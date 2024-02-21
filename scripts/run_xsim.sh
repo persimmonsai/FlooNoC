@@ -18,7 +18,13 @@ ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 #VIVADO_VER="2020.2"
 
 bender script vivado-sim -t test > ${ROOT}/scripts/vivado/add_sources.tcl
+# mkdir -p scripts
+# echo 'set ROOT [file normalize [file dirname [info script]]/..]' > ${ROOT}/scripts/vivado/add_sources.tcl
+# bender script vivado-sim -t rtl -t test | grep -v "set ROOT" >> ${ROOT}/scripts/vivado/add_sources.tcl
 
 #vivado-${VIVADO_VER} vivado -mode batch -source ${ROOT}/scripts/vivado/run_xsim.tcl
-vivado -mode batch -source ${ROOT}/scripts/vivado/run_xsim.tcl
-#vivado -source ${ROOT}/scripts/vivado/run_xsim.tcl
+#vivado -mode batch -source ${ROOT}/scripts/vivado/run_xsim.tcl
+vivado -source ${ROOT}/scripts/vivado/run_xsim.tcl
+
+
+

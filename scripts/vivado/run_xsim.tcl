@@ -20,10 +20,10 @@
 set SCRIPT_ROOT [file normalize [file dirname [info script]]]
 
 # check if the enviroment variables are set, if not, set default to genesys2
-# if {![info exists ::env(XILINX_PART)]} {
-# 	puts "Set default XILINX_PART"
-# 	set env(XILINX_PART) "xc7k325tffg900-2"
-# }
+if {![info exists ::env(XILINX_PART)]} {
+	puts "Set default XILINX_PART"
+	set env(XILINX_PART) "xcu250-figd2104-2l-e"
+}
 if {![info exists ::env(XILINX_BOARD)]} {
 	puts "Set default XILINX_BOARD"
 	set env(XILINX_BOARD) "xilinx.com:au250:part0:1.3"
@@ -50,6 +50,9 @@ set_param general.maxThreads 8
 source $SCRIPT_ROOT/add_sources.tcl
 set_property top tb_floo_rob [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
+
+# Define XSIM
+set_property verilog_define {TARGET_SIMULATION TARGET_FPGA TARGET_TEST TARGET_VIVADO TARGET_XILINX XSIM} [get_filesets sim_1]
 
 ####################################################################################################
 # Simulate tc_sram_xilinx with one port

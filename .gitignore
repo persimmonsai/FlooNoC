@@ -65,6 +65,9 @@ generated
 *.png
 hw/test/jobs
 
+# Vivado-sim
+scripts/vivado/add_sources.tcl
+
 # QuestaSim
 work
 work-vsim
