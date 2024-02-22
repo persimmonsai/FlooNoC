@@ -21,8 +21,9 @@ export_include_dirs:
 sources:
   # Level 0
   - hw/floo_pkg.sv
-  - hw/floo_axi_pkg.sv
-  - hw/floo_narrow_wide_pkg.sv
+  - hw/floo_axi_pkg.sv # Generated package from floogen
+  - hw/floo_narrow_wide_pkg.sv # Generated package from floogen
+  - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
   # Level 1
   - hw/floo_cut.sv
   - hw/floo_fifo.sv

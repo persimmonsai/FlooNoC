@@ -98,17 +98,17 @@ package floo_narrow_wide_pkg;
   /////////////////////////
 
   localparam route_algo_e RouteAlgo = XYRouting;
-  localparam bit UseIdTable = 1'b0;
-  localparam int unsigned NumXBits = 3;
-  localparam int unsigned NumYBits = 3;
-  localparam int unsigned XYAddrOffsetX = 16;
-  localparam int unsigned XYAddrOffsetY = 19;
+  localparam bit UseIdTable = 1'b1;
+  localparam int unsigned NumXBits = 2;
+  localparam int unsigned NumYBits = 2;
+  localparam int unsigned XYAddrOffsetX = 41;
+  localparam int unsigned XYAddrOffsetY = 43;
   localparam int unsigned IdAddrOffset = 0;
 
 
   typedef logic [3:0] rob_idx_t;
-  typedef logic [2:0] x_bits_t;
-  typedef logic [2:0] y_bits_t;
+  typedef logic [1:0] x_bits_t;
+  typedef logic [1:0] y_bits_t;
   typedef struct packed {
     x_bits_t x;
     y_bits_t y;
@@ -132,9 +132,28 @@ package floo_narrow_wide_pkg;
   //   Address Map   //
   /////////////////////
 
-  typedef logic addr_map_rule_t;
-  localparam int unsigned AddrMapNumRules = 0;
-  localparam addr_map_rule_t AddrMap = '0;
+  typedef struct packed {
+    id_t idx;
+    logic [47:0] start_addr;
+    logic [47:0] end_addr;
+  } addr_map_rule_t;
+
+  localparam int unsigned AddrMapNumRules = 11;
+
+  localparam addr_map_rule_t [10:0] AddrMap = '{
+      '{idx: '{x: 1, y: 1}, start_addr: 48'h000010000000, end_addr: 48'h000010040000},
+      '{idx: '{x: 1, y: 2}, start_addr: 48'h000010080000, end_addr: 48'h0000100c0000},
+      '{idx: '{x: 2, y: 1}, start_addr: 48'h000010040000, end_addr: 48'h000010080000},
+      '{idx: '{x: 2, y: 2}, start_addr: 48'h0000100c0000, end_addr: 48'h000010100000},
+      '{idx: '{x: 1, y: 3}, start_addr: 48'h000080000000, end_addr: 48'h0000c0000000},
+      '{idx: '{x: 2, y: 3}, start_addr: 48'h0000c0000000, end_addr: 48'h000100000000},
+      '{idx: '{x: 1, y: 0}, start_addr: 48'h000800000000, end_addr: 48'h000840000000},
+      '{idx: '{x: 2, y: 0}, start_addr: 48'h000840000000, end_addr: 48'h000880000000},
+      '{idx: '{x: 0, y: 2}, start_addr: 48'h010000000000, end_addr: 48'h010100000000},
+      '{idx: '{x: 3, y: 1}, start_addr: 48'h000000000000, end_addr: 48'h000000ffffff},
+      '{idx: '{x: 3, y: 2}, start_addr: 48'h000000ffffff, end_addr: 48'h000001fffffe}
+  };
+
 
   ////////////////////////
   //   Flits Typedefs   //

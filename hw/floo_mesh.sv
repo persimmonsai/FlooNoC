@@ -21,10 +21,11 @@ import floo_pkg::*;
 ) (
   input logic clk_i,
   input logic rst_ni,
+  // Connect with compute cluster
   input  logic  [NumX-1:0][NumY-1:0][NumVirtChannels-1:0]  valid_i,
   output logic  [NumX-1:0][NumY-1:0][NumVirtChannels-1:0]  ready_o,
   input  flit_t [NumX-1:0][NumY-1:0][NumPhysChannels-1:0]  data_i,
-
+  // Connect with compute cluster
   output logic  [NumX-1:0][NumY-1:0][NumVirtChannels-1:0] valid_o,
   input  logic  [NumX-1:0][NumY-1:0][NumVirtChannels-1:0] ready_i,
   output flit_t [NumX-1:0][NumY-1:0][NumPhysChannels-1:0] data_o
@@ -42,8 +43,9 @@ import floo_pkg::*;
   for (genvar x = 0; x < NumX; x++) begin : gen_x
     for (genvar y = 0; y < NumY; y++) begin : gen_y
       xy_id_t current_id;
-      assign current_id = '{x: x, y: y};
+      assign current_id = '{x: x, y: y}; // Generate x-y ID for each router
 
+      // NumDirections = 5 for Eject, North, South, East, West
       flit_t  [NumDirections-1:0][NumPhysChannels-1:0] in_flit;
       logic   [NumDirections-1:0][NumVirtChannels-1:0] in_ready, in_valid;
       flit_t  [NumDirections-1:0][NumPhysChannels-1:0] out_flit;
@@ -98,6 +100,7 @@ import floo_pkg::*;
         end
       end
 
+      // One router per connection
       floo_router #(
         .NumPhysChannels ( NumPhysChannels ),
         .NumVirtChannels ( NumVirtChannels ),
@@ -125,6 +128,7 @@ import floo_pkg::*;
         .ready_i        ( out_ready ),
         .data_o         ( out_flit  )
       );
+
     end
   end
 

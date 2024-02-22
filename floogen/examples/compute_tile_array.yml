@@ -1,0 +1,179 @@
+# Copyright 2023 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: compute_tile_array
+description: "Computile array configuration in XY routing for FlooGen"
+
+routing:
+  route_algo: "XY"
+  use_id_table: true
+
+protocols:
+  - name: "narrow"
+    type: "AXI4"
+    direction: "manager"
+    data_width: 64
+    addr_width: 48
+    id_width: 4
+    user_width: 1
+  - name: "narrow"
+    type: "AXI4"
+    direction: "subordinate"
+    data_width: 64
+    addr_width: 48
+    id_width: 2
+    user_width: 1
+  - name: "wide"
+    type: "AXI4"
+    direction: "manager"
+    data_width: 512
+    addr_width: 48
+    id_width: 3
+    user_width: 1
+  - name: "wide"
+    type: "AXI4"
+    direction: "subordinate"
+    data_width: 512
+    addr_width: 48
+    id_width: 1
+    user_width: 1
+
+# Define endpoint and slave address mapped
+endpoints:
+# Define compute tile array (snitch cluster) in XY mesh
+  - name: "cluster"
+    array: [2, 2]
+    addr_range:
+      base: 0x0000_1000_0000
+      size: 0x0000_0004_0000 # size per single snitch cluster
+    mgr_port_protocol:
+      - "narrow"
+      - "wide"
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to 1
+      y: 0 # 0 to 1
+
+# Define endpoint for each border side (North, East, South, and West)
+  # North border HBM memory
+  - name: "hbm_north"
+    array: [2, 1]
+    addr_range:
+      base: 0x0000_8000_0000
+      size: 0x0000_4000_0000
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to 1
+      y: 2 # 2 mean border of the north side (its not working)
+  # South border HBM memory
+  - name: "hbm_south"
+    array: [2, 1]
+    addr_range:
+      base: 0x0008_0000_0000
+      size: 0x0000_4000_0000
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to 1
+      y: -1 # -1 mean border of the south side
+  # West border PCIe interface
+  - name: "pcie"
+    addr_range:
+      base: 0x0100_0000_0000
+      size: 0x0010_000_0000
+    mgr_port_protocol:
+      - "narrow"
+      - "wide"
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset: 
+      x: -1 # -1 mean border of the west side
+      y: 1 # 0
+  # West border CVA6 interface
+  - name: "cva6" 
+    # No slave port so no endpoint address assign to its, 
+    # and there is no rule route to this endpoint from "addr_map_rule_t [35:0] AddrMap"
+    mgr_port_protocol:
+      - "narrow"
+    id_offset:
+      x: -1 # -1 mean border of the west side
+      y: 0 # 1
+  # East border Peripherals
+  - name: "peripherals"
+    array: [1, 2]
+    addr_range:
+      base: 0x0000_0000_0000
+      size: 0x0000_00ff_ffff
+      #start: 0x0000_0000_0000 # use start and end address for single element
+      #end: 0x0000_00ff_ffff
+    id_offset:
+      x: 2 # 2 mean border of the east side
+      y: 0 # 0 to 1
+    mgr_port_protocol:
+      - "narrow"
+    sbr_port_protocol:
+      - "narrow"
+
+routers:
+  # Router equal to cluster number
+  - name: "router"
+    array: [2, 2]
+
+connections:
+  # Each compute cluster (snitch cluster) connect to the router
+  - src: "cluster"
+    dst: "router"
+    src_range:
+    - [0, 1]
+    - [0, 1]
+    dst_range:
+    - [0, 1]
+    - [0, 1]
+    bidirectional: true
+  # North border HBM memory
+  - src: "hbm_north"
+    dst: "router"
+    src_range:
+    - [0, 1]
+    - [0, 0]
+    dst_range: # router index for north border
+    - [0, 1]
+    - [1, 1]
+    bidirectional: true
+  # South border HBM memory
+  - src: "hbm_south"
+    dst: "router"
+    src_range:
+    - [0, 1]
+    - [0, 0]
+    dst_range: # router index for south border
+    - [0, 1]
+    - [0, 0]
+    bidirectional: true
+  # West border PCIe interface
+  - src: "pcie"
+    dst: "router"
+    dst_idx: [0, 1] # No array, so use XY index to attached to specific router index
+    bidirectional: true
+  # West border CVA6 interface
+  - src: "cva6"
+    dst: "router"
+    dst_idx: [0, 0] # No array, so use XY index to attached to specific router index
+    bidirectional: true
+  # East border Peripherals
+  - src: "peripherals"
+    dst: "router"
+    src_range:
+    - [0, 0]
+    - [0, 1]
+    dst_range: # router index for south border
+    - [1, 1]
+    - [0, 1]
+    bidirectional: true

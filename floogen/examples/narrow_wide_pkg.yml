@@ -42,6 +42,7 @@ protocols:
     id_width: 1
     user_width: 1
 
+# No endpoint, routers, and connections because this configuration use to generate package only
 endpoints: []
 
 routers: []
