@@ -349,12 +349,12 @@ module compute_tile_array_floo_noc
   );
 
 
-  floo_req_t  [North:West] router_0_0_req_in;
-  floo_rsp_t  [North:West] router_0_0_rsp_out;
-  floo_req_t  [North:West] router_0_0_req_out;
-  floo_rsp_t  [North:West] router_0_0_rsp_in;
-  floo_wide_t [North:West] router_0_0_wide_in;
-  floo_wide_t [North:West] router_0_0_wide_out;
+  floo_req_t  [West:North] router_0_0_req_in;
+  floo_rsp_t  [West:North] router_0_0_rsp_out;
+  floo_req_t  [West:North] router_0_0_req_out;
+  floo_rsp_t  [West:North] router_0_0_rsp_in;
+  floo_wide_t [West:North] router_0_0_wide_in;
+  floo_wide_t [West:North] router_0_0_wide_out;
 
   assign router_0_0_req_in[East] = router_1_0_to_router_0_0_req;
   assign router_0_0_req_in[North] = router_0_1_to_router_0_0_req;
@@ -386,8 +386,14 @@ module compute_tile_array_floo_noc
   assign router_0_0_to_hbm_south_ni_0_0_wide = router_0_0_wide_out[South];
   assign router_0_0_to_cva6_ni_wide = router_0_0_wide_out[West];
 
-  compute_tile i_compute_tile_0_0
-  (
+  compute_tile
+  `ifdef QUESTA
+ #(
+    .id_x(1),
+    .id_y(1)
+  )
+`endif
+  i_compute_tile_0_0 (
     .clk_i,
     .rst_ni,
     .test_enable_i,
@@ -401,12 +407,12 @@ module compute_tile_array_floo_noc
   );
 
 
-  floo_req_t  [North:West] router_0_1_req_in;
-  floo_rsp_t  [North:West] router_0_1_rsp_out;
-  floo_req_t  [North:West] router_0_1_req_out;
-  floo_rsp_t  [North:West] router_0_1_rsp_in;
-  floo_wide_t [North:West] router_0_1_wide_in;
-  floo_wide_t [North:West] router_0_1_wide_out;
+  floo_req_t  [West:North] router_0_1_req_in;
+  floo_rsp_t  [West:North] router_0_1_rsp_out;
+  floo_req_t  [West:North] router_0_1_req_out;
+  floo_rsp_t  [West:North] router_0_1_rsp_in;
+  floo_wide_t [West:North] router_0_1_wide_in;
+  floo_wide_t [West:North] router_0_1_wide_out;
 
   assign router_0_1_req_in[East] = router_1_1_to_router_0_1_req;
   assign router_0_1_req_in[North] = hbm_north_ni_0_0_to_router_0_1_req;
@@ -438,8 +444,14 @@ module compute_tile_array_floo_noc
   assign router_0_1_to_router_0_0_wide = router_0_1_wide_out[South];
   assign router_0_1_to_pcie_ni_wide = router_0_1_wide_out[West];
 
-  compute_tile i_compute_tile_0_1
-  (
+  compute_tile 
+`ifdef QUESTA
+ #(
+    .id_x(1),
+    .id_y(2)
+  )
+`endif
+  i_compute_tile_0_1 (
     .clk_i,
     .rst_ni,
     .test_enable_i,
@@ -453,12 +465,12 @@ module compute_tile_array_floo_noc
   );
 
 
-  floo_req_t  [North:West] router_1_0_req_in;
-  floo_rsp_t  [North:West] router_1_0_rsp_out;
-  floo_req_t  [North:West] router_1_0_req_out;
-  floo_rsp_t  [North:West] router_1_0_rsp_in;
-  floo_wide_t [North:West] router_1_0_wide_in;
-  floo_wide_t [North:West] router_1_0_wide_out;
+  floo_req_t  [West:North] router_1_0_req_in;
+  floo_rsp_t  [West:North] router_1_0_rsp_out;
+  floo_req_t  [West:North] router_1_0_req_out;
+  floo_rsp_t  [West:North] router_1_0_rsp_in;
+  floo_wide_t [West:North] router_1_0_wide_in;
+  floo_wide_t [West:North] router_1_0_wide_out;
 
   assign router_1_0_req_in[East] = peripherals_ni_0_0_to_router_1_0_req;
   assign router_1_0_req_in[North] = router_1_1_to_router_1_0_req;
@@ -490,8 +502,14 @@ module compute_tile_array_floo_noc
   assign router_1_0_to_hbm_south_ni_1_0_wide = router_1_0_wide_out[South];
   assign router_1_0_to_router_0_0_wide = router_1_0_wide_out[West];
 
-  compute_tile i_compute_tile_1_0
-  (
+  compute_tile 
+`ifdef QUESTA
+ #(
+    .id_x(2),
+    .id_y(1)
+  )
+`endif
+  i_compute_tile_1_0 (
     .clk_i,
     .rst_ni,
     .test_enable_i,
@@ -505,12 +523,12 @@ module compute_tile_array_floo_noc
   );
 
 
-  floo_req_t  [North:West] router_1_1_req_in;
-  floo_rsp_t  [North:West] router_1_1_rsp_out;
-  floo_req_t  [North:West] router_1_1_req_out;
-  floo_rsp_t  [North:West] router_1_1_rsp_in;
-  floo_wide_t [North:West] router_1_1_wide_in;
-  floo_wide_t [North:West] router_1_1_wide_out;
+  floo_req_t  [West:North] router_1_1_req_in;
+  floo_rsp_t  [West:North] router_1_1_rsp_out;
+  floo_req_t  [West:North] router_1_1_req_out;
+  floo_rsp_t  [West:North] router_1_1_rsp_in;
+  floo_wide_t [West:North] router_1_1_wide_in;
+  floo_wide_t [West:North] router_1_1_wide_out;
 
   assign router_1_1_req_in[East] = peripherals_ni_0_1_to_router_1_1_req;
   assign router_1_1_req_in[North] = hbm_north_ni_1_0_to_router_1_1_req;
@@ -542,8 +560,14 @@ module compute_tile_array_floo_noc
   assign router_1_1_to_router_1_0_wide = router_1_1_wide_out[South];
   assign router_1_1_to_router_0_1_wide = router_1_1_wide_out[West];
 
-  compute_tile i_compute_tile_1_1
-  (
+  compute_tile 
+`ifdef QUESTA
+ #(
+    .id_x(2),
+    .id_y(2)
+  )
+`endif
+  i_compute_tile_1_1 (
     .clk_i,
     .rst_ni,
     .test_enable_i,

@@ -16,6 +16,13 @@ module compute_tile
   // Use AXI interface defined on 'floo_narrow_wide_pkg' that 
   // must be equal with AXI interface parameter defined on 'snitch_cluster_pkg'
   // import snitch_cluster_pkg::*;
+`ifdef QUESTA
+#(
+    // Additional simulation input port to control simulation behaviour
+    parameter int unsigned id_x = 1,
+    parameter int unsigned id_y = 1
+)
+`endif
 (
     input  logic                        clk_i,
     input  logic                        rst_ni,
@@ -23,12 +30,12 @@ module compute_tile
 
     input  id_t                         id_i, // XY ID for router and cluster NI
     // North, East, South, and West floonoc router interface
-    input  floo_req_t  [North:West]     floo_xy_req_i,
-    output floo_rsp_t  [North:West]     floo_xy_rsp_o,
-    output floo_req_t  [North:West]     floo_xy_req_o,
-    input  floo_rsp_t  [North:West]     floo_xy_rsp_i,
-    input  floo_wide_t [North:West]     floo_xy_wide_i,
-    output floo_wide_t [North:West]     floo_xy_wide_o
+    input  floo_req_t  [West:North]     floo_xy_req_i,
+    output floo_rsp_t  [West:North]     floo_xy_rsp_o,
+    output floo_req_t  [West:North]     floo_xy_req_o,
+    input  floo_rsp_t  [West:North]     floo_xy_rsp_i,
+    input  floo_wide_t [West:North]     floo_xy_wide_i,
+    output floo_wide_t [West:North]     floo_xy_wide_o
 );
   // --- Cluster to NI ---
   axi_narrow_in_req_t  cluster_to_ni_narrow_req;
@@ -76,13 +83,17 @@ module compute_tile
 
 // Switch to instantiate module between simulation (with questa) and synthesis
 `ifdef QUESTA
-  snitch_cluster_wrapper_test i_snitch_cluster_test
+  snitch_cluster_test_node  
+  #(
+    .id_x(id_x),
+    .id_y(id_y)
+  ) i_snitch_cluster_test_node
 `else
-  snitch_cluster_wrapper i_snitch_cluster
+  snitch_cluster_wrapper i_snitch_cluster 
 `endif
   (
-      .clk_i,
-      .rst_ni,
+      .clk_i (clk_i),
+      .rst_ni (rst_ni),
       // sa_rst_ni, debug_req_i, meip_i, mtip_i, and msip_i 
       // may need to extract from AXI narrow, which is a control signal and handshake from others cluster
       .sa_rst_ni('1),
@@ -110,9 +121,9 @@ module compute_tile
       .EnWideSbrPort  (1'b1),
       .EnWideMgrPort  (1'b1)
   ) i_cluster_ni (
-      .clk_i,
-      .rst_ni,
-      .test_enable_i,
+      .clk_i               (clk_i),
+      .rst_ni              (rst_ni),
+      .test_enable_i       (test_enable_i),
       .sram_cfg_i          ('0),
       .axi_narrow_in_req_i (cluster_to_ni_narrow_req),
       .axi_narrow_in_rsp_o (ni_to_cluster_narrow_resp),
@@ -140,12 +151,12 @@ module compute_tile
   assign router_to_cluster_ni_wide = router_wide_out[Eject];
 
    // Mapped router interface for North, East, South, and West direction to port
-  assign router_req_in[North:West] = floo_xy_req_i;
-  assign floo_xy_rsp_o = router_rsp_out[North:West];
-  assign floo_xy_req_o = router_req_out[North:West];
-  assign router_rsp_in[North:West] = floo_xy_rsp_i;
-  assign router_wide_in[North:West] = floo_xy_wide_i;
-  assign floo_xy_wide_o = router_wide_out[North:West];
+  assign router_req_in[West:North] = floo_xy_req_i;
+  assign floo_xy_rsp_o = router_rsp_out[West:North];
+  assign floo_xy_req_o = router_req_out[West:North];
+  assign router_rsp_in[West:North] = floo_xy_rsp_i;
+  assign router_wide_in[West:North] = floo_xy_wide_i;
+  assign floo_xy_wide_o = router_wide_out[West:North];
 
   floo_narrow_wide_router #(
       .NumRoutes(NumDirections),
@@ -154,9 +165,9 @@ module compute_tile
       .RouteAlgo(XYRouting),
       .id_t(id_t)
   ) i_router (
-      .clk_i,
-      .rst_ni,
-      .test_enable_i,
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .test_enable_i(test_enable_i),
       .id_i(id_i), // map to output port
       .id_route_map_i('0),
       .floo_req_i(router_req_in),

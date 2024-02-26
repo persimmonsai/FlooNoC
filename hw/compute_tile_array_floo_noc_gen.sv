@@ -4,7 +4,7 @@
 
 // AUTOMATICALLY GENERATED! DO NOT EDIT!
 
-module compute_tile_array_floo_noc
+module compute_tile_array_floo_noc_gen
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
 (

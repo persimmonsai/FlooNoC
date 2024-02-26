@@ -163,6 +163,59 @@ def gen_mesh_traffic(
             emit_jobs(wide_jobs, out_dir, "mesh", x + (y - 1) * NUM_X)
             emit_jobs(narrow_jobs, out_dir, "mesh", x + (y - 1) * NUM_X + 100)
 
+# TODO : Modify this to generate compitible of compute tile array jobs
+# This required to use ID table and XY routing algorithm
+def gen_compute_tile_array_traffic(
+    narrow_burst_length: int,
+    wide_burst_length: int,
+    num_narrow_bursts: int,
+    num_wide_bursts: int,
+    rw: str,
+    traffic_type: str,
+    out_dir: str,
+    **_kwargs
+):
+    # pylint: disable=too-many-arguments, too-many-locals
+    """Generate compute tile array traffic."""
+    for x in range(1, NUM_X + 1):
+        for y in range(1, NUM_Y + 1):
+            wide_jobs = ""
+            narrow_jobs = ""
+            wide_length = wide_burst_length * data_widths["wide"] / 8
+            narrow_length = narrow_burst_length * data_widths["narrow"] / 8
+            assert wide_length <= MEM_SIZE and narrow_length <= MEM_SIZE
+            if traffic_type == "hbm":
+                # Tile x=0 are the HBM channels
+                # Each core read from the channel of its y coordinate
+                hbm_addr = get_xy_base_addr(0, y)
+                local_addr = get_xy_base_addr(x, y)
+                src_addr = hbm_addr if rw == "read" else local_addr
+                dst_addr = local_addr if rw == "read" else hbm_addr
+            elif traffic_type == "random":
+                local_addr = get_xy_base_addr(x, y)
+                ext_addr = get_xy_base_addr(random.randint(1, NUM_X), random.randint(1, NUM_Y))
+                src_addr = ext_addr if rw == "read" else local_addr
+                dst_addr = local_addr if rw == "read" else ext_addr
+            elif traffic_type == "onehop":
+                if not (x == 1 and y == 1):
+                    wide_length = 0
+                    narrow_length = 0
+                    src_addr = 0
+                    dst_addr = 0
+                else:
+                    local_addr = get_xy_base_addr(x, y)
+                    ext_addr = get_xy_base_addr(x, y + 1)
+                    src_addr = ext_addr if rw == "read" else local_addr
+                    dst_addr = local_addr if rw == "read" else ext_addr
+            else:
+                raise ValueError(f"Unknown traffic type: {traffic_type}")
+            for _ in range(num_wide_bursts):
+                wide_jobs += gen_job_str(wide_length, src_addr, dst_addr)
+            for _ in range(num_narrow_bursts):
+                narrow_jobs += gen_job_str(narrow_length, src_addr, dst_addr)
+            emit_jobs(wide_jobs, out_dir, "mesh", x + (y - 1) * NUM_X)
+            emit_jobs(narrow_jobs, out_dir, "mesh", x + (y - 1) * NUM_X + 100)
+
 
 def main():
     """Main function."""
@@ -187,6 +240,8 @@ def main():
         gen_nw_chimney2chimney_traffic(**kwargs)
     elif args.tb == "dma_mesh":
         gen_mesh_traffic(**kwargs)
+    elif args.tb == "compute_tile_array":
+        gen_compute_tile_array_traffic(**kwargs)
     else:
         raise ValueError(f"Unknown testbench: {args.tb}")
 
