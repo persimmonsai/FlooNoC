@@ -160,6 +160,15 @@ package floo_narrow_wide_pkg;
       '{idx: '{x: 3, y: 2}, start_addr: 48'h000000ffffff, end_addr: 48'h000001fffffe}
   };
 
+  // Support function to find address map by xy id
+  function addr_map_rule_t find_addrmap_by_xy_id(int unsigned id_x, int unsigned id_y);
+    // Used input from global variable space expect target id
+    for (int unsigned i = 0; i < AddrMapNumRules; i++) begin
+      if ((AddrMap[i].idx.x == id_x) && (AddrMap[i].idx.y == id_y)) begin
+        return AddrMap[i];
+      end
+    end
+  endfunction
 
   ////////////////////////
   //   Flits Typedefs   //

@@ -37,18 +37,22 @@ module snitch_cluster_test_node
   // Assign unique job ID for each DMA test node
   localparam int unsigned Index = y * NumX + x+1;
 
-  // *** Use ID Table, so this hard code assignment is not required ***
-  // For XY routing algorithm WITHOUT UseIdTable
-  // XYAddrOffsetX = addr_offset_bits
-  // XYAddrOffsetY = addr_offset_bits + num_x_bits
-  // addr_offset_bits is most number of address bit use by user node and visible to user.
-  // Higher bit than addr_offset_bits use for routing algorithm and 
-  // total number of AXI address bit need to sufficient large to have x y address bit attach onto its.
-  localparam logic [AxiNarrowInAddrWidth-1:0] MemBaseAddr =
-      (x+1) << XYAddrOffsetX | (y+1) << XYAddrOffsetY;
+  localparam addr_map_rule_t local_addrmap = find_addrmap_by_xy_id(id_x,id_y);
+  localparam logic [AxiNarrowInAddrWidth-1:0] DMAMemBaseAddr = local_addrmap.start_addr; // byte unit
+  localparam logic [AxiNarrowInAddrWidth-1:0] DMAMemSize = local_addrmap.end_addr - local_addrmap.start_addr; // byte unit
+
+  // // *** Use ID Table, so this hard code assignment is not required ***
+  // // For XY routing algorithm WITHOUT UseIdTable
+  // // XYAddrOffsetX = addr_offset_bits
+  // // XYAddrOffsetY = addr_offset_bits + num_x_bits
+  // // addr_offset_bits is most number of address bit use by user node and visible to user.
+  // // Higher bit than addr_offset_bits use for routing algorithm and 
+  // // total number of AXI address bit need to sufficient large to have x y address bit attach onto its.
+  // localparam logic [AxiNarrowInAddrWidth-1:0] MemBaseAddr =
+  //     (x+1) << XYAddrOffsetX | (y+1) << XYAddrOffsetY;
 
   logic [1:0] end_of_sim;
-
+  
   floo_dma_test_node #(
     .TA             ( ApplTime              ),
     .TT             ( TestTime              ),
@@ -57,14 +61,14 @@ module snitch_cluster_test_node
     .UserWidth      ( AxiNarrowInUserWidth  ),
     .AxiIdInWidth   ( AxiNarrowOutIdWidth   ),
     .AxiIdOutWidth  ( AxiNarrowInIdWidth    ),
-    .MemBaseAddr    ( MemBaseAddr           ),
-    .MemSize        ( MemSize               ),
+    .MemBaseAddr    ( DMAMemBaseAddr        ),
+    .MemSize        ( DMAMemSize            ),
     .NumAxInFlight  ( 2*NarrowMaxTxnsPerId  ),
     .axi_in_req_t   ( axi_narrow_out_req_t  ),
     .axi_in_rsp_t   ( axi_narrow_out_rsp_t  ),
     .axi_out_req_t  ( axi_narrow_in_req_t   ),
     .axi_out_rsp_t  ( axi_narrow_in_rsp_t   ),
-    .JobId          ( 100 + Index           )
+    .JobId          ( 1000 + Index          )
   ) i_narrow_dma_node (
     .clk_i          ( clk                   ),
     .rst_ni         ( rst_n                 ),
@@ -83,8 +87,8 @@ module snitch_cluster_test_node
     .UserWidth      ( AxiWideInUserWidth  ),
     .AxiIdInWidth   ( AxiWideOutIdWidth   ),
     .AxiIdOutWidth  ( AxiWideInIdWidth    ),
-    .MemBaseAddr    ( MemBaseAddr         ),
-    .MemSize        ( MemSize             ),
+    .MemBaseAddr    ( DMAMemBaseAddr      ),
+    .MemSize        ( DMAMemSize          ),
     .NumAxInFlight  ( 2*WideMaxTxnsPerId  ),
     .axi_in_req_t   ( axi_wide_out_req_t  ),
     .axi_in_rsp_t   ( axi_wide_out_rsp_t  ),
