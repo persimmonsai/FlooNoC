@@ -70,7 +70,7 @@ sources:
       - hw/tb/tb_floo_dma_chimney.sv
       - hw/tb/tb_floo_dma_nw_chimney.sv
       - hw/tb/tb_floo_dma_mesh.sv
-      - hw/tb/tb_floo_compute_tile_array_2x2.sv
+      - hw/tb/tb_floo_compute_tile_array.sv
 
   - target: any(synthesis,spyglass)
     files:

@@ -12,7 +12,7 @@
 //`define FLOO_NOC_SIMULATION_
 //`endif
 
-module tb_floo_compute_tile_array_2x2;
+module tb_floo_compute_tile_array;
 
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;

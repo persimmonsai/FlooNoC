@@ -76,6 +76,9 @@ transcript
 vsim.wlf
 scripts/compile_vsim.tcl
 
+# VCS
+scripts/compile_vcs.sh
+
 # Verible
 verible*
 
