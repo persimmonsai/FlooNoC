@@ -342,7 +342,7 @@ module floo_dma_test_node  #(
     end else begin
       job_file = $sformatf("%s/%s.txt", job_dir, job_name);
     end
-    $display("[DMA%0d] Reading from %s", JobId + 1, job_file);
+    $display("[DMA%0d] Reading from %s", JobId, job_file);
     read_jobs(job_file, req_jobs);
     read_jobs(job_file, rsp_jobs);
   end
@@ -373,7 +373,7 @@ module floo_dma_test_node  #(
         // pop front to get a job
         automatic tb_dma_job_t now = req_jobs.pop_front();
         // print job to terminal
-        if (EnableDebug) $display("[DMA%0d]%s", JobId + 1, now.pprint());
+        if (EnableDebug) $display("[DMA%0d]%s", JobId, now.pprint());
         // launch DUT
         drv.launch_tf(
                       now.length,
@@ -388,7 +388,7 @@ module floo_dma_test_node  #(
                     );
     end
     // once done: launched all transfers
-    $display("[DMA%0d] Launched all Transfers.", JobId + 1);
+    $display("[DMA%0d] Launched all Transfers.", JobId);
 
 end
 
@@ -403,9 +403,9 @@ initial begin
       // launch DUT
       drv.wait_tf(cause, err_type, burst_addr, error, last);
       if (error) begin
-        $display("[DMA%0d] Error: %s", JobId + 1, idma_pkg::err_type_t'(err_type));
-        $display("[DMA%0d] Cause: %s", JobId + 1, axi_pkg::resp_t'(cause));
-        $display("[DMA%0d] Burst Address: 0x%0h", JobId + 1, burst_addr);
+        $display("[DMA%0d] Error: %s", JobId, idma_pkg::err_type_t'(err_type));
+        $display("[DMA%0d] Cause: %s", JobId, axi_pkg::resp_t'(cause));
+        $display("[DMA%0d] Burst Address: 0x%0h", JobId, burst_addr);
       end
   end
   // wait for some time

@@ -78,6 +78,13 @@ scripts/compile_vsim.tcl
 
 # VCS
 scripts/compile_vcs.sh
+AN.DB
+simv.daidir
+work-vcs
+elabMhIdDidWork.txt
+ucli.key
+vc_hdrs.h
+simv
 
 # Verible
 verible*

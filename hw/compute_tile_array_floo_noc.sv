@@ -2,6 +2,12 @@
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
 // SPDX-License-Identifier: SHL-0.51
 
+`ifdef QUESTA
+  `define QUESTA_VCS
+`elsif VCS
+  `define QUESTA_VCS
+`endif
+
 module compute_tile_array_floo_noc
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
@@ -387,7 +393,7 @@ module compute_tile_array_floo_noc
   assign router_0_0_to_cva6_ni_wide = router_0_0_wide_out[West];
 
   compute_tile
-  `ifdef QUESTA
+  `ifdef QUESTA_VCS
  #(
     .id_x(1),
     .id_y(1)
@@ -445,7 +451,7 @@ module compute_tile_array_floo_noc
   assign router_0_1_to_pcie_ni_wide = router_0_1_wide_out[West];
 
   compute_tile 
-`ifdef QUESTA
+`ifdef QUESTA_VCS
  #(
     .id_x(1),
     .id_y(2)
@@ -503,7 +509,7 @@ module compute_tile_array_floo_noc
   assign router_1_0_to_router_0_0_wide = router_1_0_wide_out[West];
 
   compute_tile 
-`ifdef QUESTA
+`ifdef QUESTA_VCS
  #(
     .id_x(2),
     .id_y(1)
@@ -561,7 +567,7 @@ module compute_tile_array_floo_noc
   assign router_1_1_to_router_0_1_wide = router_1_1_wide_out[West];
 
   compute_tile 
-`ifdef QUESTA
+`ifdef QUESTA_VCS
  #(
     .id_x(2),
     .id_y(2)

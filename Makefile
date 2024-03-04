@@ -47,30 +47,34 @@ VSIM_FLAGS += -t 1ps
 VSIM_FLAGS += -sv_seed 0
 
 # VCS
-VLOGAN_ARGS += -assert svaext
-VLOGAN_ARGS += -assert disable_cover
+#VLOGAN_ARGS += -assert svaext
+#VLOGAN_ARGS += -assert disable_cover
 VLOGAN_ARGS += -full64
-VLOGAN_ARGS += -sysc=q
-VLOGAN_ARGS += -nc
-VLOGAN_ARGS += -q
+#VLOGAN_ARGS += -sysc=q
+#VLOGAN_ARGS += -nc
+#VLOGAN_ARGS += -q
 VLOGAN_ARGS += -timescale=1ns/1ns
 
-VCS_FLAGS += -full64
+VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
-VCS_FLAGS += -debug_access+r
-VCS_FLAGS += -j 8
-VCS_FLAGS += -CFLAGS "-Os"
+#VCS_FLAGS += -debug_access+r
+VCS_FLAGS += -debug_all
+#VCS_FLAGS += -j 8
+#VCS_FLAGS += -CFLAGS "-Os"
 SIMV_FLAGS =
+
+#SIMV_FLAGS += +vcs+dumpvars+test.vcd
+SIMV_FLAGS += +vcs+finish+1000000 # maximum simulation time in ns
 
 # Set the job name and directory if specified
 ifdef JOB_NAME
 		VSIM_FLAGS += +JOB_NAME=$(JOB_NAME)
-		VCS_FLAGS += -pvalue+JOB_NAME=$(JOB_NAME)
+		SIMV_FLAGS += +JOB_NAME=$(JOB_NAME)
 endif
 ifdef JOB_DIR
 		VSIM_FLAGS += +JOB_DIR=$(JOB_DIR)
-		VCS_FLAGS += -pvalue+JOB_DIR=$(JOB_DIR)
+		SIMV_FLAGS += +JOB_DIR=$(JOB_DIR)
 endif
 ifdef LOG_FILE
 		VSIM_FLAGS += -l $(LOG_FILE)
@@ -175,7 +179,7 @@ scripts/compile_vcs.sh: Bender.yml pkg-sources
 compile-vcs: scripts/compile_vcs.sh
 	scripts/compile_vcs.sh
 
-run-vcs: VCS_FLAGS+=-debug_all
+#run-vcs: VCS_FLAGS+=-debug_all
 run-vcs:
 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
 	./simv $(SIMV_FLAGS) -gui
@@ -186,6 +190,13 @@ run-vcs-batch:
 
 clean-vcs:
 	rm -rf scripts/compile_vcs.sh
+	rm -rf work-vcs
+	rm -rf AN.DB
+	rm -rf simv.daidir
+	rm -rf elabMhIdDidWork.txt
+	rm -rf ucli.key
+	rm -rf vc_hdrs.h
+	rm -rf simv
 
 ####################
 # Spyglass Linting #

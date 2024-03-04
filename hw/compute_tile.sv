@@ -9,6 +9,12 @@
 
 `include "axi/typedef.svh"
 
+`ifdef QUESTA
+  `define QUESTA_VCS
+`elsif VCS
+  `define QUESTA_VCS
+`endif
+
 module compute_tile
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
@@ -16,7 +22,7 @@ module compute_tile
   // Use AXI interface defined on 'floo_narrow_wide_pkg' that 
   // must be equal with AXI interface parameter defined on 'snitch_cluster_pkg'
   // import snitch_cluster_pkg::*;
-`ifdef QUESTA
+`ifdef QUESTA_VCS
 #(
     // Additional simulation input port to control simulation behaviour
     parameter int unsigned id_x = 1,
@@ -82,7 +88,7 @@ module compute_tile
 //   input  logic [NrCores-1:0]            msip_i,
 
 // Switch to instantiate module between simulation (with questa) and synthesis
-`ifdef QUESTA
+`ifdef QUESTA_VCS
   snitch_cluster_test_node  
   #(
     .id_x(id_x),
