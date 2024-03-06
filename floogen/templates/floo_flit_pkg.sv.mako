@@ -45,6 +45,18 @@ package floo_${name}_pkg;
   localparam addr_map_rule_t AddrMap = '0;
 % endif
 
+%if noc.compute_tile_gen:
+  // Support function to find address map by xy id
+  function addr_map_rule_t find_addrmap_by_xy_id(int unsigned id_x, int unsigned id_y);
+    // Used input from global variable space expect target id
+    for (int unsigned i = 0; i < AddrMapNumRules; i++) begin
+      if ((AddrMap[i].idx.x == id_x) && (AddrMap[i].idx.y == id_y)) begin
+        return AddrMap[i];
+      end
+    end
+  endfunction
+% endif
+
   ////////////////////////
   //   Flits Typedefs   //
   ////////////////////////

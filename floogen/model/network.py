@@ -33,14 +33,20 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    # Template for compute_tile_gen=False
     with resources.path("floogen.templates", "floo_noc_top.sv.mako") as _tpl_path:
         tpl: ClassVar = Template(filename=str(_tpl_path))
+    
+    # Template for compute_tile_gen=True
+    with resources.path("floogen.templates", "floo_noc_top_compute_tile.sv.mako") as _tpl_path:
+        tpl_tile: ClassVar = Template(filename=str(_tpl_path))
 
     with resources.path("floogen.templates", "floo_flit_pkg.sv.mako") as _tpl_path:
         tpl_pkg: ClassVar = Template(filename=str(_tpl_path))
 
     name: str
     description: Optional[str]
+    compute_tile_gen : Optional[bool] = False
     protocols: List[AXI4]
     endpoints: List[EndpointDesc]
     routers: List[RouterDesc]
@@ -328,10 +334,11 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 case RouteAlgo.XY:
                     rt_id = self.graph.get_node_id(rt_name)
                     incoming, outgoing = {}, {}
+                    # edge is a connection link that still did't define which port of router to be connected
                     for edge in self.graph.get_edges_to(rt_name):
                         neighbor_id = self.graph.get_node_id(edge.source)
                         incoming_dir = str(Coord.get_dir(rt_id, neighbor_id))
-                        if incoming_dir in incoming:
+                        if incoming_dir in incoming: # Prevent multiple node connect to the same direction
                             raise ValueError("Incoming direction is already defined")
                         incoming[incoming_dir] = edge
                     for edge in self.graph.get_edges_from(rt_name):
@@ -340,6 +347,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                         if outgoing_dir in outgoing:
                             raise ValueError("Outgoing direction is already defined")
                         outgoing[outgoing_dir] = edge
+                    print("\n")
                     router_dict = {
                         "name": rt_name,
                         "incoming": XYLinks(**incoming),
@@ -507,8 +515,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         max_x = max(ni.id.x for ni in ni_nodes)
         max_y = max(ni.id.y for ni in ni_nodes)
         max_address = max(ni.addr_range.end for ni in ni_sbr_nodes)
-        self.routing.num_x_bits = clog2(max_x - min_x)
-        self.routing.num_y_bits = clog2(max_y - min_y)
+        self.routing.num_x_bits = clog2(max_x - min_x + 1)
+        self.routing.num_y_bits = clog2(max_y - min_y + 1)
         self.routing.addr_offset_bits = clog2(max_address)
         self.routing.id_offset = Coord(x=min_x, y=min_y)
         for ni in self.graph.get_ni_nodes():
@@ -529,10 +537,20 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         for ni in self.graph.get_ni_nodes():
             ni.routing.table = self.routing.table.model_copy()
 
+    # render output port of wrapper
     def render_ports(self):
         """Render the ports in the generated code."""
         ports, declared_ports = [], []
-        for ep in self.graph.get_ep_nodes():
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_nodes = self.graph.get_ep_eject_nodes()
+            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        
+        for ep in ep_nodes:
+            # Skip for port that already declared
+            # There is a problem if only some node in the node array connected to eject, 
+            # cause the program will not filter that out and declared full range of array interface
             if ep.name in declared_ports:
                 continue
             ports += ep.render_ports()
@@ -551,7 +569,13 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def render_links(self):
         """Render the links in the generated code."""
         string = ""
-        for link in self.graph.get_link_edges():
+        links = self.graph.get_link_edges()
+        # Remove router link to Eject endpoint link for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+            links = [li for li in links if (li.source not in ep_eject_ni) and (li.dest not in ep_eject_ni)]
+        
+        for link in links:
             string += link.declare()
         return string
 
@@ -559,19 +583,31 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render the routers in the generated code."""
         string = ""
         for rt in self.graph.get_rt_nodes():
-            string += rt.render()
+            if self.compute_tile_gen:
+                string += rt.render_tile(self.routing.id_offset)
+            else:
+                string += rt.render()
         return string
 
     def render_nis(self):
         """Render the network interfaces in the generated code."""
         string = ""
-        for ni in self.graph.get_ni_nodes():
+        ni_nodes = self.graph.get_ni_nodes()
+        # Remove NI for node that connect with Eject for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+            ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_eject_ni]
+        
+        for ni in ni_nodes:
             string += ni.render(noc=self)
         return string
 
     def render_network(self):
         """Render the network in the generated code."""
-        return self.tpl.render(noc=self)
+        if self.compute_tile_gen:
+            return self.tpl_tile.render(noc=self)
+        else:
+            return self.tpl.render(noc=self)
 
     def render_link_cfg(self):
         """Render the link configuration file"""
@@ -589,7 +625,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Visualize the network graph."""
         ni_nodes = [name for name, _ in self.graph.get_ni_nodes(with_name=True)]
         router_nodes = [name for name, _ in self.graph.get_rt_nodes(with_name=True)]
-        filtered_graph = self.graph.subgraph(ni_nodes + router_nodes)
+        filtered_graph = self.graph.subgraph(ni_nodes + router_nodes) # Method from networkx
         nx.draw(filtered_graph, with_labels=True)
         if savefig:
             plt.savefig(filename)

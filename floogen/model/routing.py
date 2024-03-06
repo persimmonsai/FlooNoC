@@ -115,6 +115,7 @@ class Coord(Id):
             return f"'{{x: {self.x}, y: {self.y}}}"
         return f"[{self.x}][{self.y}]"
 
+    # Used XY id to tell which direction of neighbor is connected to the interested node (router)
     @staticmethod
     def get_dir(node, neighbor) -> XYDirections:
         """Get the direction from node to neighbor."""
@@ -149,6 +150,7 @@ class AddrRange(BaseModel):
         if not isinstance(self, dict):
             raise ValueError("Invalid address range specification")
         addr_dict = {k: v for k, v in self.items() if v is not None}
+        # Select between difference format of defined address range
         match addr_dict:
             case {"size": size, "base": base, "idx": idx}:
                 addr_dict["start"] = base + size * idx

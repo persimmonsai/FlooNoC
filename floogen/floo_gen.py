@@ -51,6 +51,7 @@ def parse_args():
 def main(): # pylint: disable=too-many-branches
     """Generates the network."""
     args = parse_args()
+    # Load network configuration .yml file and validate input
     network = parse_config(Network, args.config)
 
     if args.outdir:
@@ -69,6 +70,7 @@ def main(): # pylint: disable=too-many-branches
                 f"Was not able to find the directory to store the package file: {pkg_outdir}"
             )
 
+    # Generate wrapper and testbecnch if in the mode 'compute_tile_array'
     if not args.only_pkg:
         network.create_network()
         network.compile_network()
@@ -77,7 +79,9 @@ def main(): # pylint: disable=too-many-branches
         # Visualize the network graph
         if args.visualize:
             if outdir:
-                network.visualize(filename=outdir / (network.name + ".pdf"))
+                visual_file_name = outdir / (network.name + ".pdf")
+                network.visualize(filename=visual_file_name)
+                print("Generating graph : " + str(visual_file_name))
             else:
                 network.visualize(savefig=False)
 
@@ -91,9 +95,11 @@ def main(): # pylint: disable=too-many-branches
             top_file_name = outdir / (network.name + "_floo_noc.sv")
             with open(top_file_name, "w+", encoding="utf-8") as top_file:
                 top_file.write(rendered_top)
+            print("Generating topfile : " + str(top_file_name))
         else:
             print(rendered_top)
 
+    # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()
     if not args.no_format:
         rendered_pkg = verible_format(rendered_pkg)
@@ -102,6 +108,7 @@ def main(): # pylint: disable=too-many-branches
             cfg_file_name = pkg_outdir / (f"floo_{axi_type}_pkg.sv")
             with open(cfg_file_name, "w+", encoding="utf-8") as cfg_file:
                 cfg_file.write(rendered_pkg)
+            print("Generating package : " + str(cfg_file_name))
         else:
             print(rendered_pkg)
 

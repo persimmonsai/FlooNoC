@@ -87,7 +87,14 @@ class NarrowWideXYRouter(XYRouter):
 
     with resources.path("floogen.templates", "floo_narrow_wide_xy_router.sv.mako") as _tpl_path:
         _tpl: ClassVar = Template(filename=str(_tpl_path))
+        
+    with resources.path("floogen.templates", "floo_compute_tile.sv.mako") as _tpl_path:
+        _tpl_tile: ClassVar = Template(filename=str(_tpl_path))
 
     def render(self):
         """Declare the router in the generated code."""
         return self._tpl.render(router=self) + "\n"
+
+    def render_tile(self, id_offset):
+        """Declare the compute tile in the generated code."""
+        return self._tpl_tile.render(router=self, id_offset=id_offset) + "\n"

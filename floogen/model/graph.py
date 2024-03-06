@@ -7,6 +7,7 @@
 
 from typing import List, Tuple
 
+# package for graph management and visualization
 import networkx as nx
 
 
@@ -91,8 +92,8 @@ class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
         """Filter the nodes from the graph."""
         nodes = self.nodes
         if filters is not None:
-            for flt in filters:
-                nodes = list(filter(flt, nodes))
+            for flt in filters: # Can be list of method to filter only node that satisfy condition
+                nodes = list(filter(flt, nodes)) # Loop through all node and checking for the condition in flt. flt is a function
         if with_name:
             return [(node, self.get_node_obj(node)) for node in nodes]
         return [self.get_node_obj(node) for node in nodes]
@@ -139,6 +140,56 @@ class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
     def get_ep_nodes(self, with_name=False):
         """Return the endpoint nodes."""
         return self.get_nodes(filters=[self.is_ep_node], with_name=with_name)
+    
+    # ni_name_type=True : return NI name when with_name=True
+    # ni_name_type=False : return EndPoint name when with_name=True
+    def get_ep_eject_nodes(self, with_name=False, ni_name_type=False):
+        rt_nodes = self.get_rt_nodes()
+        ep_eject_nodes = list()
+        ep_eject_ni = list()
+        """Return whether the node is an endpoint node and it's not connected on Eject port of routing"""
+        for rt in rt_nodes:
+            rt_obj = self.get_node_obj(rt.name)
+            ep_tmp = None
+            if rt_obj.incoming.EJECT.source is not None:
+                ep_eject_obj = self.get_node_obj(rt_obj.incoming.EJECT.source)
+                if ep_eject_obj.mgr_narrow_port.source is not None:
+                    ep_tmp = ep_eject_obj.mgr_narrow_port.source
+                elif ep_eject_obj.mgr_wide_port.source is not None:
+                    ep_tmp = ep_eject_obj.mgr_wide_port.source
+                elif ep_eject_obj.sbr_narrow_port.dest is not None:
+                    ep_tmp = ep_eject_obj.sbr_narrow_port.dest
+                elif ep_eject_obj.sbr_wide_port.dest is not None:
+                    ep_tmp = ep_eject_obj.sbr_wide_port.dest
+                if ep_tmp is None:
+                    raise ValueError(f"Eject port of {rt.name} have endpoint, but no connection!")
+                ep_eject_nodes.append(ep_tmp)
+                ep_eject_ni.append(rt_obj.incoming.EJECT.source)
+            elif rt_obj.outgoing.EJECT.dest is not None:
+                ep_eject_obj = self.get_node_obj(rt_obj.incoming.EJECT.dest)
+                if ep_eject_obj.mgr_narrow_port.dest is not None:
+                    ep_tmp = ep_eject_obj.mgr_narrow_port.dest
+                elif ep_eject_obj.mgr_wide_port.dest is not None:
+                    ep_tmp = ep_eject_obj.mgr_wide_port.dest
+                elif ep_eject_obj.sbr_narrow_port.source is not None:
+                    ep_tmp = ep_eject_obj.sbr_narrow_port.source
+                elif ep_eject_obj.sbr_wide_port.source is not None:
+                    ep_tmp = ep_eject_obj.sbr_wide_port.source
+                if ep_tmp is None:
+                    raise ValueError(f"Eject port of {rt.name} have endpoint, but no connection!")
+                ep_eject_nodes.append(ep_tmp)
+                ep_eject_ni.append(rt_obj.incoming.EJECT.dest)
+        if with_name:
+            node_obj = list()
+            for node in ep_eject_nodes:
+                node_obj.append(self.get_node_obj(node))
+            #return [(node, self.get_node_obj(node)) for node in ep_eject_nodes]
+            if ni_name_type:
+                node_name = ep_eject_ni
+            else:
+                node_name = ep_eject_nodes
+            return node_name, node_obj
+        return [self.get_node_obj(node) for node in ep_eject_nodes]
 
     def get_prot_edges(self, with_name=False):
         """Return the protocol edges."""

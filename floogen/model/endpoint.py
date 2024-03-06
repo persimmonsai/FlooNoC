@@ -18,6 +18,7 @@ class EndpointDesc(BaseModel):
 
     name: str
     description: Optional[str] = ""
+    soc_type : Optional[str] = None
     array: Optional[Union[Tuple[int], Tuple[int, int]]] = None
     addr_range: Optional[AddrRange] = None
     id_offset: Optional[Id] = None
@@ -51,6 +52,15 @@ class EndpointDesc(BaseModel):
                 return self
             case (_, None):
                 raise ValueError("Endpoint is a Subordinate and requires an address range")
+        return self
+    
+    @model_validator(mode="after")
+    def check_soc_type(self):
+        """Check if soc_type is lie on support type."""
+        if self.soc_type is not None:
+            soc_type_list = ["cluster", "memory", "processor", "peripheral", "serial_link"]
+            if not (self.soc_type in soc_type_list):
+                raise ValueError("soc_type must set to one of " + str(soc_type_list))
         return self
 
     def is_sbr(self) -> bool:
