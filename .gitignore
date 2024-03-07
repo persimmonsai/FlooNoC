@@ -87,6 +87,11 @@ vc_hdrs.h
 simv
 work.lib++
 verdi_config_file
+verdiLog
+.inter.fsdb.tbsim
+inter.fsdb
+novas.conf
+novas.rc
 
 # Verible
 verible*
@@ -98,3 +103,20 @@ scripts/spyglass/*
 *.csv
 **/*.log
 reviewdog
+
+
+# Tmp
+.vcs_checkpoint_shared_memory.attapon.106206
+floonoc_signal.rc
+inter.fsdb.chain
+inter.fsdb.field
+inter.fsdb.lock
+inter.fsdb.netwk
+inter.fsdb.sinf
+inter.fsdb.slist
+inter.fsdb.slock
+inter.fsdb.str
+inter.fsdb.tlist
+inter.fsdb.xlist
+Makefile.Msimdepends
+Makefile.Msimdepends.vlib_analyze_DEFAULT.dep
