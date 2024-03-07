@@ -36,12 +36,12 @@ module compute_tile
 
     input  id_t                         id_i, // XY ID for router and cluster NI
     // North, East, South, and West floonoc router interface
-    input  floo_req_t  [West:North]     floo_xy_req_i,
-    output floo_rsp_t  [West:North]     floo_xy_rsp_o,
-    output floo_req_t  [West:North]     floo_xy_req_o,
-    input  floo_rsp_t  [West:North]     floo_xy_rsp_i,
-    input  floo_wide_t [West:North]     floo_xy_wide_i,
-    output floo_wide_t [West:North]     floo_xy_wide_o
+    input  floo_req_t  [West:North]     floo_req_i,
+    output floo_rsp_t  [West:North]     floo_rsp_o,
+    output floo_req_t  [West:North]     floo_req_o,
+    input  floo_rsp_t  [West:North]     floo_rsp_i,
+    input  floo_wide_t [West:North]     floo_wide_i,
+    output floo_wide_t [West:North]     floo_wide_o
 );
   // --- Cluster to NI ---
   axi_narrow_in_req_t  cluster_to_ni_narrow_req;
@@ -157,12 +157,12 @@ module compute_tile
   assign router_to_cluster_ni_wide = router_wide_out[Eject];
 
    // Mapped router interface for North, East, South, and West direction to port
-  assign router_req_in[West:North] = floo_xy_req_i;
-  assign floo_xy_rsp_o = router_rsp_out[West:North];
-  assign floo_xy_req_o = router_req_out[West:North];
-  assign router_rsp_in[West:North] = floo_xy_rsp_i;
-  assign router_wide_in[West:North] = floo_xy_wide_i;
-  assign floo_xy_wide_o = router_wide_out[West:North];
+  assign router_req_in[West:North] = floo_req_i;
+  assign floo_rsp_o = router_rsp_out[West:North];
+  assign floo_req_o = router_req_out[West:North];
+  assign router_rsp_in[West:North] = floo_rsp_i;
+  assign router_wide_in[West:North] = floo_wide_i;
+  assign floo_wide_o = router_wide_out[West:North];
 
   floo_narrow_wide_router #(
       .NumRoutes(NumDirections),

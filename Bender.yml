@@ -14,8 +14,8 @@ dependencies:
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1 }
   axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
   idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
-  system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster}
-  #snitch_cluster : {path: ../snitch/hw/ip/snitch_cluster}
+  # By default not require snitch cluster
+  #system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster}
 
 export_include_dirs:
   - hw/include

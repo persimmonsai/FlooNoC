@@ -85,6 +85,8 @@ elabMhIdDidWork.txt
 ucli.key
 vc_hdrs.h
 simv
+work.lib++
+verdi_config_file
 
 # Verible
 verible*
