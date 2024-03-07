@@ -27,6 +27,9 @@ sources:
   - hw/floo_narrow_wide_pkg.sv # Generated package from floogen
   - hw/compute_tile.sv # Generated wrapper from floogen
   - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
+  # for synthesis testing only
+  - hw/test/snitch_cluster_wrapper.sv 
+  - hw/test/snitch_cluster_test_pkg.sv
   # Level 1
   - hw/floo_cut.sv
   - hw/floo_fifo.sv
@@ -62,7 +65,6 @@ sources:
       - hw/test/axi_bw_monitor.sv
       - hw/test/floo_hbm_model.sv
       - hw/test/snitch_cluster_test_node.sv
-      - hw/test/snitch_cluster_test_pkg.sv
       # Level 2
       - hw/tb/tb_floo_axi_chimney.sv
       - hw/tb/tb_floo_narrow_wide_chimney.sv

@@ -22,10 +22,10 @@ module snitch_cluster_wrapper
     output axi_wide_in_rsp_t                                           wide_in_resp_o
 );
 
-  narrow_in_resp_o  = '0;
-  narrow_out_req_o = '0;
+  assign narrow_in_resp_o  = '0;
+  assign narrow_out_req_o = '0;
 
-  wide_out_req_o = '0;
-  wide_in_resp_o = '0;
+  assign wide_out_req_o = '0;
+  assign wide_in_resp_o = '0;
 
 endmodule
