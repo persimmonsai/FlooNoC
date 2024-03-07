@@ -98,6 +98,7 @@ package floo_axi_pkg;
   localparam int unsigned AddrMapNumRules = 0;
   localparam addr_map_rule_t AddrMap = '0;
 
+
   ////////////////////////
   //   Flits Typedefs   //
   ////////////////////////

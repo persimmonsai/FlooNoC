@@ -620,6 +620,16 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         return axi_type, self.tpl_pkg.render(
             name=axi_type, noc=self, link=link_type
         )
+    
+    # TODO : Complete this method
+    def render_util_job(self):
+        """Render the util python file to generated DMA jobs of the generated network."""
+        return self.tpl_util_job.render(noc=self)
+    
+    # TODO : Complete this method
+    def render_tb(self):
+        """Render the testbech of the generated network."""
+        return self.tpl_tb.render(noc=self)
 
     def visualize(self, savefig=True, filename: pathlib.Path = "network.png"):
         """Visualize the network graph."""

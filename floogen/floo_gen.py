@@ -35,6 +35,20 @@ def parse_args():
         help="Path to the output directory of the generated output.",
     )
     parser.add_argument(
+        "--tb-outdir",
+        dest="tb_outdir",
+        type=Path,
+        required=False,
+        help="Path to the output testbech directory of the generated testbench.",
+    )
+    parser.add_argument(
+        "--util-outdir",
+        dest="util_outdir",
+        type=Path,
+        required=False,
+        help="Path to the output utils directory of the generated jobs parameter.",
+    )
+    parser.add_argument(
         "--only-pkg", dest="only_pkg", action="store_true", help="Only generate the package file."
     )
     parser.add_argument(
@@ -98,6 +112,31 @@ def main(): # pylint: disable=too-many-branches
             print("Generating topfile : " + str(top_file_name))
         else:
             print(rendered_top)
+        
+        # # Generating support file for compute tile array structure
+        # if network.compute_tile_gen:
+        #     if args.tb_outdir:
+        #         tb_outdir = Path(os.getcwd(), args.tb_outdir)
+        #     else:
+        #         # default output directory
+        #         tb_outdir = Path(os.getcwd(), "hw", "tb")
+        #         if not tb_outdir.exists():
+        #             raise FileNotFoundError(
+        #                 f"Was not able to find the directory to store the testbech file: {tb_outdir}"
+        #             )
+        #     if args.util_outdir:
+        #         util_outdir = Path(os.getcwd(), args.util_outdir)
+        #     else:
+        #         # default output directory
+        #         util_outdir = Path(os.getcwd(), "util")
+        #         if not util_outdir.exists():
+        #             raise FileNotFoundError(
+        #                 f"Was not able to find the directory to store the util file: {util_outdir}"
+        #             )
+        #     # TODO : Generate util python file
+        #     rendered_top = network.render_util_job()
+        #     # TODO : Generate testbench file
+        #     rendered_top = network.render_tb()
 
     # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()

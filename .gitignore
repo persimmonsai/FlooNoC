@@ -56,8 +56,8 @@ MANIFEST
 
 # bender
 .bender
-Bender.lock
-Bender.local
+#Bender.lock
+#Bender.local
 deps
 
 # Auto generated sources

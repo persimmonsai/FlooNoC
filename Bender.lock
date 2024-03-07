@@ -7,10 +7,10 @@ packages:
     dependencies:
     - common_cells
   axi:
-    revision: fccffb5953ec8564218ba05e20adbedec845e014
-    version: 0.39.1
+    revision: 49580dc3abce7ddfad70e4d8e719fe81a7a0667c
+    version: null
     source:
-      Git: https://github.com/pulp-platform/axi.git
+      Git: https://github.com/persimmonsai/axi.git
     dependencies:
     - common_cells
     - common_verification
@@ -25,10 +25,10 @@ packages:
     - common_cells
     - common_verification
   common_cells:
-    revision: 2bd027cb87eaa9bf7d17196ec5f69864b35b630f
-    version: 1.32.0
+    revision: 33570c58014b4a9db098a2d37727000d6b3a6701
+    version: null
     source:
-      Git: https://github.com/pulp-platform/common_cells.git
+      Git: https://github.com/persimmonsai/common_cells.git
     dependencies:
     - common_verification
     - tech_cells_generic
@@ -36,31 +36,194 @@ packages:
     revision: 9c07fa860593b2caabd9b5681740c25fac04b878
     version: 0.2.3
     source:
-      Git: https://github.com/pulp-platform/common_verification.git
+      Git: https://github.com/persimmonsai/common_verification.git
     dependencies: []
-  idma:
-    revision: ca1b28816a3706be0bf9ce01378246d5346384f0
-    version: 0.5.1
+  fpnew:
+    revision: 447b64ee91948e38da62c8e4ff9b136ecc72d7b8
+    version: null
     source:
-      Git: https://github.com/pulp-platform/iDMA.git
+      Git: https://github.com/persimmonsai/cvfpu.git
+    dependencies:
+    - common_cells
+    - fpu_div_sqrt_mvp
+  fpu_div_sqrt_mvp:
+    revision: 86e1f558b3c95e91577c41b2fc452c86b04e85ac
+    version: 1.0.4
+    source:
+      Git: https://github.com/pulp-platform/fpu_div_sqrt_mvp.git
+    dependencies:
+    - common_cells
+  future:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/future
+    dependencies:
+    - axi
+    - common_cells
+  idma:
+    revision: 7f02e225c8c4e9e60ad53e223e726574f36d9205
+    version: null
+    source:
+      Git: https://github.com/RomanPustobaiev/iDMA.git
     dependencies:
     - axi
     - common_cells
     - common_verification
     - register_interface
+  mem_interface:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/mem_interface
+    dependencies:
+    - common_cells
+    - reqrsp_interface
+  persimmons-sa:
+    revision: dfe6b828e875d0266cb27c5c1edf8e242ecc78dd
+    version: null
+    source:
+      Git: git@github.com:persimmonsai/sa.git
+    dependencies:
+    - axi
+    - common_cells
+    - fpnew
+    - idma
+    - tech_cells_generic
   register_interface:
     revision: 146501d80052b61475cdc333d3aab4cd769fd5dc
     version: 0.3.9
     source:
-      Git: https://github.com/pulp-platform/register_interface.git
+      Git: https://github.com/persimmonsai/register_interface.git
     dependencies:
     - apb
     - axi
     - common_cells
-  tech_cells_generic:
-    revision: 7968dd6e6180df2c644636bc6d2908a49f2190cf
-    version: 0.2.13
+  reqrsp_interface:
+    revision: null
+    version: null
     source:
-      Git: https://github.com/pulp-platform/tech_cells_generic.git
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/reqrsp_interface
+    dependencies:
+    - axi
+    - common_cells
+  riscv-dbg:
+    revision: ec0d92fa5fdaaf611e5b8a4cc8ee84017ff98710
+    version: null
+    source:
+      Git: https://github.com/persimmonsai/riscv-dbg.git
+    dependencies:
+    - common_cells
+    - tech_cells_generic
+  snitch:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch
+    dependencies:
+    - axi
+    - common_cells
+    - fpnew
+    - reqrsp_interface
+    - riscv-dbg
+  snitch_cluster:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster
+    dependencies:
+    - axi
+    - common_cells
+    - fpnew
+    - future
+    - mem_interface
+    - persimmons-sa
+    - register_interface
+    - reqrsp_interface
+    - riscv-dbg
+    - snitch
+    - snitch_dma
+    - snitch_icache
+    - snitch_ipu
+    - snitch_ssr
+    - snitch_vm
+    - tcdm_interface
+    - tech_cells_generic
+  snitch_dma:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_dma
+    dependencies:
+    - axi
+    - common_cells
+    - snitch
+  snitch_icache:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_icache
+    dependencies:
+    - common_cells
+    - snitch
+    - tech_cells_generic
+  snitch_ipu:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_ipu
+    dependencies:
+    - common_cells
+    - snitch
+  snitch_ssr:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_ssr
+    dependencies:
+    - common_cells
+    - register_interface
+    - tcdm_interface
+  snitch_vm:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_vm
+    dependencies:
+    - common_cells
+    - snitch
+  system-snitch-cluster:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster
+    dependencies:
+    - axi
+    - snitch_cluster
+    - test
+  tcdm_interface:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/tcdm_interface
+    dependencies:
+    - common_cells
+    - reqrsp_interface
+  tech_cells_generic:
+    revision: a9cae21902e75b1434328ecf36f85327ba5717de
+    version: 0.2.11
+    source:
+      Git: https://github.com/persimmonsai/tech_cells_generic.git
     dependencies:
     - common_verification
+  test:
+    revision: null
+    version: null
+    source:
+      Path: ../snitch/hw/system/snitch_cluster/../../ip/test
+    dependencies:
+    - axi
+    - axi_riscv_atomics
+    - common_cells
+    - register_interface
+    - reqrsp_interface

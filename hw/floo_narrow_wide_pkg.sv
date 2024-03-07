@@ -101,12 +101,6 @@ package floo_narrow_wide_pkg;
   localparam bit UseIdTable = 1'b1;
   localparam int unsigned NumXBits = 2;
   localparam int unsigned NumYBits = 2;
-  // For XY routing algorithm WITHOUT UseIdTable
-  // XYAddrOffsetX = addr_offset_bits
-  // XYAddrOffsetY = addr_offset_bits + num_x_bits
-  // addr_offset_bits is most number of address bit use by user
-  // Higher bit than addr_offset_bits use for routing algorithm and 
-  // total number of address bit need to sufficient large to have x y address bit attach onto its.
   localparam int unsigned XYAddrOffsetX = 41;
   localparam int unsigned XYAddrOffsetY = 43;
   localparam int unsigned IdAddrOffset = 0;
@@ -159,6 +153,7 @@ package floo_narrow_wide_pkg;
       '{idx: '{x: 3, y: 1}, start_addr: 48'h000000000000, end_addr: 48'h000000ffffff},
       '{idx: '{x: 3, y: 2}, start_addr: 48'h000000ffffff, end_addr: 48'h000001fffffe}
   };
+
 
   // Support function to find address map by xy id
   function addr_map_rule_t find_addrmap_by_xy_id(int unsigned id_x, int unsigned id_y);
