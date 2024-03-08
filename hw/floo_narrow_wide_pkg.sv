@@ -154,6 +154,7 @@ package floo_narrow_wide_pkg;
       '{idx: '{x: 3, y: 2}, start_addr: 48'h000000ffffff, end_addr: 48'h000001fffffe}
   };
 
+
   ////////////////////////
   //   Flits Typedefs   //
   ////////////////////////

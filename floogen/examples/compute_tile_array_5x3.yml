@@ -2,7 +2,7 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-name: compute_tile_array_5x3
+name: compute_tile_array
 description: "Computile array configuration in XY routing for FlooGen"
 compute_tile_gen: true
 

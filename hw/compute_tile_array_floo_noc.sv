@@ -139,6 +139,8 @@ floo_req_t peripherals_ni_0_1_to_router_1_1_req;
 floo_rsp_t router_1_1_to_peripherals_ni_0_1_rsp;
 floo_wide_t peripherals_ni_0_1_to_router_1_1_wide;
 
+
+
 localparam id_t hbm_north_ni_0_0_id = '{x: 1, y: 3};
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
@@ -409,7 +411,7 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   .id_y(1)
 ) 
 `endif
- i_compute_tile_0_0 (
+ compute_tile_0_0 (
   .clk_i,
   .rst_ni,
   .test_enable_i,
@@ -468,7 +470,7 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   .id_y(2)
 ) 
 `endif
- i_compute_tile_0_1 (
+ compute_tile_0_1 (
   .clk_i,
   .rst_ni,
   .test_enable_i,
@@ -527,7 +529,7 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   .id_y(1)
 ) 
 `endif
- i_compute_tile_1_0 (
+ compute_tile_1_0 (
   .clk_i,
   .rst_ni,
   .test_enable_i,
@@ -586,7 +588,7 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   .id_y(2)
 ) 
 `endif
- i_compute_tile_1_1 (
+ compute_tile_1_1 (
   .clk_i,
   .rst_ni,
   .test_enable_i,
