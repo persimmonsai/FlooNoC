@@ -28,8 +28,8 @@ sources:
   - hw/compute_tile.sv # Generated wrapper from floogen
   - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
   # for synthesis testing only
-  - hw/test/snitch_cluster_wrapper.sv 
-  - hw/test/snitch_cluster_test_pkg.sv
+  - hw/synth/snitch_cluster_wrapper_pkg.sv
+  - hw/synth/snitch_cluster_wrapper.sv 
   # Level 1
   - hw/floo_cut.sv
   - hw/floo_fifo.sv

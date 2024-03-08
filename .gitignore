@@ -90,8 +90,14 @@ verdi_config_file
 verdiLog
 .inter.fsdb.tbsim
 inter.fsdb
+inter.fsdb.*
 novas.conf
 novas.rc
+
+# Fusion Compiler
+fc_output.txt
+synopsys.tcl
+HDL_LIBRARIES
 
 # Verible
 verible*
@@ -104,19 +110,11 @@ scripts/spyglass/*
 **/*.log
 reviewdog
 
-
 # Tmp
 .vcs_checkpoint_shared_memory.attapon.106206
 floonoc_signal.rc
-inter.fsdb.chain
-inter.fsdb.field
-inter.fsdb.lock
-inter.fsdb.netwk
-inter.fsdb.sinf
-inter.fsdb.slist
-inter.fsdb.slock
-inter.fsdb.str
-inter.fsdb.tlist
-inter.fsdb.xlist
+inter.fsdb.*
 Makefile.Msimdepends
 Makefile.Msimdepends.vlib_analyze_DEFAULT.dep
+default-20240308_ecad-1_139946.svf
+default-20240308_ecad-1_143020.svf
