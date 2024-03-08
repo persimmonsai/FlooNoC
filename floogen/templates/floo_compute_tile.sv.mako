@@ -4,7 +4,8 @@
 <% req_type = next(d for d in router.incoming._asdict().values() if d is not None).req_type %>\
 <% rsp_type = next(d for d in router.incoming._asdict().values() if d is not None).rsp_type %>\
 <% wide_type = next(d for d in router.incoming._asdict().values() if d is not None).wide_type %>\
-<% compute_tile_name = "i_compute_tile_" + str(router.id.x + id_offset.x) + "_" + str(router.id.y + id_offset.y) %>\
+<% compute_tile_name = "compute_tile_" + str(router.id.x + id_offset.x) + "_" + str(router.id.y + id_offset.y) %>\
+<% compute_tile_id = compute_tile_name + "_id" %>\
 
 ${req_type} [West:North] ${router.name}_req_in;
 ${rsp_type} [West:North] ${router.name}_rsp_out;
@@ -49,6 +50,7 @@ ${wide_type} [West:North] ${router.name}_wide_out;
   % endif
 % endfor
 
+localparam id_t ${compute_tile_id} = ${router.id.render()};
   compute_tile 
 `ifdef QUESTA_VCS
 #(
@@ -60,7 +62,7 @@ ${wide_type} [West:North] ${router.name}_wide_out;
   .clk_i,
   .rst_ni,
   .test_enable_i,
-  .id_i (${router.id.render()}),
+  .id_i (${compute_tile_id}),
   .floo_req_i (${router.name}_req_in),
   .floo_rsp_o (${router.name}_rsp_out),
   .floo_req_o (${router.name}_req_out),
