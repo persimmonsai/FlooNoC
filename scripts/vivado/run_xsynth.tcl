@@ -35,55 +35,25 @@ set env(XILINX_PART) "xcvu37p-fsvh2892-2l-e"
 # Create project
 ####################################################################################################
 
-set project compute_tile_array
+set project floonoc
 
 create_project $project . -force
 # create_project $project . -force -part $::env(XILINX_PART)
 set_property board_part $::env(XILINX_BOARD) [current_project]
 
-
 # set number of threads
-set_param general.maxThreads 8
+#set_param general.maxThreads 8
 
 ####################################################################################################
 # add design sources
 ####################################################################################################
 
 source $SCRIPT_ROOT/add_sources.tcl
+
 set_property top compute_tile_array_floo_noc [current_fileset]
 #set_property top_lib xil_defaultlib [current_fileset]
 update_compile_order -fileset sources_1
 
-# # Define XSIM
-# set_property verilog_define {TARGET_SIMULATION TARGET_FPGA TARGET_TEST TARGET_VIVADO TARGET_XILINX XSIM} [get_filesets sim_1]
-
-# ####################################################################################################
-# # Simulate tc_sram_xilinx with one port
-# ####################################################################################################
-
-# #set_property generic NumPorts=32'd1 [get_fileset sim_1]
-# update_ip_catalog
-
-# set_property top compute_tile_array_floo_noc [current_fileset]
-# update_compile_order -fileset sources_1
-
-# launch_simulation
-
-# run -all
-
-# close_sim
-
-# ####################################################################################################
-# # Simulate tc_sram_xilinx with two ports
-# ####################################################################################################
-
-# set_property generic NumPorts=32'd2 [get_fileset sim_1]
-# update_ip_catalog
-
-# update_compile_order -fileset sources_1
-
-# launch_simulation
-
-# run -all
-
-# close_sim
+reset_run synth_1
+# Run synthesis with only 4 core to prevent machine hanking
+launch_runs synth_1 -jobs 4 

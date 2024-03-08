@@ -65,8 +65,18 @@ generated
 *.png
 hw/test/jobs
 
-# Vivado-sim
+# Vivado
 scripts/vivado/add_sources.tcl
+floonoc.xpr
+vivado.jou
+vivado_pid*
+floonoc.sim
+floonoc.runs
+floonoc.ip_user_files
+floonoc.hw
+floonoc.cache
+floonoc.runs
+.Xil
 
 # QuestaSim
 work

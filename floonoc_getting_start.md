@@ -36,5 +36,13 @@ floogen -c floogen/examples/narrow_wide_pkg.yml --only-pkg --pkg-outdir hw
 floogen -c floogen/examples/axi_pkg.yml --only-pkg --pkg-outdir hw 
 ./scripts/run_xsim.sh
 
+## Synthesis design with Vivado
+./scripts/run_xsynth.sh
 
-
+## Synthesis design with Fusion Compiler
+# Create script for synopsys fc from bender
+bender script synopsys > synopsys.tcl
+# Open fc_shell
+/opt/tools/synopsys/fusioncompiler/V-2023.12/bin/fc_shell -container
+# Compile design in fc_shell
+source synopsys.tcl
