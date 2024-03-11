@@ -25,11 +25,7 @@ sources:
   - hw/floo_pkg.sv
   - hw/floo_axi_pkg.sv # Generated package from floogen
   - hw/floo_narrow_wide_pkg.sv # Generated package from floogen
-  - hw/compute_tile.sv # Generated wrapper from floogen
-  - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
-  # for synthesis testing only
-  - hw/synth/snitch_cluster_wrapper_pkg.sv
-  - hw/synth/snitch_cluster_wrapper.sv 
+  #- hw/cluster/snitch_cluster_pkg.svh
   # Level 1
   - hw/floo_cut.sv
   - hw/floo_fifo.sv
@@ -48,6 +44,10 @@ sources:
   - hw/floo_narrow_wide_chimney.sv
   - hw/floo_router.sv
   - hw/floo_narrow_wide_router.sv
+  # Level 3
+  - hw/cluster/snitch_cluster_wrapper.sv 
+  - hw/compute_tile.sv # Generated wrapper from floogen
+  - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
 
   - target: test
     include_dirs:
@@ -55,7 +55,7 @@ sources:
     files:
       # Level 0
       - hw/test/floo_test_pkg.sv
-      - hw/test/snitch_cluster_test_pkg.sv
+      - hw/test/compute_tile_test_pkg.sv
       # Level 1
       - hw/test/floo_axi_test_node.sv
       - hw/test/floo_axi_rand_slave.sv

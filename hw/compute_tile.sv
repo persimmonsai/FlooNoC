@@ -44,6 +44,10 @@ module compute_tile
     output floo_wide_t [West:North]     floo_wide_o
 );
   // --- Cluster to NI ---
+  // in/out direction type that is declared in this scope is respect to NI
+  // So axi_narrow_in_req_t of NI will connected to axi_narrow_out_req_t of snitch_cluster
+  // In case, id width is not equal between axi_narrow_in_req_t of NI and axi_narrow_out_req_t of snitch_cluster,
+  // axi_iw_converter need to place to convert ID width
   axi_narrow_in_req_t  cluster_to_ni_narrow_req;
   axi_narrow_in_rsp_t  ni_to_cluster_narrow_resp;
   axi_narrow_out_req_t ni_to_cluster_narrow_req;
@@ -70,22 +74,6 @@ module compute_tile
   floo_rsp_t  [NumDirections-1:0] router_rsp_in;
   floo_wide_t [NumDirections-1:0] router_wide_in;
   floo_wide_t [NumDirections-1:0] router_wide_out;
-
-//   input logic                           sa_rst_ni,
-//   /// Per-core debug request signal. Asserting this signals puts the
-//   /// corresponding core into debug mode. This signal is assumed to be _async_.
-//   input  logic [NrCores-1:0]            debug_req_i,
-//   /// Machine external interrupt pending. Usually those interrupts come from a
-//   /// platform-level interrupt controller. This signal is assumed to be _async_.
-//   input  logic [NrCores-1:0]            meip_i,
-//   /// Machine timer interrupt pending. Usually those interrupts come from a
-//   /// core-local interrupt controller such as a timer/RTC. This signal is
-//   /// assumed to be _async_.
-//   input  logic [NrCores-1:0]            mtip_i,
-//   /// Core software interrupt pending. Usually those interrupts come from
-//   /// another core to facilitate inter-processor-interrupts. This signal is
-//   /// assumed to be _async_.
-//   input  logic [NrCores-1:0]            msip_i,
 
 // Switch to instantiate module between simulation (with questa) and synthesis
 `ifdef QUESTA_VCS

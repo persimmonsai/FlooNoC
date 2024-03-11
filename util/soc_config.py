@@ -7,9 +7,10 @@
 # NUM_X = 4
 # NUM_Y = 4
 NUM_X = 2
-NUM_Y = 2
+#NUM_Y = 2
 
-data_widths = {"wide": 512, "narrow": 64}
+#data_widths = {"wide": 512, "narrow": 64}
+data_widths = {"wide": 64, "narrow": 64}
 
 # New soc_type attribute to facilitate auto-testbench generation
 # soc_type = {"cluster", "memory", "processor", "peripheral", "serial_link"}

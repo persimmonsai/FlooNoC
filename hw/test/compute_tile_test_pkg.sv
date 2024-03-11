@@ -8,10 +8,12 @@
 `include "floo_noc/typedef.svh"
 
 // Simulation parameter for compute tile array model
-package snitch_cluster_test_pkg;
+package compute_tile_test_pkg;
 
-  // import floo_pkg::*;
-  import floo_narrow_wide_pkg::*;
+  import floo_narrow_wide_pkg::addr_map_rule_t;
+  import floo_narrow_wide_pkg::AddrMap;
+  import floo_narrow_wide_pkg::AddrMapNumRules;
+  import floo_narrow_wide_pkg::axi_narrow_in_addr_t;
 
   // Simulation parameter
   localparam time CyclTime = 10ns;  // clock period 
@@ -31,25 +33,12 @@ package snitch_cluster_test_pkg;
   // `ASSERT_INIT(NotEnoughYBits, $clog2(NumY + 2) <= $bits(y_bits_t))
   // `ASSERT_INIT(NotEnoughAddrOffset, $clog2(HBMSize) <= XYAddrOffsetX)
 
-
-  // Narrow Wide Chimney parameters (already define in wrapper by floogen)
-  // localparam bit CutAx = 1'b1;
-  // localparam bit CutRsp = 1'b0;
-  // localparam int unsigned NarrowReorderBufferSize = 32'd256;
-  // localparam int unsigned WideReorderBufferSize = 32'd64;
-  // localparam int unsigned NarrowMaxTxns = 32;
-  // localparam int unsigned WideMaxTxns = 32;
-
   // DMA test node parameter (snitch cluster behaviour)
   localparam int unsigned NarrowMaxTxnsPerId = 4;
   localparam int unsigned WideMaxTxnsPerId = 32;
 
-  // Router parameter (already define in wrapper by floogen)
-  // localparam int unsigned ChannelFifoDepth = 2;
-  // localparam int unsigned OutputFifoDepth = 32;
-
   // Snitch cluster parameter
-  localparam int unsigned NrCores = 4;
+  //localparam int unsigned NrCores = 4;
 
   // Support function to find address map by xy id
   function addr_map_rule_t find_addrmap_by_xy_id(int unsigned id_x, int unsigned id_y);

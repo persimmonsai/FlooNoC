@@ -36,6 +36,14 @@ floogen -c floogen/examples/narrow_wide_pkg.yml --only-pkg --pkg-outdir hw
 floogen -c floogen/examples/axi_pkg.yml --only-pkg --pkg-outdir hw 
 ./scripts/run_xsim.sh
 
+## Simulation with VCS
+# Generate DMA Jobs file to control the simulation
+make jobs TRAFFIC_TB=compute_tile_array TRAFFIC_TYPE=random
+# Run simulation in batch mode
+make run-vcs-batch TB_DUT=tb_floo_compute_tile_array JOB_NAME=compute_tile_array
+# Run simulation in GUI mode
+make run-vcs TB_DUT=tb_floo_compute_tile_array JOB_NAME=compute_tile_array
+
 ## Synthesis design with Vivado
 ./scripts/run_xsynth.sh
 
@@ -46,3 +54,6 @@ bender script synopsys > synopsys.tcl
 /opt/tools/synopsys/fusioncompiler/V-2023.12/bin/fc_shell -container
 # Compile design in fc_shell
 source synopsys.tcl
+
+# (Additional info) check for license status
+/opt/tools/synopsys/scl/2023.09/linux64/bin/lmstat -c 27020@license-server -a

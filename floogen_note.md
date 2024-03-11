@@ -16,9 +16,6 @@ floogen -c floogen/examples/axi_pkg.yml --pkg-outdir generated/axi_pkg --only-pk
 floogen -c floogen/examples/compute_tile_array.yml --outdir hw --pkg-outdir hw --visualize
 
 
-
-
-
 # Optional command to generate reference result for understanding purpose
 # Occamy mesh (XY base rounting with ID table)
 mkdir -p generated/occamy_mesh/pkg

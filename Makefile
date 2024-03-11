@@ -50,7 +50,9 @@ VSIM_FLAGS += -sv_seed 0
 #VLOGAN_ARGS += -assert svaext
 #VLOGAN_ARGS += -assert disable_cover
 VLOGAN_ARGS += -full64
-VLOGAN_ARGS += -kdb
+VCS_FLAGS += -debug_access+all
+VCS_FLAGS += -kdb
+VCS_FLAGS += -lca
 #VLOGAN_ARGS += -sysc=q
 #VLOGAN_ARGS += -nc
 #VLOGAN_ARGS += -q
@@ -59,16 +61,16 @@ VLOGAN_ARGS += -timescale=1ns/1ns
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
-VCS_FLAGS += -debug_access+r
+#VCS_FLAGS += -debug_access+r
+VCS_FLAGS += -debug_access+all
 VCS_FLAGS += -kdb
-#VCS_FLAGS += -debug_acc+all+dmptf -debug_region+cell+encrypt # -debug_all
-#VCS_FLAGS += -debug_access+nomemcbk+dmptf -debug_region+cell # -PP
+VCS_FLAGS += -lca
 #VCS_FLAGS += -j 8
 #VCS_FLAGS += -CFLAGS "-Os"
 SIMV_FLAGS =
 
 #SIMV_FLAGS += +vcs+dumpvars+test.vcd
-SIMV_FLAGS += +vcs+finish+1000000 # maximum simulation time in ns
+SIMV_FLAGS += +vcs+finish+1500000 # maximum simulation time in ns
 
 # Set the job name and directory if specified
 ifdef JOB_NAME
@@ -146,7 +148,7 @@ clean-jobs:
 
 .PHONY: compile-vsim run-vsim run-vsim-batch clean-vsim
 
-scripts/compile_vsim.tcl: Bender.yml pkg-sources
+scripts/compile_vsim.tcl: Bender.yml
 	mkdir -p scripts
 	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > scripts/compile_vsim.tcl
 	$(BENDER) script vsim --vlog-arg="$(VLOG_ARGS)" $(BENDER_FLAGS) | grep -v "set ROOT" >> scripts/compile_vsim.tcl
@@ -173,7 +175,7 @@ clean-vsim:
 
 .PHONY: compile-vcs run-vcs run-vcs-batch clean-vcs
 
-scripts/compile_vcs.sh: Bender.yml pkg-sources
+scripts/compile_vcs.sh: Bender.yml
 	mkdir -p scripts
 	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > scripts/compile_vcs.sh
 	$(BENDER) script vcs --vlog-arg="$(VLOGAN_ARGS)" $(BENDER_FLAGS) | grep -v "set ROOT" >> scripts/compile_vcs.sh

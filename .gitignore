@@ -121,10 +121,10 @@ scripts/spyglass/*
 reviewdog
 
 # Tmp
-.vcs_checkpoint_shared_memory.attapon.106206
+.vcs_checkpoint_shared_memory.*
 floonoc_signal.rc
 inter.fsdb.*
 Makefile.Msimdepends
-Makefile.Msimdepends.vlib_analyze_DEFAULT.dep
-default-20240308_ecad-1_139946.svf
-default-20240308_ecad-1_143020.svf
+Makefile.Msimdepends.*
+default-*.svf
+*.rc
