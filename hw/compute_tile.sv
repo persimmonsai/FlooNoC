@@ -157,6 +157,7 @@ module compute_tile
       .ChannelFifoDepth(2),
       .OutputFifoDepth(2),
       .RouteAlgo(XYRouting),
+      .XYRouteOpt(XYRouteOpt),
       .id_t(id_t)
   ) i_router (
       .clk_i(clk_i),

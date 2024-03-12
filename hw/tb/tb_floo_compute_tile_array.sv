@@ -200,7 +200,7 @@ module tb_floo_compute_tile_array;
     #100ns;
     // Stop the simulation
     $display("-- End Simulation --");
-    $stop;
+    $finish;
   end
 
 endmodule

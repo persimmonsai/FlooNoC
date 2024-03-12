@@ -35,6 +35,7 @@ BENDER_FLAGS += -t rtl
 BENDER_FLAGS += -t test
 
 TB_DUT ?= tb_floo_compute_tile_array
+SIM_TIME ?= 1500000
 
 # VSIM
 VLOG_ARGS += -suppress vlog-2583
@@ -47,15 +48,9 @@ VSIM_FLAGS += -t 1ps
 VSIM_FLAGS += -sv_seed 0
 
 # VCS
-#VLOGAN_ARGS += -assert svaext
-#VLOGAN_ARGS += -assert disable_cover
 VLOGAN_ARGS += -full64
 VCS_FLAGS += -debug_access+all
 VCS_FLAGS += -kdb
-VCS_FLAGS += -lca
-#VLOGAN_ARGS += -sysc=q
-#VLOGAN_ARGS += -nc
-#VLOGAN_ARGS += -q
 VLOGAN_ARGS += -timescale=1ns/1ns
 
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
@@ -64,13 +59,10 @@ VCS_FLAGS += -Mdir=work-vcs
 #VCS_FLAGS += -debug_access+r
 VCS_FLAGS += -debug_access+all
 VCS_FLAGS += -kdb
-VCS_FLAGS += -lca
-#VCS_FLAGS += -j 8
-#VCS_FLAGS += -CFLAGS "-Os"
 SIMV_FLAGS =
 
 #SIMV_FLAGS += +vcs+dumpvars+test.vcd
-SIMV_FLAGS += +vcs+finish+1500000 # maximum simulation time in ns
+SIMV_FLAGS += +vcs+finish+$(SIM_TIME) # maximum simulation time in ns
 
 # Set the job name and directory if specified
 ifdef JOB_NAME

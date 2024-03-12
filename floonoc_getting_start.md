@@ -39,6 +39,8 @@ floogen -c floogen/examples/axi_pkg.yml --only-pkg --pkg-outdir hw
 ## Simulation with VCS
 # Generate DMA Jobs file to control the simulation
 make jobs TRAFFIC_TB=compute_tile_array TRAFFIC_TYPE=random
+make jobs TRAFFIC_TB=compute_tile_array TRAFFIC_TYPE=cluster_rand
+
 # Run simulation in batch mode
 make run-vcs-batch TB_DUT=tb_floo_compute_tile_array JOB_NAME=compute_tile_array
 # Run simulation in GUI mode
@@ -57,3 +59,8 @@ source synopsys.tcl
 
 # (Additional info) check for license status
 /opt/tools/synopsys/scl/2023.09/linux64/bin/lmstat -c 27020@license-server -a
+
+
+## (Additional info) Debugging Tips
+# Generate small DMA Jobs
+util/gen_jobs.py --out_dir hw/test/jobs --tb compute_tile_array --traffic_type hbm --rw read --num_narrow_bursts 2 --num_wide_bursts 3

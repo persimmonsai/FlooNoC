@@ -98,6 +98,7 @@ package floo_narrow_wide_pkg;
   /////////////////////////
 
   localparam route_algo_e RouteAlgo = XYRouting;
+  localparam bit XYRouteOpt = 1'b0;
   localparam bit UseIdTable = 1'b1;
   localparam int unsigned NumXBits = 2;
   localparam int unsigned NumYBits = 2;
