@@ -49,8 +49,8 @@ VSIM_FLAGS += -sv_seed 0
 
 # VCS
 VLOGAN_ARGS += -full64
-VCS_FLAGS += -debug_access+all
-VCS_FLAGS += -kdb
+VLOGAN_ARGS += -debug_access+all
+VLOGAN_ARGS += -kdb
 VLOGAN_ARGS += -timescale=1ns/1ns
 
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
@@ -126,10 +126,17 @@ TRAFFIC_TYPE ?= random
 TRAFFIC_RW ?= read
 TRAFFIC_OUTDIR ?= hw/test/jobs
 
+TRAFFIC_NR_BURST_NUM ?= 10
+TRAFFIC_NR_BURST_LEN ?= 1
+TRAFFIC_WD_BURST_NUM ?= 100
+TRAFFIC_WD_BURST_LEN ?= 16
+
 .PHONY: jobs clean-jobs
 jobs: $(TRAFFIC_GEN)
 	mkdir -p $(TRAFFIC_OUTDIR)
-	$(TRAFFIC_GEN) --out_dir $(TRAFFIC_OUTDIR) --tb $(TRAFFIC_TB) --traffic_type $(TRAFFIC_TYPE) --rw $(TRAFFIC_RW)
+	$(TRAFFIC_GEN) --out_dir $(TRAFFIC_OUTDIR) --tb $(TRAFFIC_TB) --traffic_type $(TRAFFIC_TYPE) --rw $(TRAFFIC_RW) \
+		--num_narrow_bursts $(TRAFFIC_NR_BURST_NUM) --num_wide_bursts $(TRAFFIC_WD_BURST_NUM) \
+		--narrow_burst_length $(TRAFFIC_NR_BURST_LEN) --wide_burst_length $(TRAFFIC_WD_BURST_LEN)
 
 clean-jobs:
 	rm -rf $(TRAFFIC_OUTDIR)
@@ -194,6 +201,24 @@ clean-vcs:
 	rm -rf ucli.key
 	rm -rf vc_hdrs.h
 	rm -rf simv
+	rm -rf novas.rc
+	rm -rf novas.conf
+	rm -rf novas_dump.log
+	rm -rf Makefile.Msimdepends
+	rm -rf Makefile.Msimdepends.vlib_analyze_DEFAULT.dep
+	rm -rf verdi_config_file
+	rm -rf verdiLog
+
+#############################################
+# Random testing for Compute tile structure #
+#############################################
+
+test-random:
+	util/test_random_compute_tile.sh 2>&1 | tee test_random.log
+
+clean-test-random:
+	rm -rf test
+	rm -rf test_random.log
 
 ####################
 # Spyglass Linting #

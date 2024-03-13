@@ -64,6 +64,7 @@ deps
 generated
 *.png
 hw/test/jobs
+test/jobs
 
 # Vivado
 scripts/vivado/add_sources.tcl
