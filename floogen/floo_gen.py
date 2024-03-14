@@ -113,8 +113,8 @@ def main(): # pylint: disable=too-many-branches
         else:
             print(rendered_top)
         
-        # # Generating support file for compute tile array structure
-        # if network.compute_tile_gen:
+        # Generating support file for compute tile array structure
+        if network.compute_tile_gen:
         #     if args.tb_outdir:
         #         tb_outdir = Path(os.getcwd(), args.tb_outdir)
         #     else:
@@ -124,19 +124,31 @@ def main(): # pylint: disable=too-many-branches
         #             raise FileNotFoundError(
         #                 f"Was not able to find the directory to store the testbech file: {tb_outdir}"
         #             )
-        #     if args.util_outdir:
-        #         util_outdir = Path(os.getcwd(), args.util_outdir)
-        #     else:
-        #         # default output directory
-        #         util_outdir = Path(os.getcwd(), "util")
-        #         if not util_outdir.exists():
-        #             raise FileNotFoundError(
-        #                 f"Was not able to find the directory to store the util file: {util_outdir}"
-        #             )
-        #     # TODO : Generate util python file
-        #     rendered_top = network.render_util_job()
-        #     # TODO : Generate testbench file
-        #     rendered_top = network.render_tb()
+            if args.util_outdir:
+                util_outdir = Path(os.getcwd(), args.util_outdir)
+            else:
+                # default output directory
+                util_outdir = Path(os.getcwd(), "util")
+                if not util_outdir.exists():
+                    raise FileNotFoundError(
+                        f"Was not able to find the directory to store the util file: {util_outdir}"
+                    )
+            # Generate util python file
+            rendered_util = network.render_util_job()
+            # TODO : Generate testbench file
+            #rendered_top = network.render_tb()
+            
+            if not args.no_format:
+                rendered_util = verible_format(rendered_util)
+            # Write the network description to file or print it to stdout
+            if util_outdir:
+                util_outdir.mkdir(parents=True, exist_ok=True)
+                util_file_name = util_outdir / ("soc_config.py")
+                with open(util_file_name, "w+", encoding="utf-8") as util_file:
+                    util_file.write(rendered_util)
+                print("Generating utilfile : " + str(util_file_name))
+            else:
+                print(rendered_util)
 
     # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()

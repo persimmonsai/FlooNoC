@@ -49,7 +49,7 @@ VSIM_FLAGS += -sv_seed 0
 
 # VCS
 VLOGAN_ARGS += -full64
-VLOGAN_ARGS += -debug_access+all
+#VLOGAN_ARGS += -debug_access+all
 VLOGAN_ARGS += -kdb
 VLOGAN_ARGS += -timescale=1ns/1ns
 
@@ -57,7 +57,7 @@ VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all 
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
 #VCS_FLAGS += -debug_access+r
-VCS_FLAGS += -debug_access+all
+#VCS_FLAGS += -debug_access+all
 VCS_FLAGS += -kdb
 SIMV_FLAGS =
 
@@ -180,15 +180,20 @@ scripts/compile_vcs.sh: Bender.yml
 	$(BENDER) script vcs --vlog-arg="$(VLOGAN_ARGS)" $(BENDER_FLAGS) | grep -v "set ROOT" >> scripts/compile_vcs.sh
 	chmod +x scripts/compile_vcs.sh
 
+compile-vcs: VLOGAN_ARGS+=-debug_access+all
 compile-vcs: scripts/compile_vcs.sh
 	scripts/compile_vcs.sh
 
-#run-vcs: VCS_FLAGS+=-debug_all
+compile-vcs-batch: scripts/compile_vcs.sh
+	scripts/compile_vcs.sh
+
+run-vcs: VCS_FLAGS+=-debug_access+all
+run-vcs: SIMV_FLAGS += -gui=elite
 run-vcs: compile-vcs
 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
-	./simv $(SIMV_FLAGS) -gui=elite
+	./simv $(SIMV_FLAGS)
 
-run-vcs-batch: compile-vcs
+run-vcs-batch: compile-vcs-batch
 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
 	./simv $(SIMV_FLAGS)
 

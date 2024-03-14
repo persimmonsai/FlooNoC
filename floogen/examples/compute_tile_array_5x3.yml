@@ -9,7 +9,9 @@ compute_tile_gen: true
 routing:
   route_algo: "XY"
   use_id_table: true
-
+  # If true, allow routing from X to Y only
+  xy_route_opt: false
+  
 protocols:
   - name: "narrow"
     type: "AXI4"

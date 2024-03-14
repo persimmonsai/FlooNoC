@@ -43,6 +43,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
 
     with resources.path("floogen.templates", "floo_flit_pkg.sv.mako") as _tpl_path:
         tpl_pkg: ClassVar = Template(filename=str(_tpl_path))
+    
+    with resources.path("floogen.templates", "util_soc_config.py.mako") as _tpl_path:
+        tpl_util_job: ClassVar = Template(filename=str(_tpl_path))
 
     name: str
     description: Optional[str]
@@ -531,7 +534,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         for ni in ni_sbr_nodes:
             dest = ni.id
             addr_range = ni.addr_range
-            addr_rule = RoutingRule(dest=dest, addr_range=addr_range)
+            addr_rule = RoutingRule(dest=dest, addr_range=addr_range, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name)
             addr_table.append(addr_rule)
         self.routing.table = RoutingTable(rules=addr_table)
         for ni in self.graph.get_ni_nodes():
@@ -621,9 +624,12 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             name=axi_type, noc=self, link=link_type
         )
     
-    # TODO : Complete this method
     def render_util_job(self):
         """Render the util python file to generated DMA jobs of the generated network."""
+        if (len(self.routers)>1):
+            raise ValueError(
+                "Generating soc_config.py for util jobs generation support the network that have only 1 router"
+            )
         return self.tpl_util_job.render(noc=self)
     
     # TODO : Complete this method

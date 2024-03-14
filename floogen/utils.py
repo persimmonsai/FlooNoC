@@ -54,6 +54,12 @@ def sv_param_decl(
         return f"{ptype} {dtype} {name} = {value};\n"
     return f"{ptype} {dtype}[{array_size-1}:0] {name} = {value};\n"
 
+def py_param_decl(
+    name: str,
+    value: Union[int, str]
+) -> str:
+    """Declare a Python util parameter."""
+    return f"{name} = {value}\n"
 
 def sv_typedef(name: str, dtype: str = "logic", array_size: int = None) -> str:
     """Declare a SystemVerilog typedef."""
