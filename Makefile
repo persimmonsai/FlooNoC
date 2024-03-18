@@ -172,7 +172,7 @@ clean-vsim:
 # VCS Simulation #
 ##################
 
-.PHONY: compile-vcs run-vcs run-vcs-batch clean-vcs
+.PHONY: compile-vcs compile-vcs-batch run-vcs run-vcs-batch clean-vcs
 
 scripts/compile_vcs.sh: Bender.yml
 	mkdir -p scripts
@@ -217,6 +217,8 @@ clean-vcs:
 #############################################
 # Random testing for Compute tile structure #
 #############################################
+
+.PHONY: test-random clean-test-random
 
 test-random:
 	util/test_random_compute_tile.sh 2>&1 | tee test_random.log

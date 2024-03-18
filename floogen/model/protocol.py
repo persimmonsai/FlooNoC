@@ -191,6 +191,28 @@ class AXI4Bus(AXI4):
             {self._array_to_sv_array()} {self.rsp_name(port=True)}"
         )
         return ports
+    
+    def render_tb_connect_port(self) -> List[str]:
+        """Render the port of the protocol."""
+        ports = []
+        # AXI Request
+        ports.append(f".{self.req_name(port=True)}\t({self.base_name}_req)")
+        # AXI Response
+        ports.append(f".{self.rsp_name(port=True)}\t({self.base_name}_rsp)")
+        return ports
+    
+    def render_tb_trim_port(self) -> List[str]:
+        """Render the port of the protocol."""
+        ports = []
+        if self.svdirection=="input":
+            # AXI Request
+            ports.append(f".{self.req_name(port=True)}\t('0)")
+            ports.append(f".{self.rsp_name(port=True)}\t()")
+        else:
+            # AXI Response
+            ports.append(f".{self.req_name(port=True)}\t()")
+            ports.append(f".{self.rsp_name(port=True)}\t('0)")
+        return ports
 
 
 Protocols = TypeVar("Protocols", bound=ProtocolDesc)

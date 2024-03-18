@@ -11,7 +11,7 @@ job_type="compute_tile_array"
 print_jobs="true"
 rw_type=("read" "write")
 traffic_type=("hbm" "hbm_rand" "random" "cluster_rand" "onehop")
-repeat_num_test=(5 20 20 20 5) # match with traffic_type
+repeat_num_test=(10 50 50 50 10) # match with traffic_type
 #repeat_num_test=(1 1 1 1 1) # match with traffic_type
 out_dir="test/jobs"
 # Burst num

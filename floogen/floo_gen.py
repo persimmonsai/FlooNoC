@@ -115,15 +115,15 @@ def main(): # pylint: disable=too-many-branches
         
         # Generating support file for compute tile array structure
         if network.compute_tile_gen:
-        #     if args.tb_outdir:
-        #         tb_outdir = Path(os.getcwd(), args.tb_outdir)
-        #     else:
-        #         # default output directory
-        #         tb_outdir = Path(os.getcwd(), "hw", "tb")
-        #         if not tb_outdir.exists():
-        #             raise FileNotFoundError(
-        #                 f"Was not able to find the directory to store the testbech file: {tb_outdir}"
-        #             )
+            if args.tb_outdir:
+                tb_outdir = Path(os.getcwd(), args.tb_outdir)
+            else:
+                # default output directory
+                tb_outdir = Path(os.getcwd(), "hw", "tb")
+                if not tb_outdir.exists():
+                    raise FileNotFoundError(
+                        f"Was not able to find the directory to store the testbech file: {tb_outdir}"
+                    )
             if args.util_outdir:
                 util_outdir = Path(os.getcwd(), args.util_outdir)
             else:
@@ -135,12 +135,11 @@ def main(): # pylint: disable=too-many-branches
                     )
             # Generate util python file
             rendered_util = network.render_util_job()
-            # TODO : Generate testbench file
-            #rendered_top = network.render_tb()
+            # Generate testbench file
+            rendered_tb = network.render_tb()
+            rendered_tb_pkg = network.render_tb_pkg()
             
-            if not args.no_format:
-                rendered_util = verible_format(rendered_util)
-            # Write the network description to file or print it to stdout
+            # Write python util file for DMA jobs generation
             if util_outdir:
                 util_outdir.mkdir(parents=True, exist_ok=True)
                 util_file_name = util_outdir / ("soc_config.py")
@@ -149,6 +148,23 @@ def main(): # pylint: disable=too-many-branches
                 print("Generating utilfile : " + str(util_file_name))
             else:
                 print(rendered_util)
+            
+            if not args.no_format:
+                rendered_tb = verible_format(rendered_tb)
+                rendered_tb_pkg = verible_format(rendered_tb_pkg)
+            # Write toplevel testbench file for compute file array structure
+            if tb_outdir:
+                tb_outdir.mkdir(parents=True, exist_ok=True)
+                tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
+                tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
+                with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
+                    tb_file.write(rendered_tb)
+                print("Generating tbfile : " + str(tb_file_name))
+                with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
+                    tb_file.write(rendered_tb_pkg)
+                print("Generating tbpkgfile : " + str(tb_pkg_file_name))
+            else:
+                print(rendered_tb)
 
     # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()

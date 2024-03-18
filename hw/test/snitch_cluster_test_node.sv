@@ -3,7 +3,7 @@
 
 // Simple random simulation to generate 
 module snitch_cluster_test_node
-  import compute_tile_test_pkg::*; // Simulation setting parameter modified through macro for each difference testbench
+  import compute_tile_array_test_pkg::*; // Simulation setting parameter modified through macro for each difference testbench
   import floo_narrow_wide_pkg::addr_map_rule_t;  // Address map to access DMA
 //import snitch_cluster_pkg::*;  // Snitch cluster generated package
 #(

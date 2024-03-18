@@ -46,6 +46,12 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     
     with resources.path("floogen.templates", "util_soc_config.py.mako") as _tpl_path:
         tpl_util_job: ClassVar = Template(filename=str(_tpl_path))
+    
+    with resources.path("floogen.templates", "tb_floo_compute_tile_array.sv.mako") as _tpl_path:
+        tpl_tb: ClassVar = Template(filename=str(_tpl_path))
+    
+    with resources.path("floogen.templates", "tb_compute_tile_array_test_pkg.sv.mako") as _tpl_path:
+        tpl_tb_pkg: ClassVar = Template(filename=str(_tpl_path)) 
 
     name: str
     description: Optional[str]
@@ -632,10 +638,55 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             )
         return self.tpl_util_job.render(noc=self)
     
-    # TODO : Complete this method
+    def render_tb_endpoint(self):
+        """Render the network interfaces in the generated code."""
+        endpoints, declared_endpoints = "", []
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_nodes = self.graph.get_ep_eject_nodes()
+            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        # Due to limitation of current version, only memory simulation model is supported
+        ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
+
+        for ep in ep_nodes:
+            # Skip for port that already declared
+            # There is a problem if only some node in the node array connected to eject, 
+            # cause the program will not filter that out and declared full range of array interface
+            if ep.name in declared_endpoints:
+                continue
+            endpoints += ep.render_tb() + "\n"
+            declared_endpoints.append(ep.name)
+        return endpoints
+    
+    def render_tb_dut_ports(self):
+        """Render the ports in the generated code."""
+        ports, declared_ports = [], []
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_nodes = self.graph.get_ep_eject_nodes()
+            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        
+        for ep in ep_nodes:
+            # Skip for port that already declared
+            # There is a problem if only some node in the node array connected to eject, 
+            # cause the program will not filter that out and declared full range of array interface
+            if ep.name in declared_ports:
+                continue
+            ports += ep.render_tb_ports()
+            declared_ports.append(ep.name)
+        port_string = ",\n  ".join(ports) + "\n"
+        return port_string
+    
     def render_tb(self):
         """Render the testbech of the generated network."""
-        return self.tpl_tb.render(noc=self)
+        routers = self.graph.get_rt_nodes() # 1 Compute tile have one router
+        return self.tpl_tb.render(noc=self, cp_tiles=routers)
+    
+    def render_tb_pkg(self):
+        """Render the package testbech of the generated network."""
+        return self.tpl_tb_pkg.render(noc=self)
 
     def visualize(self, savefig=True, filename: pathlib.Path = "network.png"):
         """Visualize the network graph."""

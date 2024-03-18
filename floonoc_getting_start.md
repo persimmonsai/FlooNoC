@@ -37,14 +37,19 @@ floogen -c floogen/examples/axi_pkg.yml --only-pkg --pkg-outdir hw
 ./scripts/run_xsim.sh
 
 ## Simulation with VCS
+# Generate sv file following network configuration .yml by using floogen
+# Simple configuration with 2x2 compute tile cluster
+floogen -c floogen/examples/compute_tile_array.yml --outdir hw --pkg-outdir hw --visualize
+# More complex configuration with 5x4 compute tile cluster and HBM connect to all border endpoint
+floogen -c floogen/examples/compute_tile_array_5x4.yml --outdir hw --pkg-outdir hw --visualize
 # Generate DMA Jobs file to control the simulation
 make jobs TRAFFIC_TB=compute_tile_array TRAFFIC_TYPE=random
-make jobs TRAFFIC_TB=compute_tile_array TRAFFIC_TYPE=cluster_rand
-
 # Run simulation in batch mode
 make run-vcs-batch TB_DUT=tb_floo_compute_tile_array JOB_NAME=compute_tile_array
 # Run simulation in GUI mode
 make run-vcs TB_DUT=tb_floo_compute_tile_array JOB_NAME=compute_tile_array
+# Clean previos simulation result
+make clean-vcs
 
 ## Synthesis design with Vivado
 ./scripts/run_xsynth.sh
@@ -64,3 +69,5 @@ source synopsys.tcl
 ## (Additional info) Debugging Tips
 # Generate small DMA Jobs
 util/gen_jobs.py --out_dir hw/test/jobs --tb compute_tile_array --traffic_type hbm --rw read --num_narrow_bursts 2 --num_wide_bursts 3
+
+

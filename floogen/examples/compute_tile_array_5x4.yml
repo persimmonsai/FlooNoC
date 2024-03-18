@@ -50,7 +50,7 @@ endpoints:
 # Define compute tile array (snitch cluster) in XY mesh
   - name: "cluster"
     soc_type: "cluster"
-    array: [5, 3]
+    array: [5, 4]
     addr_range:
       base: 0x0000_1000_0000
       size: 0x0000_0004_0000 # size per single snitch cluster
@@ -62,7 +62,7 @@ endpoints:
       - "wide"
     id_offset:
       x: 0 # 0 to 4
-      y: 0 # 0 to 2
+      y: 0 # 0 to 3
 
 # Define endpoint for each border side (North, East, South, and West)
   # North border HBM memory
@@ -77,7 +77,7 @@ endpoints:
       - "wide"
     id_offset:
       x: 0 # 0 to 4
-      y: 3 # 3 mean border of the north side (its not working)
+      y: 4 # 4 mean border of the north side (its not working)
   # South border HBM memory
   - name: "hbm_south"
     soc_type: "memory"
@@ -91,11 +91,37 @@ endpoints:
     id_offset:
       x: 0 # 0 to 4
       y: -1 # -1 mean border of the south side
+  # East border HBM memory
+  - name: "hbm_east"
+    soc_type: "memory"
+    array: [1, 4]
+    addr_range:
+      base: 0x0010_0000_0000
+      size: 0x0000_4000_0000
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 5 # east side border
+      y: 0 # 0 to 3
+  # West border HBM memory
+  - name: "hbm_west"
+    soc_type: "memory"
+    array: [1, 4]
+    addr_range:
+      base: 0x0018_0000_0000
+      size: 0x0000_4000_0000
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: -1 # west side border
+      y: 0 # 0 to 3
 
 routers:
   # Router equal to cluster number
   - name: "router"
-    array: [5, 3]
+    array: [5, 4]
 
 connections:
   # Each compute cluster (snitch cluster) connect to the router
@@ -103,10 +129,10 @@ connections:
     dst: "router"
     src_range:
     - [0, 4]
-    - [0, 2]
+    - [0, 3]
     dst_range:
     - [0, 4]
-    - [0, 2]
+    - [0, 3]
     bidirectional: true
   # North border HBM memory
   - src: "hbm_north"
@@ -116,7 +142,7 @@ connections:
     - [0, 0]
     dst_range: # router index for north border
     - [0, 4]
-    - [2, 2]
+    - [3, 3]
     bidirectional: true
   # South border HBM memory
   - src: "hbm_south"
@@ -127,4 +153,24 @@ connections:
     dst_range: # router index for south border
     - [0, 4]
     - [0, 0]
+    bidirectional: true
+  # South border HBM memory
+  - src: "hbm_east"
+    dst: "router"
+    src_range:
+    - [0, 0]
+    - [0, 3]
+    dst_range:
+    - [4, 4]
+    - [0, 3]
+    bidirectional: true
+  # South border HBM memory
+  - src: "hbm_west"
+    dst: "router"
+    src_range:
+    - [0, 0]
+    - [0, 3]
+    dst_range:
+    - [0, 0]
+    - [0, 3]
     bidirectional: true

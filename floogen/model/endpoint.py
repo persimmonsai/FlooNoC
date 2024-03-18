@@ -4,8 +4,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Author: Tim Fischer <fischeti@iis.ee.ethz.ch>
-from typing import Optional, List, Union, Tuple
+from typing import Optional, List, Union, Tuple, ClassVar
 from pydantic import BaseModel, field_validator, model_validator
+from importlib import resources
+from mako.lookup import Template
 
 from floogen.model.routing import AddrRange, Id, Coord
 from floogen.model.protocol import Protocols
@@ -77,10 +79,16 @@ class EndpointDesc(BaseModel):
 
     def render_ports(self):
         """Render the ports of the endpoint."""
+        
+    def render_tb(self) -> str:
+        """Render the testbench of the endpoint."""
 
 
 class Endpoint(EndpointDesc):
     """Endpoint class to describe an endpoint with adress ranges and configuration parameters."""
+    
+    with resources.path("floogen.templates", "tb_memory_model.sv.mako") as _tpl_path:
+        _tpl_tb_mem: ClassVar = Template(filename=str(_tpl_path))
 
     mgr_ports: List[Protocols] = []
     sbr_ports: List[Protocols] = []
@@ -100,3 +108,25 @@ class Endpoint(EndpointDesc):
         for port in self.sbr_ports:
             ports += port.render_port()
         return ports
+    
+    def render_tb_ports(self):
+        """Render the testbench ports of the endpoint."""
+        ports = []
+        # Render as connected port (support simulation model endpoint)
+        if (self.soc_type=="memory"):
+            for port in self.mgr_ports:
+                ports += port.render_tb_connect_port()
+            for port in self.sbr_ports:
+                ports += port.render_tb_connect_port()
+        # Render as trimmed port (unsupport simulation model endpoint)
+        else:
+            for port in self.mgr_ports:
+                ports += port.render_tb_trim_port()
+            for port in self.sbr_ports:
+                ports += port.render_tb_trim_port()
+        return ports
+    
+    def render_tb(self) -> str:
+        """Render the testbench of the endpoint."""
+        return self._tpl_tb_mem.render(ep=self)
+    

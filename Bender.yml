@@ -55,7 +55,7 @@ sources:
     files:
       # Level 0
       - hw/test/floo_test_pkg.sv
-      - hw/test/compute_tile_test_pkg.sv
+      - hw/tb/compute_tile_array_test_pkg.sv
       # Level 1
       - hw/test/floo_axi_test_node.sv
       - hw/test/floo_axi_rand_slave.sv
