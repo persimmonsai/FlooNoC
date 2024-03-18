@@ -191,9 +191,12 @@ module tb_floo_rob;
     .data_o         ( chimney_rsp_in_chan   )
   );
 
-  localparam slave_type_e SlaveType[NumDirections-1] = '{
+//  localparam slave_type_e SlaveType[NumDirections-1] = '{
+//    FastSlave, FastSlave, SlowSlave, MixedSlave};
+  localparam slave_type_e SlaveType[NumDirections-1:1] = '{
     FastSlave, FastSlave, SlowSlave, MixedSlave};
-
+  
+  // i=1,2,3,4 for North,East,South,West
   for (genvar i = North; i <= West; i++) begin : gen_slaves
 
     if (i == North) begin : gen_north

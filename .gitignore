@@ -56,14 +56,28 @@ MANIFEST
 
 # bender
 .bender
-Bender.lock
-Bender.local
+#Bender.lock
+#Bender.local
 deps
 
 # Auto generated sources
 generated
 *.png
 hw/test/jobs
+test/*
+
+# Vivado
+scripts/vivado/add_sources.tcl
+floonoc.xpr
+vivado.jou
+vivado_pid*
+floonoc.sim
+floonoc.runs
+floonoc.ip_user_files
+floonoc.hw
+floonoc.cache
+floonoc.runs
+.Xil
 
 # QuestaSim
 work
@@ -72,6 +86,29 @@ modelsim.ini
 transcript
 vsim.wlf
 scripts/compile_vsim.tcl
+
+# VCS
+scripts/compile_vcs.sh
+AN.DB
+simv.daidir
+work-vcs
+elabMhIdDidWork.txt
+ucli.key
+vc_hdrs.h
+simv
+work.lib++
+verdi_config_file
+verdiLog
+.inter.fsdb.tbsim
+inter.fsdb
+inter.fsdb.*
+novas.conf
+novas.rc
+
+# Fusion Compiler
+fc_output.txt
+synopsys.tcl
+HDL_LIBRARIES
 
 # Verible
 verible*
@@ -83,3 +120,12 @@ scripts/spyglass/*
 *.csv
 **/*.log
 reviewdog
+
+# Tmp
+.vcs_checkpoint_shared_memory.*
+floonoc_signal.rc
+inter.fsdb.*
+Makefile.Msimdepends
+Makefile.Msimdepends.*
+default-*.svf
+*.rc

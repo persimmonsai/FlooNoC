@@ -15,7 +15,7 @@ module floo_route_select import floo_pkg::*;
   /// Used for ID-based and XY routing
   parameter int unsigned IdWidth       = 0,
   /// Used for ID-based routing
-  parameter int unsigned NumAddrRules  = 0,
+  parameter int unsigned NumAddrRules  = 1, // initial to 1 to avoid id_route_map_i start from -1:0
   parameter type         addr_rule_t   = logic,
   parameter type         id_t          = logic[IdWidth-1:0],
   /// Used for source-based routing

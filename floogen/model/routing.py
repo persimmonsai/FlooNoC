@@ -11,8 +11,11 @@ from abc import ABC, abstractmethod
 
 from pydantic import BaseModel, Field, ConfigDict, model_validator, field_validator
 
+from copy import deepcopy
+
 from floogen.utils import (
     cdiv,
+    py_param_decl,
     sv_param_decl,
     sv_typedef,
     sv_struct_typedef,
@@ -126,7 +129,12 @@ class Coord(Id):
         if not as_index:
             return f"'{{x: {self.x}, y: {self.y}}}"
         return f"[{self.x}][{self.y}]"
+    
+    def render_util(self):
+        """Render the Python util for compute tile array."""
+        return f"{{\"x\": {self.x}, \"y\": {self.y}}}"
 
+    # Used XY id to tell which direction of neighbor is connected to the interested node (router)
     @staticmethod
     def get_dir(node, neighbor) -> XYDirections:
         """Get the direction from node to neighbor."""
@@ -161,6 +169,7 @@ class AddrRange(BaseModel):
         if not isinstance(self, dict):
             raise ValueError("Invalid address range specification")
         addr_dict = {k: v for k, v in self.items() if v is not None}
+        # Select between difference format of defined address range
         match addr_dict:
             case {"size": size, "base": base, "idx": idx}:
                 addr_dict["start"] = base + size * idx
@@ -204,6 +213,8 @@ class RouteMapRule(BaseModel):
 
     dest: Id
     addr_range: AddrRange
+    soc_type: Optional[str] = "cluster"
+    name: Optional[str] = "none"
     desc: Optional[str] = None
 
     def __str__(self):
@@ -224,6 +235,24 @@ class RouteMapRule(BaseModel):
             f"'{{idx: {self.dest.render()}, "
             f"start_addr: {self.addr_range.start}, "
             f"end_addr: {self.addr_range.end}}}"
+        )
+    
+    def render_util(self, aw=None):
+        """Render the Python Util routing rule."""
+        if aw is not None:
+            return (
+                f"{{\"idx\": {self.dest.render_util()}, "
+                f"\"name\": \"{self.name}\", "
+                f"\"soc_type\": \"{self.soc_type}\", "
+                f"\"start_addr\": int(\"0x{self.addr_range.start:0{cdiv(aw,4)}x}\",16), "
+                f"\"end_addr\": int(\"0x{self.addr_range.end:0{cdiv(aw,4)}x}\",16)}}"
+            )
+        return (
+            f"{{\"idx\": {self.dest.render_util()}, "
+            f"\"name\": \"{self.name}\", "
+            f"\"soc_type\": \"{self.soc_type}\", "
+            f"\"start_addr\": {self.addr_range.start}, "
+            f"\"end_addr\": {self.addr_range.end}}}"
         )
 
 
@@ -370,7 +399,10 @@ class RouteMap(BaseModel):
     def render(self, aw=None):
         """Render the SystemVerilog routing table."""
         string = ""
-        rules = self.rules.copy()
+        rules = deepcopy(self.rules)
+        if id_offset is not None:
+            for rule in rules:
+                rule.dest -= id_offset
         # typedef of the address rule
         string += sv_param_decl(f"{snake_to_camel(self.name)}NumRules", len(rules)) + "\n"
         addr_type = f"logic [{aw-1}:0]" if aw is not None else "id_t"
@@ -397,12 +429,33 @@ class RouteMap(BaseModel):
             array_size=f"{snake_to_camel(self.name)}NumRules-1"
         )
         return string
-
+    
+    def render_util(self, name, aw=None, id_offset=None):
+        """Render the Python util routing table for DMA jobs generation."""
+        string = ""
+        rules = deepcopy(self.rules)
+        if id_offset is not None:
+            for rule in rules:
+                rule.dest -= id_offset
+        rules_str = ""
+        if not rules:
+            # Compute tile array design for UseIDTable, so throw away error if no rule found
+            raise ValueError(
+                    "Compute tile array must have rule by turning on UseIdTable"
+                )
+        for rule in rules:
+            rules_str += f"\t{rule.render_util(aw)},\n"
+        rules_str = rules_str[:-2]
+        string += py_param_decl(
+            f"{snake_to_camel(name)}",
+            value="[\n" + rules_str + "\n]"
+        )
+        return string
+    
     def pprint(self):
         """Pretty print the routing table."""
         for rule in self.rules:
             print(rule)
-
 
 class Routing(BaseModel):
     """Routing Description class."""
@@ -411,6 +464,8 @@ class Routing(BaseModel):
 
     route_algo: RouteAlgo
     use_id_table: bool = True
+    xy_route_opt: Optional[bool] = True
+    table: Optional[RoutingTable] = None
     sam: Optional[RouteMap] = None
     table: Optional[RouteMap] = None
     addr_offset_bits: Optional[int] = None
@@ -435,6 +490,8 @@ class Routing(BaseModel):
         """Render the SystemVerilog parameter declaration."""
         string = ""
         string += sv_param_decl("RouteAlgo", self.route_algo.value, dtype="route_algo_e")
+        if self.route_algo.value=="XYRouting":
+            string += sv_param_decl("XYRouteOpt", bool_to_sv(self.xy_route_opt), dtype="bit")
         string += sv_param_decl("UseIdTable", bool_to_sv(self.use_id_table), dtype="bit")
         match (self.route_algo):
             case RouteAlgo.XY:

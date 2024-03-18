@@ -22,7 +22,7 @@ package floo_pkg;
     East  = 3'd2, // x increasing
     South = 3'd3, // y decreasing
     West  = 3'd4, // x decreasing
-    NumDirections
+    NumDirections // 3'd5, NumDirections must stay on last
   } route_direction_e;
 
   typedef enum  {

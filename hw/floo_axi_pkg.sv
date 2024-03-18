@@ -100,6 +100,7 @@ package floo_axi_pkg;
   typedef logic sam_rule_t;
   localparam sam_rule_t Sam = '0;
 
+
   ////////////////////////
   //   Flits Typedefs   //
   ////////////////////////

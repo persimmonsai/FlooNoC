@@ -1,5 +1,12 @@
 <%! from floogen.utils import snake_to_camel %>\
 <% actual_xy_id = ni.id - ni.routing.id_offset if ni.routing.id_offset is not None else ni.id %>\
+<% ni_id = ni.name + "_id" %>\
+
+% if ni.routing.route_algo.value == 'XYRouting':
+localparam id_t ${ni_id} = ${actual_xy_id.render()};
+% else:
+localparam id_t ${ni_id} = ${ni.id.render()};
+% endif
 
 % if ni.routing.route_algo.value == 'SourceRouting':
   ${ni.table.render(num_route_bits=ni.routing.num_route_bits)}
@@ -62,11 +69,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o (    ),
   .axi_wide_out_rsp_i ( '0 ),
 % endif
-% if ni.routing.route_algo.value == 'XYRouting':
-  .id_i             ( ${actual_xy_id.render()}    ),
-% else:
-  .id_i             ( id_t'(${ni.id.render()}) ),
-% endif
+  .id_i             ( ${ni_id}    ),
 % if ni.routing.route_algo.value == 'SourceRouting':
   .route_table_i    ( ${snake_to_camel(ni.table.name)}  ),
 % else:

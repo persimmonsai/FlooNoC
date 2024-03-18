@@ -35,6 +35,20 @@ def parse_args():
         help="Path to the output directory of the generated output.",
     )
     parser.add_argument(
+        "--tb-outdir",
+        dest="tb_outdir",
+        type=Path,
+        required=False,
+        help="Path to the output testbech directory of the generated testbench.",
+    )
+    parser.add_argument(
+        "--util-outdir",
+        dest="util_outdir",
+        type=Path,
+        required=False,
+        help="Path to the output utils directory of the generated jobs parameter.",
+    )
+    parser.add_argument(
         "--only-pkg", dest="only_pkg", action="store_true", help="Only generate the package file."
     )
     parser.add_argument(
@@ -51,6 +65,7 @@ def parse_args():
 def main(): # pylint: disable=too-many-branches
     """Generates the network."""
     args = parse_args()
+    # Load network configuration .yml file and validate input
     network = parse_config(Network, args.config)
 
     if args.outdir:
@@ -69,6 +84,7 @@ def main(): # pylint: disable=too-many-branches
                 f"Was not able to find the directory to store the package file: {pkg_outdir}"
             )
 
+    # Generate wrapper and testbecnch if in the mode 'compute_tile_array'
     if not args.only_pkg:
         network.create_network()
         network.compile_network()
@@ -77,7 +93,9 @@ def main(): # pylint: disable=too-many-branches
         # Visualize the network graph
         if args.visualize:
             if outdir:
-                network.visualize(filename=outdir / (network.name + ".pdf"))
+                visual_file_name = outdir / (network.name + ".pdf")
+                network.visualize(filename=visual_file_name)
+                print("Generating graph : " + str(visual_file_name))
             else:
                 network.visualize(savefig=False)
 
@@ -91,9 +109,64 @@ def main(): # pylint: disable=too-many-branches
             top_file_name = outdir / (network.name + "_floo_noc.sv")
             with open(top_file_name, "w+", encoding="utf-8") as top_file:
                 top_file.write(rendered_top)
+            print("Generating topfile : " + str(top_file_name))
         else:
             print(rendered_top)
+        
+        # Generating support file for compute tile array structure
+        if network.compute_tile_gen:
+            if args.tb_outdir:
+                tb_outdir = Path(os.getcwd(), args.tb_outdir)
+            else:
+                # default output directory
+                tb_outdir = Path(os.getcwd(), "hw", "tb")
+                if not tb_outdir.exists():
+                    raise FileNotFoundError(
+                        f"Was not able to find the directory to store the testbech file: {tb_outdir}"
+                    )
+            if args.util_outdir:
+                util_outdir = Path(os.getcwd(), args.util_outdir)
+            else:
+                # default output directory
+                util_outdir = Path(os.getcwd(), "util")
+                if not util_outdir.exists():
+                    raise FileNotFoundError(
+                        f"Was not able to find the directory to store the util file: {util_outdir}"
+                    )
+            # Generate util python file
+            rendered_util = network.render_util_job()
+            # Generate testbench file
+            rendered_tb = network.render_tb()
+            rendered_tb_pkg = network.render_tb_pkg()
+            
+            # Write python util file for DMA jobs generation
+            if util_outdir:
+                util_outdir.mkdir(parents=True, exist_ok=True)
+                util_file_name = util_outdir / ("soc_config.py")
+                with open(util_file_name, "w+", encoding="utf-8") as util_file:
+                    util_file.write(rendered_util)
+                print("Generating utilfile : " + str(util_file_name))
+            else:
+                print(rendered_util)
+            
+            if not args.no_format:
+                rendered_tb = verible_format(rendered_tb)
+                rendered_tb_pkg = verible_format(rendered_tb_pkg)
+            # Write toplevel testbench file for compute file array structure
+            if tb_outdir:
+                tb_outdir.mkdir(parents=True, exist_ok=True)
+                tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
+                tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
+                with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
+                    tb_file.write(rendered_tb)
+                print("Generating tbfile : " + str(tb_file_name))
+                with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
+                    tb_file.write(rendered_tb_pkg)
+                print("Generating tbpkgfile : " + str(tb_pkg_file_name))
+            else:
+                print(rendered_tb)
 
+    # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()
     if not args.no_format:
         rendered_pkg = verible_format(rendered_pkg)
@@ -102,6 +175,7 @@ def main(): # pylint: disable=too-many-branches
             cfg_file_name = pkg_outdir / (f"floo_{axi_type}_pkg.sv")
             with open(cfg_file_name, "w+", encoding="utf-8") as cfg_file:
                 cfg_file.write(rendered_pkg)
+            print("Generating package : " + str(cfg_file_name))
         else:
             print(rendered_pkg)
 

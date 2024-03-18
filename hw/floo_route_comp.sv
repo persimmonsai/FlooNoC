@@ -77,10 +77,12 @@ module floo_route_comp
       .default_idx_i    ( '0          )
     );
 
-    `ASSERT(DecodeError, !dec_error)
+    // Ignore address decode error for the case that addr_i==0, 
+    // that will be occured when AddrMap have no adrress assignment on 'b0 address and no package is coming
+    `ASSERT(DecodeError, !(dec_error !== 0 && addr_i !== 0))
   end else if (RouteAlgo == XYRouting) begin : gen_xy_bits_routing
-    assign id_o.x = addr_i[XYAddrOffsetX +: $bits(id_o.x)];
-    assign id_o.y = addr_i[XYAddrOffsetY +: $bits(id_o.y)];
+    assign id_o.x = addr_i[XYAddrOffsetX+:$bits(id_o.x)];
+    assign id_o.y = addr_i[XYAddrOffsetY+:$bits(id_o.y)];
   end else if (RouteAlgo == IdTable) begin : gen_id_bits_routing
     assign id_o = addr_i[IdAddrOffset +: $bits(id_o)];
   end else if (RouteAlgo == SourceRouting) begin : gen_source_routing
