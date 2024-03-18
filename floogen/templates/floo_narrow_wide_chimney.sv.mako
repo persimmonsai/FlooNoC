@@ -1,6 +1,4 @@
-<%def name="int2hex(val, width)">
-  <% return f"{width}\'h{val:0{width//4}x}" %>
-</%def>\
+<%! from floogen.utils import snake_to_camel %>\
 <% actual_xy_id = ni.id - ni.routing.id_offset if ni.routing.id_offset is not None else ni.id %>\
 <% ni_id = ni.name + "_id" %>\
 
@@ -9,7 +7,15 @@ localparam id_t ${ni_id} = ${actual_xy_id.render()};
 % else:
 localparam id_t ${ni_id} = ${ni.id.render()};
 % endif
+
+% if ni.routing.route_algo.value == 'SourceRouting':
+  ${ni.table.render(num_route_bits=ni.routing.num_route_bits)}
+% endif
+
 floo_narrow_wide_chimney  #(
+% if ni.routing.route_algo.value == 'SourceRouting':
+  .NumRoutes(${len(ni.table)}),
+% endif
 % if ni.sbr_narrow_port is None:
   .EnNarrowSbrPort(1'b0),
 % else:
@@ -64,6 +70,11 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_rsp_i ( '0 ),
 % endif
   .id_i             ( ${ni_id}    ),
+% if ni.routing.route_algo.value == 'SourceRouting':
+  .route_table_i    ( ${snake_to_camel(ni.table.name)}  ),
+% else:
+  .route_table_i    ( '0                          ),
+% endif
   .floo_req_o       ( ${ni.mgr_link.req_name()}   ),
   .floo_rsp_i       ( ${ni.mgr_link.rsp_name()}   ),
   .floo_wide_o      ( ${ni.mgr_link.wide_name()}  ),
