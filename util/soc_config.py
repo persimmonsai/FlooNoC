@@ -9,8 +9,8 @@ data_widths = {"wide": 64, "narrow": 64}
 
 AddrMap = [
 	{"idx": {"x": 1, "y": 1}, "name": "cluster", "soc_type": "cluster", "start_addr": int("0x000010000000",16), "end_addr": int("0x000010040000",16)},
-	{"idx": {"x": 1, "y": 2}, "name": "cluster", "soc_type": "cluster", "start_addr": int("0x000010080000",16), "end_addr": int("0x0000100c0000",16)},
-	{"idx": {"x": 2, "y": 1}, "name": "cluster", "soc_type": "cluster", "start_addr": int("0x000010040000",16), "end_addr": int("0x000010080000",16)},
+	{"idx": {"x": 1, "y": 2}, "name": "cluster", "soc_type": "cluster", "start_addr": int("0x000010040000",16), "end_addr": int("0x000010080000",16)},
+	{"idx": {"x": 2, "y": 1}, "name": "cluster", "soc_type": "cluster", "start_addr": int("0x000010080000",16), "end_addr": int("0x0000100c0000",16)},
 	{"idx": {"x": 2, "y": 2}, "name": "cluster", "soc_type": "cluster", "start_addr": int("0x0000100c0000",16), "end_addr": int("0x000010100000",16)},
 	{"idx": {"x": 1, "y": 3}, "name": "hbm_north", "soc_type": "memory", "start_addr": int("0x000080000000",16), "end_addr": int("0x0000c0000000",16)},
 	{"idx": {"x": 2, "y": 3}, "name": "hbm_north", "soc_type": "memory", "start_addr": int("0x0000c0000000",16), "end_addr": int("0x000100000000",16)},

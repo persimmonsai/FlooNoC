@@ -95,7 +95,9 @@ class NarrowWideXYRouter(XYRouter):
     ) as _tpl_path:
         _tpl: ClassVar = Template(filename=str(_tpl_path))
         
-    with resources.path("floogen.templates", "floo_compute_tile.sv.mako") as _tpl_path:
+    with as_file(
+        files(floogen.templates).joinpath("floo_compute_tile.sv.mako")
+    ) as _tpl_path:
         _tpl_tile: ClassVar = Template(filename=str(_tpl_path))
 
     def render(self):

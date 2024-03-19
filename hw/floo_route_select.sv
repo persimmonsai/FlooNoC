@@ -6,33 +6,34 @@
 
 `include "common_cells/registers.svh"
 
-module floo_route_select import floo_pkg::*;
- #(
-  parameter int unsigned NumRoutes     = 0,
-  parameter type         flit_t        = logic,
-  parameter route_algo_e RouteAlgo     = IdTable,
-  parameter bit          LockRouting   = 1'b1,
-  /// Used for ID-based and XY routing
-  parameter int unsigned IdWidth       = 0,
-  /// Used for ID-based routing
-  parameter int unsigned NumAddrRules  = 1, // initial to 1 to avoid id_route_map_i start from -1:0
-  parameter type         addr_rule_t   = logic,
-  parameter type         id_t          = logic[IdWidth-1:0],
-  /// Used for source-based routing
-  parameter int unsigned RouteSelWidth = $clog2(NumRoutes)
+module floo_route_select
+  import floo_pkg::*;
+#(
+    parameter int unsigned NumRoutes = 1,
+    parameter type flit_t = logic,
+    parameter route_algo_e RouteAlgo = IdTable,
+    parameter bit LockRouting = 1'b1,
+    /// Used for ID-based and XY routing
+    parameter int unsigned IdWidth = 0,
+    /// Used for ID-based routing
+    parameter int unsigned NumAddrRules  = 1, // initial to 1 to avoid id_route_map_i start from -1:0
+    parameter type addr_rule_t = logic,
+    parameter type id_t = logic [IdWidth-1:0],
+    /// Used for source-based routing
+    parameter int unsigned RouteSelWidth = $clog2(NumRoutes)
 ) (
-  input  logic                         clk_i,
-  input  logic                         rst_ni,
-  input  logic                         test_enable_i,
+    input logic clk_i,
+    input logic rst_ni,
+    input logic test_enable_i,
 
-  input  id_t                           xy_id_i,
-  input  addr_rule_t [NumAddrRules-1:0] id_route_map_i,
+    input id_t                           xy_id_i,
+    input addr_rule_t [NumAddrRules-1:0] id_route_map_i,
 
-  input  flit_t                         channel_i,
-  input  logic                          valid_i,
-  input  logic                          ready_i,
-  output flit_t                         channel_o,
-  output logic       [   NumRoutes-1:0] route_sel_o // One-hot route
+    input  flit_t                 channel_i,
+    input  logic                  valid_i,
+    input  logic                  ready_i,
+    output flit_t                 channel_o,
+    output logic  [NumRoutes-1:0] route_sel_o  // One-hot route
 
 );
 
@@ -59,19 +60,19 @@ module floo_route_select import floo_pkg::*;
     assign channel_o = channel_i;
 
     addr_decode #(
-      .NoIndices ( NumRoutes    ),
-      .NoRules   ( NumAddrRules ),
-      .addr_t    ( id_t         ),
-      .rule_t    ( addr_rule_t  ),
-      .Napot     ( 0            )
+        .NoIndices(NumRoutes),
+        .NoRules  (NumAddrRules),
+        .addr_t   (id_t),
+        .rule_t   (addr_rule_t),
+        .Napot    (0)
     ) i_id_decode (
-      .addr_i           ( channel_i.hdr.dst_id  ),
-      .addr_map_i       ( id_route_map_i    ),
-      .idx_o            ( out_id            ),
-      .dec_valid_o      (),
-      .dec_error_o      (),
-      .default_idx_i    ('0),
-      .en_default_idx_i ('0)
+        .addr_i          (channel_i.hdr.dst_id),
+        .addr_map_i      (id_route_map_i),
+        .idx_o           (out_id),
+        .dec_valid_o     (),
+        .dec_error_o     (),
+        .default_idx_i   ('0),
+        .en_default_idx_i('0)
     );
 
     // One-hot encoding of the decoded route

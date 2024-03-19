@@ -128,6 +128,7 @@ module compute_tile
       .axi_wide_out_req_o  (ni_to_cluster_wide_req),
       .axi_wide_out_rsp_i  (cluster_to_ni_wide_resp),
       .id_i                (id_i),
+      .route_table_i       ('0),
       .floo_req_o          (cluster_ni_to_router_req),
       .floo_rsp_i          (router_to_cluster_ni_rsp),
       .floo_wide_o         (cluster_ni_to_router_wide),

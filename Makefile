@@ -224,7 +224,7 @@ test-random:
 	util/test_random_compute_tile.sh 2>&1 | tee test_random.log
 
 clean-test-random:
-	rm -rf test
+	rm -rf test/jobs
 	rm -rf test_random.log
 
 ####################

@@ -142,6 +142,8 @@ floo_wide_t peripherals_ni_0_1_to_router_1_1_wide;
 
 
 localparam id_t hbm_north_ni_0_0_id = '{x: 1, y: 3};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b0),
@@ -161,6 +163,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o ( hbm_north_wide_req_o[0] ),
   .axi_wide_out_rsp_i ( hbm_north_wide_rsp_i[0] ),
   .id_i             ( hbm_north_ni_0_0_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( hbm_north_ni_0_0_to_router_0_1_req   ),
   .floo_rsp_i       ( router_0_1_to_hbm_north_ni_0_0_rsp   ),
   .floo_wide_o      ( hbm_north_ni_0_0_to_router_0_1_wide  ),
@@ -170,6 +173,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t hbm_north_ni_1_0_id = '{x: 2, y: 3};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b0),
@@ -189,6 +194,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o ( hbm_north_wide_req_o[1] ),
   .axi_wide_out_rsp_i ( hbm_north_wide_rsp_i[1] ),
   .id_i             ( hbm_north_ni_1_0_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( hbm_north_ni_1_0_to_router_1_1_req   ),
   .floo_rsp_i       ( router_1_1_to_hbm_north_ni_1_0_rsp   ),
   .floo_wide_o      ( hbm_north_ni_1_0_to_router_1_1_wide  ),
@@ -198,6 +204,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t hbm_south_ni_0_0_id = '{x: 1, y: 0};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b0),
@@ -217,6 +225,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o ( hbm_south_wide_req_o[0] ),
   .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[0] ),
   .id_i             ( hbm_south_ni_0_0_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( hbm_south_ni_0_0_to_router_0_0_req   ),
   .floo_rsp_i       ( router_0_0_to_hbm_south_ni_0_0_rsp   ),
   .floo_wide_o      ( hbm_south_ni_0_0_to_router_0_0_wide  ),
@@ -226,6 +235,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t hbm_south_ni_1_0_id = '{x: 2, y: 0};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b0),
@@ -245,6 +256,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o ( hbm_south_wide_req_o[1] ),
   .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[1] ),
   .id_i             ( hbm_south_ni_1_0_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( hbm_south_ni_1_0_to_router_1_0_req   ),
   .floo_rsp_i       ( router_1_0_to_hbm_south_ni_1_0_rsp   ),
   .floo_wide_o      ( hbm_south_ni_1_0_to_router_1_0_wide  ),
@@ -254,6 +266,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t pcie_ni_id = '{x: 0, y: 2};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b1),
@@ -273,6 +287,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o ( pcie_wide_req_o ),
   .axi_wide_out_rsp_i ( pcie_wide_rsp_i ),
   .id_i             ( pcie_ni_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( pcie_ni_to_router_0_1_req   ),
   .floo_rsp_i       ( router_0_1_to_pcie_ni_rsp   ),
   .floo_wide_o      ( pcie_ni_to_router_0_1_wide  ),
@@ -282,6 +297,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t cva6_ni_id = '{x: 0, y: 1};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b0),
   .EnNarrowMgrPort(1'b1),
@@ -301,6 +318,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o (    ),
   .axi_wide_out_rsp_i ( '0 ),
   .id_i             ( cva6_ni_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( cva6_ni_to_router_0_0_req   ),
   .floo_rsp_i       ( router_0_0_to_cva6_ni_rsp   ),
   .floo_wide_o      ( cva6_ni_to_router_0_0_wide  ),
@@ -310,6 +328,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t peripherals_ni_0_0_id = '{x: 3, y: 1};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b1),
@@ -329,6 +349,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o (    ),
   .axi_wide_out_rsp_i ( '0 ),
   .id_i             ( peripherals_ni_0_0_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( peripherals_ni_0_0_to_router_1_0_req   ),
   .floo_rsp_i       ( router_1_0_to_peripherals_ni_0_0_rsp   ),
   .floo_wide_o      ( peripherals_ni_0_0_to_router_1_0_wide  ),
@@ -338,6 +359,8 @@ floo_narrow_wide_chimney  #(
 );
 
 localparam id_t peripherals_ni_0_1_id = '{x: 3, y: 2};
+
+
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b1),
@@ -357,6 +380,7 @@ floo_narrow_wide_chimney  #(
   .axi_wide_out_req_o (    ),
   .axi_wide_out_rsp_i ( '0 ),
   .id_i             ( peripherals_ni_0_1_id    ),
+  .route_table_i    ( '0                          ),
   .floo_req_o       ( peripherals_ni_0_1_to_router_1_1_req   ),
   .floo_rsp_i       ( router_1_1_to_peripherals_ni_0_1_rsp   ),
   .floo_wide_o      ( peripherals_ni_0_1_to_router_1_1_wide  ),

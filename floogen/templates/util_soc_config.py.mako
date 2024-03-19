@@ -14,5 +14,5 @@ data_widths = {"wide": ${wide_dw}, "narrow": ${narrow_dw}}
 # New soc_type attribute to facilitate auto-testbench generation
 # soc_type = {"cluster", "memory", "processor", "peripheral", "serial_link"}
 
-${noc.routing.table.render_util(name="addr_map", aw=noc.routing.addr_width, id_offset=noc.routing.id_offset)}
+${noc.routing.sam.render_util(name="addr_map", aw=noc.routing.addr_width)}
 

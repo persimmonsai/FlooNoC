@@ -4,7 +4,7 @@
 // Simple random simulation to generate 
 module snitch_cluster_test_node
   import compute_tile_array_test_pkg::*; // Simulation setting parameter modified through macro for each difference testbench
-  import floo_narrow_wide_pkg::addr_map_rule_t;  // Address map to access DMA
+  import floo_narrow_wide_pkg::sam_rule_t;  // Address map to access DMA
 //import snitch_cluster_pkg::*;  // Snitch cluster generated package
 #(
     // Additional simulation input port to control simulation behaviour
@@ -40,7 +40,7 @@ module snitch_cluster_test_node
   // Assign unique job ID for each DMA test node
   localparam int unsigned Index = y * NumX + x + 1;
 
-  localparam addr_map_rule_t local_addrmap = find_addrmap_by_xy_id(id_x, id_y);
+  localparam sam_rule_t local_addrmap = find_addrmap_by_xy_id(id_x, id_y);
   localparam logic [snitch_cluster_pkg::AddrWidth-1:0] DMAMemBaseAddr = local_addrmap.start_addr;  // byte unit
   localparam logic [snitch_cluster_pkg::AddrWidth-1:0] DMAMemSize = local_addrmap.end_addr - local_addrmap.start_addr; // byte unit
 

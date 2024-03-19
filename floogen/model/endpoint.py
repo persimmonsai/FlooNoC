@@ -6,11 +6,12 @@
 # Author: Tim Fischer <fischeti@iis.ee.ethz.ch>
 from typing import Optional, List, Union, Tuple, ClassVar
 from pydantic import BaseModel, field_validator, model_validator
-from importlib import resources
+from importlib.resources import files, as_file
 from mako.lookup import Template
 
 from floogen.model.routing import AddrRange, Id, Coord
 from floogen.model.protocol import Protocols
+import floogen.templates
 
 
 class EndpointDesc(BaseModel):
@@ -95,7 +96,7 @@ class EndpointDesc(BaseModel):
 class Endpoint(EndpointDesc):
     """Endpoint class to describe an endpoint with adress ranges and configuration parameters."""
     
-    with resources.path("floogen.templates", "tb_memory_model.sv.mako") as _tpl_path:
+    with as_file(files(floogen.templates).joinpath("tb_memory_model.sv.mako")) as _tpl_path:
         _tpl_tb_mem: ClassVar = Template(filename=str(_tpl_path))
 
     mgr_ports: List[Protocols] = []

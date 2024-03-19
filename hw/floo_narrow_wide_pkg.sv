@@ -135,27 +135,73 @@ package floo_narrow_wide_pkg;
   //   Address Map   //
   /////////////////////
 
+  localparam int unsigned SamNumRules = 11;
+
   typedef struct packed {
     id_t idx;
     logic [47:0] start_addr;
     logic [47:0] end_addr;
-  } addr_map_rule_t;
+  } sam_rule_t;
 
-  localparam int unsigned AddrMapNumRules = 11;
+  localparam sam_rule_t [SamNumRules-1:0] Sam = '{
+      '{
+          idx: '{x: 1, y: 1},
+          start_addr: 48'h000010000000,
+          end_addr: 48'h000010040000
+      },  // cluster_ni_0_0
+      '{
+          idx: '{x: 1, y: 2},
+          start_addr: 48'h000010040000,
+          end_addr: 48'h000010080000
+      },  // cluster_ni_0_1
+      '{
+          idx: '{x: 2, y: 1},
+          start_addr: 48'h000010080000,
+          end_addr: 48'h0000100c0000
+      },  // cluster_ni_1_0
+      '{
+          idx: '{x: 2, y: 2},
+          start_addr: 48'h0000100c0000,
+          end_addr: 48'h000010100000
+      },  // cluster_ni_1_1
+      '{
+          idx: '{x: 1, y: 3},
+          start_addr: 48'h000080000000,
+          end_addr: 48'h0000c0000000
+      },  // hbm_north_ni_0_0
+      '{
+          idx: '{x: 2, y: 3},
+          start_addr: 48'h0000c0000000,
+          end_addr: 48'h000100000000
+      },  // hbm_north_ni_1_0
+      '{
+          idx: '{x: 1, y: 0},
+          start_addr: 48'h000800000000,
+          end_addr: 48'h000840000000
+      },  // hbm_south_ni_0_0
+      '{
+          idx: '{x: 2, y: 0},
+          start_addr: 48'h000840000000,
+          end_addr: 48'h000880000000
+      },  // hbm_south_ni_1_0
+      '{
+          idx: '{x: 0, y: 2},
+          start_addr: 48'h010000000000,
+          end_addr: 48'h010100000000
+      },  // pcie_ni
+      '{
+          idx: '{x: 3, y: 1},
+          start_addr: 48'h000000000000,
+          end_addr: 48'h000000ffffff
+      },  // peripherals_ni_0_0
+      '{
+          idx: '{x: 3, y: 2},
+          start_addr: 48'h000000ffffff,
+          end_addr: 48'h000001fffffe
+      }  // peripherals_ni_0_1
 
-  localparam addr_map_rule_t [10:0] AddrMap = '{
-      '{idx: '{x: 1, y: 1}, start_addr: 48'h000010000000, end_addr: 48'h000010040000},
-      '{idx: '{x: 1, y: 2}, start_addr: 48'h000010080000, end_addr: 48'h0000100c0000},
-      '{idx: '{x: 2, y: 1}, start_addr: 48'h000010040000, end_addr: 48'h000010080000},
-      '{idx: '{x: 2, y: 2}, start_addr: 48'h0000100c0000, end_addr: 48'h000010100000},
-      '{idx: '{x: 1, y: 3}, start_addr: 48'h000080000000, end_addr: 48'h0000c0000000},
-      '{idx: '{x: 2, y: 3}, start_addr: 48'h0000c0000000, end_addr: 48'h000100000000},
-      '{idx: '{x: 1, y: 0}, start_addr: 48'h000800000000, end_addr: 48'h000840000000},
-      '{idx: '{x: 2, y: 0}, start_addr: 48'h000840000000, end_addr: 48'h000880000000},
-      '{idx: '{x: 0, y: 2}, start_addr: 48'h010000000000, end_addr: 48'h010100000000},
-      '{idx: '{x: 3, y: 1}, start_addr: 48'h000000000000, end_addr: 48'h000000ffffff},
-      '{idx: '{x: 3, y: 2}, start_addr: 48'h000000ffffff, end_addr: 48'h000001fffffe}
   };
+
 
   ////////////////////////
   //   Flits Typedefs   //

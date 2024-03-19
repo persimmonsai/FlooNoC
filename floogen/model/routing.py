@@ -400,9 +400,6 @@ class RouteMap(BaseModel):
         """Render the SystemVerilog routing table."""
         string = ""
         rules = deepcopy(self.rules)
-        if id_offset is not None:
-            for rule in rules:
-                rule.dest -= id_offset
         # typedef of the address rule
         string += sv_param_decl(f"{snake_to_camel(self.name)}NumRules", len(rules)) + "\n"
         addr_type = f"logic [{aw-1}:0]" if aw is not None else "id_t"
@@ -430,13 +427,10 @@ class RouteMap(BaseModel):
         )
         return string
     
-    def render_util(self, name, aw=None, id_offset=None):
+    def render_util(self, name, aw=None):
         """Render the Python util routing table for DMA jobs generation."""
         string = ""
         rules = deepcopy(self.rules)
-        if id_offset is not None:
-            for rule in rules:
-                rule.dest -= id_offset
         rules_str = ""
         if not rules:
             # Compute tile array design for UseIDTable, so throw away error if no rule found
@@ -465,7 +459,6 @@ class Routing(BaseModel):
     route_algo: RouteAlgo
     use_id_table: bool = True
     xy_route_opt: Optional[bool] = True
-    table: Optional[RoutingTable] = None
     sam: Optional[RouteMap] = None
     table: Optional[RouteMap] = None
     addr_offset_bits: Optional[int] = None

@@ -35,23 +35,23 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Template for compute_tile_gen=False
-    with resources.path("floogen.templates", "floo_noc_top.sv.mako") as _tpl_path:
+    with as_file(files(floogen.templates).joinpath("floo_noc_top.sv.mako")) as _tpl_path:
         tpl: ClassVar = Template(filename=str(_tpl_path))
     
     # Template for compute_tile_gen=True
-    with resources.path("floogen.templates", "floo_noc_top_compute_tile.sv.mako") as _tpl_path:
+    with as_file(files(floogen.templates).joinpath("floo_noc_top_compute_tile.sv.mako")) as _tpl_path:
         tpl_tile: ClassVar = Template(filename=str(_tpl_path))
 
     with as_file(files(floogen.templates).joinpath("floo_flit_pkg.sv.mako")) as _tpl_path:
         tpl_pkg: ClassVar = Template(filename=str(_tpl_path))
     
-    with resources.path("floogen.templates", "util_soc_config.py.mako") as _tpl_path:
+    with as_file(files(floogen.templates).joinpath("util_soc_config.py.mako")) as _tpl_path:
         tpl_util_job: ClassVar = Template(filename=str(_tpl_path))
     
-    with resources.path("floogen.templates", "tb_floo_compute_tile_array.sv.mako") as _tpl_path:
+    with as_file(files(floogen.templates).joinpath("tb_floo_compute_tile_array.sv.mako")) as _tpl_path:
         tpl_tb: ClassVar = Template(filename=str(_tpl_path))
     
-    with resources.path("floogen.templates", "tb_compute_tile_array_test_pkg.sv.mako") as _tpl_path:
+    with as_file(files(floogen.templates).joinpath("tb_compute_tile_array_test_pkg.sv.mako")) as _tpl_path:
         tpl_tb_pkg: ClassVar = Template(filename=str(_tpl_path)) 
 
     name: str
@@ -357,7 +357,6 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                         if outgoing_dir in outgoing:
                             raise ValueError("Outgoing direction is already defined")
                         outgoing[outgoing_dir] = edge
-                    print("\n")
                     router_dict = {
                         "name": rt_name,
                         "incoming": XYLinks(**incoming),
@@ -567,7 +566,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 routes.append(rule)
                 self.routing.num_route_bits = max(self.routing.num_route_bits, max_route_bits)
             ni_src.table = RouteTable(name=ni_src.name + "_table", routes=routes)
-
+    
     def gen_sam(self):
         """Generate the system address map, which is used by the network interfaces
         to determine the destination of a packet based on the address."""
@@ -576,9 +575,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         for ni in ni_sbr_nodes:
             dest = ni.id
             if self.routing.id_offset is not None:
-                dest += self.routing.id_offset
+                dest -= self.routing.id_offset
             addr_range = ni.addr_range
-            addr_rule = RoutingRule(dest=dest, addr_range=addr_range, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name)
+            addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name)
             addr_table.append(addr_rule)
         return RouteMap(name="sam", rules=addr_table)
 

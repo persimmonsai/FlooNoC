@@ -46,7 +46,7 @@ module tb_floo_${noc.name};
   logic [${len(cp_tiles)-1}:0] endsim_cluster;
   // Get end_of_sim signal inside DUT
 % for i in range(0,len(cp_tiles)):
-  assign endsim_cluster[${i}] = &tb_floo_${noc.name}.i_${noc.name}_floo_noc.compute_tile_${str(cp_tiles[i].id.x + noc.routing.id_offset.x)}_${str(cp_tiles[i].id.y + noc.routing.id_offset.y)}.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[${i}] = &tb_floo_${noc.name}.i_${noc.name}_floo_noc.compute_tile_${str(cp_tiles[i].id.x)}_${str(cp_tiles[i].id.y)}.i_snitch_cluster_test_node.end_of_sim;
 % endfor
 
   initial begin
