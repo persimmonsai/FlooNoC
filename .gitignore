@@ -62,7 +62,7 @@ deps
 
 # Auto generated sources
 generated
-*.png
+#*.png
 hw/test/jobs
 test/*
 
