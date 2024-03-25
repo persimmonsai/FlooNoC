@@ -1,5 +1,5 @@
 
-`include "snitch_cluster_pkg.svh"
+`include "test_cluster/snitch_cluster_pkg.svh"
 
 // Blank wrapper for synthesis testing
 module snitch_cluster_wrapper (

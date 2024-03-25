@@ -71,6 +71,7 @@ scripts/vivado/add_sources.tcl
 floonoc.xpr
 vivado.jou
 vivado_pid*
+vivado_*
 floonoc.sim
 floonoc.runs
 floonoc.ip_user_files

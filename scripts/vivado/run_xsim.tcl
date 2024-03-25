@@ -16,6 +16,8 @@
 # This script runs xsim in vivado
 ####################################################################################################
 
+set tb_name tb_floo_compute_tile_array
+
 # set script root to location where this script is located
 set SCRIPT_ROOT [file normalize [file dirname [info script]]]
 
@@ -35,22 +37,21 @@ set env(XILINX_PART) "xcvu37p-fsvh2892-2l-e"
 # Create project
 ####################################################################################################
 
-set project tb_floo_dut
+set project $tb_name
 
 create_project $project . -force
 # create_project $project . -force -part $::env(XILINX_PART)
 set_property board_part $::env(XILINX_BOARD) [current_project]
 
-
 # set number of threads
-set_param general.maxThreads 8
+set_param general.maxThreads 4
 
 ####################################################################################################
 # add design sources
 ####################################################################################################
 
 source $SCRIPT_ROOT/add_sources.tcl
-set_property top tb_floo_rob [get_filesets sim_1]
+set_property top $tb_name [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 
 # Define XSIM
@@ -63,7 +64,7 @@ set_property verilog_define {TARGET_SIMULATION TARGET_FPGA TARGET_TEST TARGET_VI
 #set_property generic NumPorts=32'd1 [get_fileset sim_1]
 update_ip_catalog
 
-set_property top tb_floo_rob [current_fileset]
+set_property top $tb_name [current_fileset]
 update_compile_order -fileset sources_1
 
 launch_simulation

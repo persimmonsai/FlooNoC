@@ -14,7 +14,7 @@ MKFILE_DIR  := $(dir $(MKFILE_PATH))
 
 .PHONY: all clean
 all: compile-vsim
-clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources
+clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources clean-vivado clean-bender
 
 ############
 # Programs #
@@ -100,7 +100,7 @@ FLOOGEN_PKG_CFG ?= $(shell find $(FLOOGEN_CFG_DIR) -name "*_pkg.yml")
 FLOOGEN_PKG_SRC ?= $(patsubst $(FLOOGEN_CFG_DIR)/%_pkg.yml,$(FLOOGEN_PKG_OUT_DIR)/floo_%_pkg.sv,$(FLOOGEN_PKG_CFG))
 FLOOGEN_TPL ?= $(shell find $(FLOOGEN_TPL_DIR) -name "*.mako")
 
-.PHONY: install-floogen pkg-sources sources clean-sources
+.PHONY: install-floogen pkg-sources sources clean-sources clean-bender
 
 install-floogen:
 	@which $(FLOOGEN) > /dev/null || (echo "Installing floogen..." && pip install .)
@@ -115,6 +115,10 @@ sources: install-floogen
 clean-sources:
 	rm -rf $(FLOOGEN_OUT_DIR)
 #	rm -f $(FLOOGEN_PKG_SRC)
+
+clean-bender:
+	rm -rf .bender
+	rm -rf Bender.lock
 
 ######################
 # Traffic Generation #
@@ -226,6 +230,37 @@ test-random:
 clean-test-random:
 	rm -rf test/jobs
 	rm -rf test_random.log
+
+####################
+# Vivado Synthesis #
+####################
+
+.PHONY: vivado-synth vivado-synth-batch clean-vivado
+
+scripts/vivado/add_sources.tcl: Bender.yml
+	echo 'set ROOT [file normalize [file dirname [info script]]/../..]' > scripts/vivado/add_sources.tcl
+#	$(BENDER) script vivado $(BENDER_FLAGS) | grep -v "set ROOT" >> scripts/vivado/add_sources.tcl
+	$(BENDER) script vivado -t rtl | grep -v "set ROOT" >> scripts/vivado/add_sources.tcl
+
+vivado-synth: scripts/vivado/add_sources.tcl
+	vivado -source scripts/vivado/run_xsynth.tcl
+
+vivado-synth-batch: scripts/add_sources.tcl
+	vivado -mode batch -source scripts/vivado/run_xsynth.tcl
+
+clean-vivado:
+	rm -rf scripts/vivado/add_sources.tcl
+	rm -rf .bender
+	rm -rf .Xil
+	rm -rf floonoc.cache
+	rm -rf floonoc.hw
+	rm -rf floonoc.ip_user_files
+	rm -rf floonoc.runs
+	rm -rf floonoc.sim
+	rm -rf floonoc.cache
+	rm -rf floonoc.xpr
+	rm -rf vivado.*
+	rm -rf vivado_*
 
 ####################
 # Spyglass Linting #

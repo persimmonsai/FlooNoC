@@ -13,3 +13,5 @@ overrides:
     fpnew: {git: https://github.com/persimmonsai/cvfpu.git, rev: persimmons}
     riscv-dbg: {git: https://github.com/persimmonsai/riscv-dbg.git, rev: ec0d92fa5fdaaf611e5b8a4cc8ee84017ff98710}
     idma: {git: https://github.com/RomanPustobaiev/iDMA.git, rev: roman/development}
+    axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
+    
