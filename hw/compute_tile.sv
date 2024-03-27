@@ -2,27 +2,12 @@
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
 // SPDX-License-Identifier: SHL-0.51
 
-// `include "snitch_cluster_pkg.svh"
-
-// `include "axi_flat.svh"
-// `include "axi/typedef.svh"
-
 `include "axi/typedef.svh"
-
-`ifdef QUESTA
-  `define QUESTA_VCS
-`elsif VCS
-  `define QUESTA_VCS
-`endif
 
 module compute_tile
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
-  // TODO : Set AXI interface of 'snitch_cluster_pkg' to be equal with 'floo_narrow_wide_pkg'
-  // Use AXI interface defined on 'floo_narrow_wide_pkg' that 
-  // must be equal with AXI interface parameter defined on 'snitch_cluster_pkg'
-  // import snitch_cluster_pkg::*;
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
 #(
     // Additional simulation input port to control simulation behaviour
     parameter int unsigned id_x = 1,
@@ -33,6 +18,11 @@ module compute_tile
     input  logic                        clk_i,
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
+
+    /// Core software interrupt pending. Usually those interrupts come from
+    /// another core to facilitate inter-processor-interrupts. This signal is
+    /// assumed to be _async_.
+    input  logic [snitch_cluster_pkg::NrCores-1:0]  msip_i,
 
     input  id_t                         id_i, // XY ID for router and cluster NI
     // North, East, South, and West floonoc router interface
@@ -76,7 +66,7 @@ module compute_tile
   floo_wide_t [NumDirections-1:0] router_wide_out;
 
 // Switch to instantiate module between simulation (with questa) and synthesis
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
   snitch_cluster_test_node  
   #(
     .id_x(id_x),
@@ -90,11 +80,11 @@ module compute_tile
       .rst_ni (rst_ni),
       // sa_rst_ni, debug_req_i, meip_i, mtip_i, and msip_i 
       // may need to extract from AXI narrow, which is a control signal and handshake from others cluster
-      .sa_rst_ni('1),
+      //.sa_rst_ni('1),
       .debug_req_i ('0),
       .meip_i ('0),
       .mtip_i ('0),
-      .msip_i ('0),
+      .msip_i (msip_i),
       // Narrow AXI Master
       .narrow_out_req_o (cluster_to_ni_narrow_req),
       .narrow_out_resp_i (ni_to_cluster_narrow_resp),

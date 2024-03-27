@@ -21,7 +21,6 @@ clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources clean-vivado
 ############
 
 BENDER     	?= bender
-# VSIM		?= questa-2023.4 vsim
 VSIM       	?= vsim
 VCS			?= vcs
 SPYGLASS   	?= sg_shell
@@ -42,6 +41,11 @@ VLOG_ARGS += -suppress vlog-2583
 VLOG_ARGS += -suppress vlog-13314
 VLOG_ARGS += -suppress vlog-13233
 VLOG_ARGS += -timescale \"1 ns / 1 ps\"
+ifdef DMA_TESTNODE
+	VLOG_ARGS += +define+DMA_TESTNODE
+endif
+
+$(warning $(VLOG_ARGS))
 
 VSIM_FLAGS += -64
 VSIM_FLAGS += -t 1ps
@@ -49,15 +53,15 @@ VSIM_FLAGS += -sv_seed 0
 
 # VCS
 VLOGAN_ARGS += -full64
-#VLOGAN_ARGS += -debug_access+all
 VLOGAN_ARGS += -kdb
 VLOGAN_ARGS += -timescale=1ns/1ns
+ifdef DMA_TESTNODE
+	VLOGAN_ARGS += +define+DMA_TESTNODE
+endif
 
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
-#VCS_FLAGS += -debug_access+r
-#VCS_FLAGS += -debug_access+all
 VCS_FLAGS += -kdb
 SIMV_FLAGS =
 
@@ -66,16 +70,16 @@ SIMV_FLAGS += +vcs+finish+$(SIM_TIME) # maximum simulation time in ns
 
 # Set the job name and directory if specified
 ifdef JOB_NAME
-		VSIM_FLAGS += +JOB_NAME=$(JOB_NAME)
-		SIMV_FLAGS += +JOB_NAME=$(JOB_NAME)
+	VSIM_FLAGS += +JOB_NAME=$(JOB_NAME)
+	SIMV_FLAGS += +JOB_NAME=$(JOB_NAME)
 endif
 ifdef JOB_DIR
-		VSIM_FLAGS += +JOB_DIR=$(JOB_DIR)
-		SIMV_FLAGS += +JOB_DIR=$(JOB_DIR)
+	VSIM_FLAGS += +JOB_DIR=$(JOB_DIR)
+	SIMV_FLAGS += +JOB_DIR=$(JOB_DIR)
 endif
 ifdef LOG_FILE
-		VSIM_FLAGS += -l $(LOG_FILE)
-		VSIM_FLAGS += -nostdout
+	VSIM_FLAGS += -l $(LOG_FILE)
+	VSIM_FLAGS += -nostdout
 endif
 
 # Automatically open the waveform if a wave.tcl file is present
@@ -192,7 +196,7 @@ compile-vcs-batch: scripts/compile_vcs.sh
 	scripts/compile_vcs.sh
 
 run-vcs: VCS_FLAGS+=-debug_access+all
-run-vcs: SIMV_FLAGS += -gui=elite
+run-vcs: SIMV_FLAGS+=-gui=elite
 run-vcs: compile-vcs
 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
 	./simv $(SIMV_FLAGS)

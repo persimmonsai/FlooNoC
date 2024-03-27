@@ -14,7 +14,8 @@ dependencies:
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1 }
   axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
   idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
-  system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster}
+  # system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster}
+  system-snitch-cluster : {path: ../PULP/snitch/hw/system/snitch_cluster}
 
 export_include_dirs:
   - hw/include
@@ -63,6 +64,7 @@ sources:
       - hw/test/axi_bw_monitor.sv
       - hw/test/floo_hbm_model.sv
       - hw/test/snitch_cluster_test_node.sv
+      - hw/test_cluster/floo_testharness.sv
       # Level 2
       - hw/tb/tb_floo_axi_chimney.sv
       - hw/tb/tb_floo_narrow_wide_chimney.sv
@@ -72,6 +74,8 @@ sources:
       - hw/tb/tb_floo_dma_nw_chimney.sv
       - hw/tb/tb_floo_dma_mesh.sv
       - hw/tb/tb_floo_compute_tile_array.sv
+      - hw/tb/tb_floo_bin.sv
+      
 
   - target: any(synthesis,spyglass)
     files:

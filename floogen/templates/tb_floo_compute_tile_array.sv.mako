@@ -35,10 +35,15 @@ module tb_floo_${noc.name};
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
+  logic [snitch_cluster_pkg::NrCores-1:0] msip_i;
+  assign msip_i = 'b0;  // unused port for snitch cluster
+
   ${noc.name}_floo_noc i_${noc.name}_floo_noc (
       .clk_i(clk),
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
+
+      .msip_i(msip_i),
 
       ${noc.render_tb_dut_ports()}
   );

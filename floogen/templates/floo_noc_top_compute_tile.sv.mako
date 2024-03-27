@@ -7,12 +7,6 @@
 
 // AUTOMATICALLY GENERATED! DO NOT EDIT!
 
-`ifdef QUESTA
-  `define QUESTA_VCS
-`elsif VCS
-  `define QUESTA_VCS
-`endif
-
 module ${noc.name}_floo_noc
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
@@ -20,6 +14,8 @@ module ${noc.name}_floo_noc
   input logic clk_i,
   input logic rst_ni,
   input logic test_enable_i,
+
+  input logic [snitch_cluster_pkg::NrCores-1:0]  msip_i, 
 
   ${noc.render_ports()}
 );

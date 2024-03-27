@@ -53,7 +53,7 @@ ${wide_type} [West:North] ${router.name}_wide_out;
 
 localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   compute_tile 
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
 #(
   .id_x(${actual_xy_id.x}),
   .id_y(${actual_xy_id.y})
@@ -63,6 +63,7 @@ localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   .clk_i,
   .rst_ni,
   .test_enable_i,
+  .msip_i (msip_i),
   .id_i (${compute_tile_id}),
   .floo_req_i (${router.name}_req_in),
   .floo_rsp_o (${router.name}_rsp_out),

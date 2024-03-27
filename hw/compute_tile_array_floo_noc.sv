@@ -4,12 +4,6 @@
 
 // AUTOMATICALLY GENERATED! DO NOT EDIT!
 
-`ifdef QUESTA
-  `define QUESTA_VCS
-`elsif VCS
-  `define QUESTA_VCS
-`endif
-
 module compute_tile_array_floo_noc
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
@@ -17,6 +11,8 @@ module compute_tile_array_floo_noc
   input logic clk_i,
   input logic rst_ni,
   input logic test_enable_i,
+
+  input logic [snitch_cluster_pkg::NrCores-1:0]  msip_i, 
 
   output axi_narrow_out_req_t             [1:0] hbm_north_narrow_req_o,
   input axi_narrow_out_rsp_t             [1:0] hbm_north_narrow_rsp_i,
@@ -38,8 +34,12 @@ module compute_tile_array_floo_noc
   output axi_narrow_in_rsp_t              cva6_narrow_rsp_o,
   input axi_narrow_in_req_t             [1:0] peripherals_narrow_req_i,
   output axi_narrow_in_rsp_t             [1:0] peripherals_narrow_rsp_o,
+  input axi_wide_in_req_t             [1:0] peripherals_wide_req_i,
+  output axi_wide_in_rsp_t             [1:0] peripherals_wide_rsp_o,
   output axi_narrow_out_req_t             [1:0] peripherals_narrow_req_o,
-  input axi_narrow_out_rsp_t             [1:0] peripherals_narrow_rsp_i
+  input axi_narrow_out_rsp_t             [1:0] peripherals_narrow_rsp_i,
+  output axi_wide_out_req_t             [1:0] peripherals_wide_req_o,
+  input axi_wide_out_rsp_t             [1:0] peripherals_wide_rsp_i
 
 );
 
@@ -333,8 +333,8 @@ localparam id_t peripherals_ni_0_0_id = '{x: 3, y: 1};
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b1),
-  .EnWideSbrPort(1'b0),
-  .EnWideMgrPort(1'b0)
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b1)
 ) peripherals_ni_0_0 (
   .clk_i,
   .rst_ni,
@@ -344,10 +344,10 @@ floo_narrow_wide_chimney  #(
   .axi_narrow_in_rsp_o  ( peripherals_narrow_rsp_o[0] ),
   .axi_narrow_out_req_o ( peripherals_narrow_req_o[0] ),
   .axi_narrow_out_rsp_i ( peripherals_narrow_rsp_i[0] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o (    ),
-  .axi_wide_out_rsp_i ( '0 ),
+  .axi_wide_in_req_i  ( peripherals_wide_req_i[0] ),
+  .axi_wide_in_rsp_o  ( peripherals_wide_rsp_o[0] ),
+  .axi_wide_out_req_o ( peripherals_wide_req_o[0] ),
+  .axi_wide_out_rsp_i ( peripherals_wide_rsp_i[0] ),
   .id_i             ( peripherals_ni_0_0_id    ),
   .route_table_i    ( '0                          ),
   .floo_req_o       ( peripherals_ni_0_0_to_router_1_0_req   ),
@@ -364,8 +364,8 @@ localparam id_t peripherals_ni_0_1_id = '{x: 3, y: 2};
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b1),
-  .EnWideSbrPort(1'b0),
-  .EnWideMgrPort(1'b0)
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b1)
 ) peripherals_ni_0_1 (
   .clk_i,
   .rst_ni,
@@ -375,10 +375,10 @@ floo_narrow_wide_chimney  #(
   .axi_narrow_in_rsp_o  ( peripherals_narrow_rsp_o[1] ),
   .axi_narrow_out_req_o ( peripherals_narrow_req_o[1] ),
   .axi_narrow_out_rsp_i ( peripherals_narrow_rsp_i[1] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o (    ),
-  .axi_wide_out_rsp_i ( '0 ),
+  .axi_wide_in_req_i  ( peripherals_wide_req_i[1] ),
+  .axi_wide_in_rsp_o  ( peripherals_wide_rsp_o[1] ),
+  .axi_wide_out_req_o ( peripherals_wide_req_o[1] ),
+  .axi_wide_out_rsp_i ( peripherals_wide_rsp_i[1] ),
   .id_i             ( peripherals_ni_0_1_id    ),
   .route_table_i    ( '0                          ),
   .floo_req_o       ( peripherals_ni_0_1_to_router_1_1_req   ),
@@ -429,7 +429,7 @@ floo_wide_t [West:North] router_0_0_wide_out;
 
 localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   compute_tile 
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
 #(
   .id_x(1),
   .id_y(1)
@@ -439,6 +439,7 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   .clk_i,
   .rst_ni,
   .test_enable_i,
+  .msip_i (msip_i),
   .id_i (compute_tile_0_0_id),
   .floo_req_i (router_0_0_req_in),
   .floo_rsp_o (router_0_0_rsp_out),
@@ -488,7 +489,7 @@ floo_wide_t [West:North] router_0_1_wide_out;
 
 localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   compute_tile 
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
 #(
   .id_x(1),
   .id_y(2)
@@ -498,6 +499,7 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   .clk_i,
   .rst_ni,
   .test_enable_i,
+  .msip_i (msip_i),
   .id_i (compute_tile_0_1_id),
   .floo_req_i (router_0_1_req_in),
   .floo_rsp_o (router_0_1_rsp_out),
@@ -547,7 +549,7 @@ floo_wide_t [West:North] router_1_0_wide_out;
 
 localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   compute_tile 
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
 #(
   .id_x(2),
   .id_y(1)
@@ -557,6 +559,7 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   .clk_i,
   .rst_ni,
   .test_enable_i,
+  .msip_i (msip_i),
   .id_i (compute_tile_1_0_id),
   .floo_req_i (router_1_0_req_in),
   .floo_rsp_o (router_1_0_rsp_out),
@@ -606,7 +609,7 @@ floo_wide_t [West:North] router_1_1_wide_out;
 
 localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   compute_tile 
-`ifdef QUESTA_VCS
+`ifdef DMA_TESTNODE
 #(
   .id_x(2),
   .id_y(2)
@@ -616,6 +619,7 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   .clk_i,
   .rst_ni,
   .test_enable_i,
+  .msip_i (msip_i),
   .id_i (compute_tile_1_1_id),
   .floo_req_i (router_1_1_req_in),
   .floo_rsp_o (router_1_1_rsp_out),

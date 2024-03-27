@@ -65,7 +65,7 @@ do
                 TRAFFIC_NR_BURST_NUM=$num_narrow_bursts TRAFFIC_NR_BURST_LEN=$narrow_burst_length \
                 TRAFFIC_WD_BURST_NUM=$num_wide_bursts TRAFFIC_WD_BURST_LEN=$wide_burst_length 2>&1 | tee $job_dir/job_stats.log
             # Run the simulation
-            make run-vcs-batch TB_DUT=$tb_dut JOB_NAME=$job_type JOB_DIR=$job_dir 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
+            make run-vcs-batch TB_DUT=$tb_dut JOB_NAME=$job_type JOB_DIR=$job_dir DMA_TESTNODE=TRUE 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
         done
     done
     echo ""

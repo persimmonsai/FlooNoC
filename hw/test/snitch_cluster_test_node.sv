@@ -1,5 +1,5 @@
 
-`include "test_cluster/snitch_cluster_pkg.svh"
+//`include "test_cluster/snitch_cluster_pkg.svh"
 
 // Simple random simulation to generate 
 module snitch_cluster_test_node
@@ -14,7 +14,7 @@ module snitch_cluster_test_node
     input logic clk_i,
     input logic rst_ni,
 
-    input logic sa_rst_ni,
+    //input logic sa_rst_ni,
     input logic [snitch_cluster_pkg::NrCores-1:0] debug_req_i,
     input logic [snitch_cluster_pkg::NrCores-1:0] meip_i,
     input logic [snitch_cluster_pkg::NrCores-1:0] mtip_i,

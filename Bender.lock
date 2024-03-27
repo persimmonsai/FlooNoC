@@ -39,10 +39,10 @@ packages:
       Git: https://github.com/persimmonsai/common_verification.git
     dependencies: []
   fpnew:
-    revision: 447b64ee91948e38da62c8e4ff9b136ecc72d7b8
+    revision: 1202ca3a767b563bca5de505574373e53941506f
     version: null
     source:
-      Git: https://github.com/persimmonsai/cvfpu.git
+      Git: https://github.com/openhwgroup/cvfpu.git
     dependencies:
     - common_cells
     - fpu_div_sqrt_mvp
@@ -57,7 +57,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/future
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/future
     dependencies:
     - axi
     - common_cells
@@ -75,21 +75,10 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/mem_interface
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/mem_interface
     dependencies:
     - common_cells
     - reqrsp_interface
-  persimmons-sa:
-    revision: 7b240cf57d6184b54e0964c4a3b89bcbae0d516a
-    version: null
-    source:
-      Git: git@github.com:persimmonsai/sa.git
-    dependencies:
-    - axi
-    - common_cells
-    - fpnew
-    - idma
-    - tech_cells_generic
   register_interface:
     revision: 146501d80052b61475cdc333d3aab4cd769fd5dc
     version: 0.3.9
@@ -103,7 +92,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/reqrsp_interface
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/reqrsp_interface
     dependencies:
     - axi
     - common_cells
@@ -119,7 +108,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch
     dependencies:
     - axi
     - common_cells
@@ -130,14 +119,13 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster
     dependencies:
     - axi
     - common_cells
     - fpnew
     - future
     - mem_interface
-    - persimmons-sa
     - register_interface
     - reqrsp_interface
     - riscv-dbg
@@ -153,7 +141,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_dma
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_dma
     dependencies:
     - axi
     - common_cells
@@ -162,7 +150,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_icache
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_icache
     dependencies:
     - common_cells
     - snitch
@@ -171,7 +159,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_ipu
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_ipu
     dependencies:
     - common_cells
     - snitch
@@ -179,7 +167,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_ssr
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_ssr
     dependencies:
     - common_cells
     - register_interface
@@ -188,7 +176,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_vm
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/snitch_vm
     dependencies:
     - common_cells
     - snitch
@@ -196,7 +184,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster
+      Path: ../PULP/snitch/hw/system/snitch_cluster
     dependencies:
     - axi
     - snitch_cluster
@@ -205,7 +193,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/tcdm_interface
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/snitch_cluster/../../ip/tcdm_interface
     dependencies:
     - common_cells
     - reqrsp_interface
@@ -220,7 +208,7 @@ packages:
     revision: null
     version: null
     source:
-      Path: ../snitch/hw/system/snitch_cluster/../../ip/test
+      Path: ../PULP/snitch/hw/system/snitch_cluster/../../ip/test
     dependencies:
     - axi
     - axi_riscv_atomics

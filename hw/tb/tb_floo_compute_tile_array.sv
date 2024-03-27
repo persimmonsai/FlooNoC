@@ -132,10 +132,15 @@ module tb_floo_compute_tile_array;
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
+  logic [snitch_cluster_pkg::NrCores-1:0] msip_i;
+  assign msip_i = 'b0;  // unused port for snitch cluster
+
   compute_tile_array_floo_noc i_compute_tile_array_floo_noc (
       .clk_i(clk),
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
+
+      .msip_i(msip_i),
 
       .hbm_north_narrow_req_o(hbm_north_narrow_req),
       .hbm_north_narrow_rsp_i(hbm_north_narrow_rsp),
@@ -157,8 +162,12 @@ module tb_floo_compute_tile_array;
       .cva6_narrow_rsp_o(),
       .peripherals_narrow_req_i('0),
       .peripherals_narrow_rsp_o(),
+      .peripherals_wide_req_i('0),
+      .peripherals_wide_rsp_o(),
       .peripherals_narrow_req_o(),
-      .peripherals_narrow_rsp_i('0)
+      .peripherals_narrow_rsp_i('0),
+      .peripherals_wide_req_o(),
+      .peripherals_wide_rsp_i('0)
 
   );
 
