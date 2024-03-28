@@ -51,4 +51,12 @@ module tb_floo_bin;
     $finish;
   end
 
+  // Temporary Force reset to enable only one cluster at cluster x=0, y=0 that have addresss mapped to 0x1000_0000
+  initial begin
+    force i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_0_1.i_snitch_cluster.rst_ni = 1'b0;
+    force i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_1_0.i_snitch_cluster.rst_ni = 1'b0;
+    force i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_1_1.i_snitch_cluster.rst_ni = 1'b0;
+    // #500 release tb_top.dut_top.dut_block.dut_signal;
+  end
+
 endmodule

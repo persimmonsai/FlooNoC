@@ -109,7 +109,7 @@ def main(): # pylint: disable=too-many-branches
             top_file_name = outdir / (network.name + "_floo_noc.sv")
             with open(top_file_name, "w+", encoding="utf-8") as top_file:
                 top_file.write(rendered_top)
-            print("Generating topfile : " + str(top_file_name))
+            print("Generating top_file : " + str(top_file_name))
         else:
             print(rendered_top)
         
@@ -122,7 +122,7 @@ def main(): # pylint: disable=too-many-branches
                 tb_outdir = Path(os.getcwd(), "hw", "tb")
                 if not tb_outdir.exists():
                     raise FileNotFoundError(
-                        f"Was not able to find the directory to store the testbech file: {tb_outdir}"
+                        f"Was not able to find the directory to store the testbench file: {tb_outdir}"
                     )
             if args.util_outdir:
                 util_outdir = Path(os.getcwd(), args.util_outdir)
@@ -138,6 +138,7 @@ def main(): # pylint: disable=too-many-branches
             # Generate testbench file
             rendered_tb = network.render_tb()
             rendered_tb_pkg = network.render_tb_pkg()
+            rendered_testharness = network.render_testharness()
             
             # Write python util file for DMA jobs generation
             if util_outdir:
@@ -145,24 +146,29 @@ def main(): # pylint: disable=too-many-branches
                 util_file_name = util_outdir / ("soc_config.py")
                 with open(util_file_name, "w+", encoding="utf-8") as util_file:
                     util_file.write(rendered_util)
-                print("Generating utilfile : " + str(util_file_name))
+                print("Generating util_file : " + str(util_file_name))
             else:
                 print(rendered_util)
             
             if not args.no_format:
                 rendered_tb = verible_format(rendered_tb)
                 rendered_tb_pkg = verible_format(rendered_tb_pkg)
+                rendered_testharness = verible_format(rendered_testharness)
             # Write toplevel testbench file for compute file array structure
             if tb_outdir:
                 tb_outdir.mkdir(parents=True, exist_ok=True)
                 tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
                 tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
+                testharness_file_name = tb_outdir / "floo_testharness.sv"
                 with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
                     tb_file.write(rendered_tb)
-                print("Generating tbfile : " + str(tb_file_name))
+                print("Generating tb_file : " + str(tb_file_name))
                 with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
                     tb_file.write(rendered_tb_pkg)
-                print("Generating tbpkgfile : " + str(tb_pkg_file_name))
+                print("Generating tbpkg_file : " + str(tb_pkg_file_name))
+                with open(testharness_file_name, "w+", encoding="utf-8") as tb_file:
+                    tb_file.write(rendered_testharness)
+                print("Generating testharness_file : " + str(testharness_file_name))
             else:
                 print(rendered_tb)
 

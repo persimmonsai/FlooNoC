@@ -64,7 +64,7 @@ sources:
       - hw/test/axi_bw_monitor.sv
       - hw/test/floo_hbm_model.sv
       - hw/test/snitch_cluster_test_node.sv
-      - hw/test_cluster/floo_testharness.sv
+      - hw/tb/floo_testharness.sv
       # Level 2
       - hw/tb/tb_floo_axi_chimney.sv
       - hw/tb/tb_floo_narrow_wide_chimney.sv

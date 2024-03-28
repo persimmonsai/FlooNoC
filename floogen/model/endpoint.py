@@ -90,14 +90,20 @@ class EndpointDesc(BaseModel):
         """Render the ports of the endpoint."""
         
     def render_tb(self) -> str:
-        """Render the testbench of the endpoint."""
+        """Render endpoints of the testbench."""
+        
+    def render_testharness(self) -> str:
+        """Render endpoints of the testharness."""
 
 
 class Endpoint(EndpointDesc):
-    """Endpoint class to describe an endpoint with adress ranges and configuration parameters."""
+    """Endpoint class to describe an endpoint with address ranges and configuration parameters."""
     
     with as_file(files(floogen.templates).joinpath("tb_memory_model.sv.mako")) as _tpl_path:
         _tpl_tb_mem: ClassVar = Template(filename=str(_tpl_path))
+       
+    with as_file(files(floogen.templates).joinpath("tb_virtual_memory.sv.mako")) as _tpl_path:
+        _tpl_virtual_mem: ClassVar = Template(filename=str(_tpl_path)) 
 
     mgr_ports: List[Protocols] = []
     sbr_ports: List[Protocols] = []
@@ -123,8 +129,9 @@ class Endpoint(EndpointDesc):
         ports = []
         # Render as connected port (support simulation model endpoint)
         if (self.soc_type=="memory"):
-            for port in self.mgr_ports:
-                ports += port.render_tb_connect_port()
+            # For memory type, expect that there is no mgr_ports
+            if self.mgr_ports:
+                raise ValueError("Unexpected soc_type of memory, but have mgr_ports");
             for port in self.sbr_ports:
                 ports += port.render_tb_connect_port()
         # Render as trimmed port (unsupport simulation model endpoint)
@@ -136,6 +143,10 @@ class Endpoint(EndpointDesc):
         return ports
     
     def render_tb(self) -> str:
-        """Render the testbench of the endpoint."""
+        """Render endpoints of the testbench."""
         return self._tpl_tb_mem.render(ep=self)
+    
+    def render_testharness(self) -> str:
+        """Render endpoints of the testharness."""
+        return self._tpl_virtual_mem.render(ep=self)
     

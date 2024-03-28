@@ -17,7 +17,7 @@ AddrMap = [
 	{"idx": {"x": 1, "y": 0}, "name": "hbm_south", "soc_type": "memory", "start_addr": int("0x000180000000",16), "end_addr": int("0x000200000000",16)},
 	{"idx": {"x": 2, "y": 0}, "name": "hbm_south", "soc_type": "memory", "start_addr": int("0x000200000000",16), "end_addr": int("0x000280000000",16)},
 	{"idx": {"x": 0, "y": 2}, "name": "pcie", "soc_type": "serial_link", "start_addr": int("0x010000000000",16), "end_addr": int("0x010100000000",16)},
-	{"idx": {"x": 3, "y": 1}, "name": "peripherals", "soc_type": "peripheral", "start_addr": int("0x000000000000",16), "end_addr": int("0x000001000000",16)},
+	{"idx": {"x": 3, "y": 1}, "name": "bootrom", "soc_type": "memory", "start_addr": int("0x000000000000",16), "end_addr": int("0x000001000000",16)},
 	{"idx": {"x": 3, "y": 2}, "name": "peripherals", "soc_type": "peripheral", "start_addr": int("0x000001000000",16), "end_addr": int("0x000002000000",16)}
 ]
 

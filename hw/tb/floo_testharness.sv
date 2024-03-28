@@ -8,7 +8,6 @@
 module floo_testharness
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
-//import snitch_cluster_pkg::*;
 (
     input logic clk_i,
     input logic rst_ni
@@ -25,28 +24,26 @@ module floo_testharness
   axi_wide_out_req_t   [1:0] hbm_north_wide_req;
   axi_wide_out_rsp_t   [1:0] hbm_north_wide_rsp;
 
-  // Wide port into simulation memory.
   tb_memory_axi #(
       .AxiAddrWidth(AxiWideOutAddrWidth),
       .AxiDataWidth(AxiWideOutDataWidth),
-      .AxiIdWidth(AxiWideOutIdWidth),
       .AxiUserWidth(AxiWideOutUserWidth),
-      .req_t(axi_wide_out_req_t),
-      .rsp_t(axi_wide_out_rsp_t)
+      .AxiIdWidth  (AxiWideOutIdWidth),
+      .req_t       (axi_wide_out_req_t),
+      .rsp_t       (axi_wide_out_rsp_t)
   ) i_wide_hbm_north_memory[1:0] (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
       .req_i (hbm_north_wide_req),
       .rsp_o (hbm_north_wide_rsp)
   );
-  // Narrow port into simulation memory.
   tb_memory_axi #(
       .AxiAddrWidth(AxiNarrowOutAddrWidth),
       .AxiDataWidth(AxiNarrowOutDataWidth),
-      .AxiIdWidth(AxiNarrowOutIdWidth),
       .AxiUserWidth(AxiNarrowOutUserWidth),
-      .req_t(axi_narrow_out_req_t),
-      .rsp_t(axi_narrow_out_rsp_t)
+      .AxiIdWidth  (AxiNarrowOutIdWidth),
+      .req_t       (axi_narrow_out_req_t),
+      .rsp_t       (axi_narrow_out_rsp_t)
   ) i_narrow_hbm_north_memory[1:0] (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
@@ -62,24 +59,23 @@ module floo_testharness
   tb_memory_axi #(
       .AxiAddrWidth(AxiWideOutAddrWidth),
       .AxiDataWidth(AxiWideOutDataWidth),
-      .AxiIdWidth(AxiWideOutIdWidth),
       .AxiUserWidth(AxiWideOutUserWidth),
-      .req_t(axi_wide_out_req_t),
-      .rsp_t(axi_wide_out_rsp_t)
+      .AxiIdWidth  (AxiWideOutIdWidth),
+      .req_t       (axi_wide_out_req_t),
+      .rsp_t       (axi_wide_out_rsp_t)
   ) i_wide_hbm_south_memory[1:0] (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
       .req_i (hbm_south_wide_req),
       .rsp_o (hbm_south_wide_rsp)
   );
-  // Narrow port into simulation memory.
   tb_memory_axi #(
       .AxiAddrWidth(AxiNarrowOutAddrWidth),
       .AxiDataWidth(AxiNarrowOutDataWidth),
-      .AxiIdWidth(AxiNarrowOutIdWidth),
       .AxiUserWidth(AxiNarrowOutUserWidth),
-      .req_t(axi_narrow_out_req_t),
-      .rsp_t(axi_narrow_out_rsp_t)
+      .AxiIdWidth  (AxiNarrowOutIdWidth),
+      .req_t       (axi_narrow_out_req_t),
+      .rsp_t       (axi_narrow_out_rsp_t)
   ) i_narrow_hbm_south_memory[1:0] (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
@@ -87,38 +83,38 @@ module floo_testharness
       .rsp_o (hbm_south_narrow_rsp)
   );
 
-  axi_narrow_out_req_t [1:0] peripherals_narrow_req;
-  axi_narrow_out_rsp_t [1:0] peripherals_narrow_rsp;
-  axi_wide_out_req_t   [1:0] peripherals_wide_req;
-  axi_wide_out_rsp_t   [1:0] peripherals_wide_rsp;
+  axi_narrow_out_req_t bootrom_narrow_req;
+  axi_narrow_out_rsp_t bootrom_narrow_rsp;
+  axi_wide_out_req_t   bootrom_wide_req;
+  axi_wide_out_rsp_t   bootrom_wide_rsp;
 
   tb_memory_axi #(
       .AxiAddrWidth(AxiWideOutAddrWidth),
       .AxiDataWidth(AxiWideOutDataWidth),
-      .AxiIdWidth(AxiWideOutIdWidth),
       .AxiUserWidth(AxiWideOutUserWidth),
-      .req_t(axi_wide_out_req_t),
-      .rsp_t(axi_wide_out_rsp_t)
-  ) i_wide_peripherals_memory[1:0] (
+      .AxiIdWidth  (AxiWideOutIdWidth),
+      .req_t       (axi_wide_out_req_t),
+      .rsp_t       (axi_wide_out_rsp_t)
+  ) i_wide_bootrom_memory (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
-      .req_i (peripherals_wide_req),
-      .rsp_o (peripherals_wide_rsp)
+      .req_i (bootrom_wide_req),
+      .rsp_o (bootrom_wide_rsp)
   );
-  // Narrow port into simulation memory.
   tb_memory_axi #(
       .AxiAddrWidth(AxiNarrowOutAddrWidth),
       .AxiDataWidth(AxiNarrowOutDataWidth),
-      .AxiIdWidth(AxiNarrowOutIdWidth),
       .AxiUserWidth(AxiNarrowOutUserWidth),
-      .req_t(axi_narrow_out_req_t),
-      .rsp_t(axi_narrow_out_rsp_t)
-  ) i_narrow_peripherals_memory[1:0] (
+      .AxiIdWidth  (AxiNarrowOutIdWidth),
+      .req_t       (axi_narrow_out_req_t),
+      .rsp_t       (axi_narrow_out_rsp_t)
+  ) i_narrow_bootrom_memory (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
-      .req_i (peripherals_narrow_req),
-      .rsp_o (peripherals_narrow_rsp)
+      .req_i (bootrom_narrow_req),
+      .rsp_o (bootrom_narrow_rsp)
   );
+
 
   //////////////////////////////////
   //   Compute Tile Array (DUT)   //
@@ -141,8 +137,8 @@ module floo_testharness
   // verilog_lint: waive-stop always-ff-non-blocking
 
   compute_tile_array_floo_noc i_compute_tile_array_floo_noc (
-      .clk_i(clk),
-      .rst_ni(rst_n),
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
       .test_enable_i(1'b0),
 
       .msip_i(msip_i),
@@ -165,30 +161,15 @@ module floo_testharness
       .pcie_wide_rsp_i('0),
       .cva6_narrow_req_i('0),
       .cva6_narrow_rsp_o(),
+      .bootrom_narrow_req_o(bootrom_narrow_req),
+      .bootrom_narrow_rsp_i(bootrom_narrow_rsp),
+      .bootrom_wide_req_o(bootrom_wide_req),
+      .bootrom_wide_rsp_i(bootrom_wide_rsp),
       .peripherals_narrow_req_i('0),
       .peripherals_narrow_rsp_o(),
-      .peripherals_wide_req_i('0),
-      .peripherals_wide_rsp_o(),
-      .peripherals_narrow_req_o(peripherals_narrow_req),
-      .peripherals_narrow_rsp_i(peripherals_narrow_rsp),
-      .peripherals_wide_req_o(peripherals_wide_req),
-      .peripherals_wide_rsp_i(peripherals_wide_rsp)
+      .peripherals_narrow_req_o(),
+      .peripherals_narrow_rsp_i('0)
+
   );
-
-  //   logic [3:0] endsim_cluster;
-  //   // Get end_of_sim signal inside DUT
-  //   assign endsim_cluster[0] = &tb_floo_bin.i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_0_0.i_snitch_cluster_test_node.end_of_sim;
-  //   assign endsim_cluster[1] = &tb_floo_bin.i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_0_1.i_snitch_cluster_test_node.end_of_sim;
-  //   assign endsim_cluster[2] = &tb_floo_bin.i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_1_0.i_snitch_cluster_test_node.end_of_sim;
-  //   assign endsim_cluster[3] = &tb_floo_bin.i_floo_testharness.i_compute_tile_array_floo_noc.compute_tile_1_1.i_snitch_cluster_test_node.end_of_sim;
-
-  //   initial begin
-  //     wait (&endsim_cluster);
-  //     // Wait for some time
-  //     #100ns;
-  //     // Stop the simulation
-  //     $display("-- End Simulation --");
-  //     $finish;
-  //   end
 
 endmodule

@@ -105,6 +105,9 @@ inter.fsdb
 inter.fsdb.*
 novas.conf
 novas.rc
+simv.vdb
+bin
+logs
 
 # Fusion Compiler
 fc_output.txt

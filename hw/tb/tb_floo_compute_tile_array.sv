@@ -127,6 +127,56 @@ module tb_floo_compute_tile_array;
       .hbm_rsp_o(hbm_south_narrow_rsp)
   );
 
+  axi_narrow_out_req_t bootrom_narrow_req;
+  axi_narrow_out_rsp_t bootrom_narrow_rsp;
+  axi_wide_out_req_t   bootrom_wide_req;
+  axi_wide_out_rsp_t   bootrom_wide_rsp;
+
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiWideOutAddrWidth),
+      .DataWidth  (AxiWideOutDataWidth),
+      .UserWidth  (AxiWideOutUserWidth),
+      .IdWidth    (AxiWideOutIdWidth),
+      .axi_req_t  (axi_wide_out_req_t),
+      .axi_rsp_t  (axi_wide_out_rsp_t),
+      .aw_chan_t  (axi_wide_out_aw_chan_t),
+      .w_chan_t   (axi_wide_out_w_chan_t),
+      .b_chan_t   (axi_wide_out_b_chan_t),
+      .ar_chan_t  (axi_wide_out_ar_chan_t),
+      .r_chan_t   (axi_wide_out_r_chan_t)
+  ) i_floo_wide_bootrom_model (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(bootrom_wide_req),
+      .hbm_rsp_o(bootrom_wide_rsp)
+  );
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiNarrowOutAddrWidth),
+      .DataWidth  (AxiNarrowOutDataWidth),
+      .UserWidth  (AxiNarrowOutUserWidth),
+      .IdWidth    (AxiNarrowOutIdWidth),
+      .axi_req_t  (axi_narrow_out_req_t),
+      .axi_rsp_t  (axi_narrow_out_rsp_t),
+      .aw_chan_t  (axi_narrow_out_aw_chan_t),
+      .w_chan_t   (axi_narrow_out_w_chan_t),
+      .b_chan_t   (axi_narrow_out_b_chan_t),
+      .ar_chan_t  (axi_narrow_out_ar_chan_t),
+      .r_chan_t   (axi_narrow_out_r_chan_t)
+  ) i_floo_narrow_bootrom_model (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(bootrom_narrow_req),
+      .hbm_rsp_o(bootrom_narrow_rsp)
+  );
+
 
   //////////////////////////////////
   //   Compute Tile Array (DUT)   //
@@ -160,14 +210,14 @@ module tb_floo_compute_tile_array;
       .pcie_wide_rsp_i('0),
       .cva6_narrow_req_i('0),
       .cva6_narrow_rsp_o(),
+      .bootrom_narrow_req_o(bootrom_narrow_req),
+      .bootrom_narrow_rsp_i(bootrom_narrow_rsp),
+      .bootrom_wide_req_o(bootrom_wide_req),
+      .bootrom_wide_rsp_i(bootrom_wide_rsp),
       .peripherals_narrow_req_i('0),
       .peripherals_narrow_rsp_o(),
-      .peripherals_wide_req_i('0),
-      .peripherals_wide_rsp_o(),
       .peripherals_narrow_req_o(),
-      .peripherals_narrow_rsp_i('0),
-      .peripherals_wide_req_o(),
-      .peripherals_wide_rsp_i('0)
+      .peripherals_narrow_rsp_i('0)
 
   );
 

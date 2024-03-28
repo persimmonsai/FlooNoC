@@ -193,12 +193,12 @@ package floo_narrow_wide_pkg;
           idx: '{x: 3, y: 1},
           start_addr: 48'h000000000000,
           end_addr: 48'h000001000000
-      },  // peripherals_ni_0_0
+      },  // bootrom_ni
       '{
           idx: '{x: 3, y: 2},
           start_addr: 48'h000001000000,
           end_addr: 48'h000002000000
-      }  // peripherals_ni_0_1
+      }  // peripherals_ni
 
   };
 

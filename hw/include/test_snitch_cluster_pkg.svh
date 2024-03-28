@@ -1,6 +1,6 @@
 
-`ifndef SNITCH_CLUSTER_PKG_SVH
-`define SNITCH_CLUSTER_PKG_SVH
+`ifndef TEST_SNITCH_CLUSTER_PKG_SVH
+`define TEST_SNITCH_CLUSTER_PKG_SVH
 
 
 
@@ -9,7 +9,7 @@
 
 
 // verilog_lint: waive-start package-filename
-package snitch_cluster_pkg;
+package test_snitch_cluster_pkg;
 
   localparam int unsigned NrCores = 4;
   localparam int unsigned NrHives = 1;

@@ -116,24 +116,30 @@ endpoints:
     id_offset:
       x: -1 # -1 mean border of the west side
       y: 0 # 1
-  # East border Peripherals (Boot rom)
-  - name: "peripherals"
-    soc_type: "peripheral"
-    array: [1, 2]
+  # East border Peripherals (bootrom)
+  - name: "bootrom"
+    soc_type: "memory"
     addr_range:
       base: 0x0000_0000_0000
       size: 0x0000_0100_0000
-      #start: 0x0000_0000_0000 # use start and end address for single endpoint
-      #end: 0x0000_0100_0000
     id_offset:
       x: 2 # 2 mean border of the east side
-      y: 0 # 0 to 1
-    mgr_port_protocol:
-      - "narrow"
-      - "wide" # Change to narrow only later with converter between narrow wide interface to single narrow interface.
+      y: 0
     sbr_port_protocol:
       - "narrow"
-      - "wide" # Change to narrow only later with converter between narrow wide interface to single narrow interface.
+      - "wide"
+  - name: "peripherals"
+    soc_type: "peripheral"
+    addr_range:
+      base: 0x0000_0100_0000
+      size: 0x0000_0100_0000
+    id_offset:
+      x: 2 # 2 mean border of the east side
+      y: 1
+    mgr_port_protocol:
+      - "narrow"
+    sbr_port_protocol:
+      - "narrow"
 
 routers:
   # Router equal to cluster number
@@ -181,13 +187,13 @@ connections:
     dst: "router"
     dst_idx: [0, 0] # No array, so use XY index to attached to specific router index
     bidirectional: true
+  # East border bootrom
+  - src: "bootrom"
+    dst: "router"
+    dst_idx: [1, 0]
+    bidirectional: true
   # East border Peripherals
   - src: "peripherals"
     dst: "router"
-    src_range:
-    - [0, 0]
-    - [0, 1]
-    dst_range: # router index for east border
-    - [1, 1]
-    - [0, 1]
+    dst_idx: [1, 1]
     bidirectional: true
