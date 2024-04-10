@@ -91,7 +91,14 @@ package floo_narrow_wide_pkg;
                       axi_wide_out_id_t, axi_wide_out_data_t, axi_wide_out_strb_t,
                       axi_wide_out_user_t)
 
-
+  typedef logic [47:0] axi_wide_join_addr_t;
+  typedef logic [511:0] axi_wide_join_data_t;
+  typedef logic [63:0] axi_wide_join_strb_t;
+  typedef logic [4:0] axi_wide_join_id_t;
+  typedef logic [0:0] axi_wide_join_user_t;
+  `AXI_TYPEDEF_ALL_CT(axi_wide_join, axi_wide_join_req_t, axi_wide_join_rsp_t, axi_wide_join_addr_t,
+                      axi_wide_join_id_t, axi_wide_join_data_t, axi_wide_join_strb_t,
+                      axi_wide_join_user_t)
 
   /////////////////////////
   //   Header Typedefs   //
