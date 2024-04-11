@@ -26,6 +26,7 @@ from floogen.model.protocol import AXI4, AXI4Bus
 from floogen.utils import clog2
 import floogen.templates
 
+from copy import deepcopy
 
 class Network(BaseModel):  # pylint: disable=too-many-public-methods
     """
@@ -663,6 +664,25 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             axi_type, link_type = "narrow_wide", NarrowWideLink
         else:
             axi_type, link_type = "axi", NarrowLink
+        # Add Join data type for HBM Narrow Wide Join
+        max_id_in = 0;
+        for prot in self.protocols:
+            # Copy type from wide out interface
+            if prot.name=="wide" and prot.direction=="subordinate":
+                prot_join = deepcopy(prot)
+                prot_join.name = "join" 
+            # Find maximum value of id_width between narrow out and wide out interface
+            # Which is input to floo_narrow_wide_join
+            if prot.direction=="subordinate":
+                if prot.id_width > max_id_in:
+                    max_id_in = prot.id_width
+        # ID width of the resulting AXI bus
+        # To prevent the instantiation of any ID remappers,
+        # `AxiIdOutWidth` should be chosen, such that:
+        # max(`AxiNarrowIdWidth` and `AxiWideIdWidth`) == AxidOutWidth - 1
+        prot_join.id_width = max_id_in + 1
+        # Add new join output protocol to be generate into Package
+        self.protocols.append(prot_join)
         return axi_type, self.tpl_pkg.render(
             name=axi_type, noc=self, link=link_type
         )
