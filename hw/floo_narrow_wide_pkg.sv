@@ -322,43 +322,43 @@ package floo_narrow_wide_pkg;
       },  // cluster_ni_7_3
       '{
           idx: '{x: 1, y: 5},
-          start_addr: 48'h000080000000,
-          end_addr: 48'h0000c0000000
+          start_addr: 48'h000200000000,
+          end_addr: 48'h000240000000
       },  // hbm_north_ni_0_0
       '{
           idx: '{x: 2, y: 5},
-          start_addr: 48'h0000c0000000,
-          end_addr: 48'h000100000000
+          start_addr: 48'h000240000000,
+          end_addr: 48'h000280000000
       },  // hbm_north_ni_1_0
       '{
           idx: '{x: 3, y: 5},
-          start_addr: 48'h000100000000,
-          end_addr: 48'h000140000000
+          start_addr: 48'h000280000000,
+          end_addr: 48'h0002c0000000
       },  // hbm_north_ni_2_0
       '{
           idx: '{x: 4, y: 5},
-          start_addr: 48'h000140000000,
-          end_addr: 48'h000180000000
+          start_addr: 48'h0002c0000000,
+          end_addr: 48'h000300000000
       },  // hbm_north_ni_3_0
       '{
           idx: '{x: 5, y: 5},
-          start_addr: 48'h000180000000,
-          end_addr: 48'h0001c0000000
+          start_addr: 48'h000300000000,
+          end_addr: 48'h000340000000
       },  // hbm_north_ni_4_0
       '{
           idx: '{x: 6, y: 5},
-          start_addr: 48'h0001c0000000,
-          end_addr: 48'h000200000000
+          start_addr: 48'h000340000000,
+          end_addr: 48'h000380000000
       },  // hbm_north_ni_5_0
       '{
           idx: '{x: 7, y: 5},
-          start_addr: 48'h000200000000,
-          end_addr: 48'h000240000000
+          start_addr: 48'h000380000000,
+          end_addr: 48'h0003c0000000
       },  // hbm_north_ni_6_0
       '{
           idx: '{x: 8, y: 5},
-          start_addr: 48'h000240000000,
-          end_addr: 48'h000280000000
+          start_addr: 48'h0003c0000000,
+          end_addr: 48'h000400000000
       },  // hbm_north_ni_7_0
       '{
           idx: '{x: 1, y: 0},
