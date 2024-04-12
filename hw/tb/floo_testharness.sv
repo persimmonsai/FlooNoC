@@ -174,8 +174,6 @@ module floo_testharness
       .pcie_narrow_rsp_o(),
       .pcie_narrow_req_o(),
       .pcie_narrow_rsp_i('0),
-      .peripherals_narrow_req_i('0),
-      .peripherals_narrow_rsp_o(),
       .peripherals_narrow_req_o(),
       .peripherals_narrow_rsp_i('0),
       .jtag_narrow_req_i('0),

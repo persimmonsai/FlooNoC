@@ -26,8 +26,6 @@ module chiplet_floo_noc
   output axi_narrow_in_rsp_t              pcie_narrow_rsp_o,
   output axi_narrow_out_req_t              pcie_narrow_req_o,
   input axi_narrow_out_rsp_t              pcie_narrow_rsp_i,
-  input axi_narrow_in_req_t              peripherals_narrow_req_i,
-  output axi_narrow_in_rsp_t              peripherals_narrow_rsp_o,
   output axi_narrow_out_req_t              peripherals_narrow_req_o,
   input axi_narrow_out_rsp_t              peripherals_narrow_rsp_i,
   input axi_narrow_in_req_t              jtag_narrow_req_i,
@@ -1191,7 +1189,7 @@ localparam id_t peripherals_ni_id = '{x: 0, y: 3};
 
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
   .EnWideSbrPort(1'b0),
   .EnWideMgrPort(1'b0)
 ) peripherals_ni (
@@ -1199,8 +1197,8 @@ floo_narrow_wide_chimney  #(
   .rst_ni,
   .test_enable_i,
   .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( peripherals_narrow_req_i ),
-  .axi_narrow_in_rsp_o  ( peripherals_narrow_rsp_o ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
   .axi_narrow_out_req_o ( peripherals_narrow_req_o ),
   .axi_narrow_out_rsp_i ( peripherals_narrow_rsp_i ),
   .axi_wide_in_req_i  ( '0 ),

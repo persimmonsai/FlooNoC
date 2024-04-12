@@ -53,6 +53,12 @@ package floo_narrow_wide_pkg;
   localparam int unsigned AxiWideOutUserWidth = 1;
 
 
+  localparam int unsigned AxiJoinOutAddrWidth = 48;
+  localparam int unsigned AxiJoinOutDataWidth = 512;
+  localparam int unsigned AxiJoinOutIdWidth = 3;
+  localparam int unsigned AxiJoinOutUserWidth = 1;
+
+
   typedef logic [47:0] axi_narrow_in_addr_t;
   typedef logic [63:0] axi_narrow_in_data_t;
   typedef logic [7:0] axi_narrow_in_strb_t;
@@ -90,6 +96,16 @@ package floo_narrow_wide_pkg;
   `AXI_TYPEDEF_ALL_CT(axi_wide_out, axi_wide_out_req_t, axi_wide_out_rsp_t, axi_wide_out_addr_t,
                       axi_wide_out_id_t, axi_wide_out_data_t, axi_wide_out_strb_t,
                       axi_wide_out_user_t)
+
+
+  typedef logic [47:0] axi_join_out_addr_t;
+  typedef logic [511:0] axi_join_out_data_t;
+  typedef logic [63:0] axi_join_out_strb_t;
+  typedef logic [2:0] axi_join_out_id_t;
+  typedef logic [0:0] axi_join_out_user_t;
+  `AXI_TYPEDEF_ALL_CT(axi_join_out, axi_join_out_req_t, axi_join_out_rsp_t, axi_join_out_addr_t,
+                      axi_join_out_id_t, axi_join_out_data_t, axi_join_out_strb_t,
+                      axi_join_out_user_t)
 
 
 

@@ -588,6 +588,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     # render output port of wrapper
     def render_ports(self):
         """Render the ports in the generated code."""
+        # TODO: Replace filtering of ep_nodes that declared as a port by using self.get_ports()
         ports, declared_ports = [], []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
@@ -605,7 +606,37 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             declared_ports.append(ep.name)
         port_string = ",\n  ".join(ports) + "\n"
         return port_string
+    
+    # render output port of wrapper
+    def get_ports(self):
+        """Get ports list of the top level wrapper of FlooNoC system."""
+        declared_ports = []
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_nodes = self.graph.get_ep_eject_nodes()
+            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        port_nodes = []
+        for ep in ep_nodes:
+            # Skip for port that already declared
+            # There is a problem if only some node in the node array connected to eject, 
+            # cause the program will not filter that out and declared full range of array interface
+            if ep.name in declared_ports:
+                continue
+            port_nodes.append(ep)
+            declared_ports.append(ep.name)
+        return port_nodes
+    
+    # Get system parameter for export to Chipletgen
+    def get_sys_param(self):
+        sys_param_dict = {}
+        sys_param_dict["name"] = self.name + "_floo_noc"
+        sys_param_dict["xy_route_opt"] = self.routing.xy_route_opt
+        sys_param_dict["x_num"] = self.routers[0].array[0]
+        sys_param_dict["y_num"] = self.routers[0].array[1]
+        return sys_param_dict
 
+    # Get port parameter for export to Chipletgen
     def render_prots(self):
         """Render the protocols in the generated code."""
         string = ""

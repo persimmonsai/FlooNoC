@@ -7,11 +7,12 @@
 
 import os
 import argparse
+import hjson
 from pathlib import Path
 
 from floogen.config_parser import parse_config
 from floogen.model.network import Network
-from floogen.utils import verible_format
+from floogen.utils import verible_format, port_dict_convert
 
 
 def parse_args():
@@ -39,7 +40,7 @@ def parse_args():
         dest="tb_outdir",
         type=Path,
         required=False,
-        help="Path to the output testbech directory of the generated testbench.",
+        help="Path to the output testbench directory of the generated testbench.",
     )
     parser.add_argument(
         "--util-outdir",
@@ -47,6 +48,16 @@ def parse_args():
         type=Path,
         required=False,
         help="Path to the output utils directory of the generated jobs parameter.",
+    )
+    parser.add_argument(
+        "--export-sys", dest="export_sys", action="store_true", help="Export .hjson FlooNoC system parameter for Chipletgen"
+    )
+    parser.add_argument(
+        "--export-outdir",
+        dest="export_outdir",
+        type=Path,
+        required=False,
+        help="Path to the output export system parameter.",
     )
     parser.add_argument(
         "--only-pkg", dest="only_pkg", action="store_true", help="Only generate the package file."
@@ -171,6 +182,24 @@ def main(): # pylint: disable=too-many-branches
                 print("Generating testharness_file : " + str(testharness_file_name))
             else:
                 print(rendered_tb)
+            
+        # Export system parameter and port connection information to Chipletgen framework 
+        # for SoC top level wrapper generating
+        if args.export_sys:
+            if args.export_outdir:
+                export_outdir = Path(os.getcwd(), args.export_outdir)
+            else:
+                raise ValueError(
+                    "Can't export .hjson system parameter cause --export-outdir is not set"
+                )
+            # Get export parameter as a dictionary structure to be export as .hjson file
+            sys_param = network.get_sys_param()
+            sys_param["ports"] = port_dict_convert(network.get_ports())
+            # Write the export parameter to file or print it to stdout
+            hjson_file_name = export_outdir / "floo_sys_param.hjson"
+            with open(hjson_file_name, "w+", encoding="utf-8") as hjson_file:
+                hjson.dump(sys_param, hjson_file)
+            print("Generating hjson_file : " + str(hjson_file_name))
 
     # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()
