@@ -634,6 +634,15 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         sys_param_dict["xy_route_opt"] = self.routing.xy_route_opt
         sys_param_dict["x_num"] = self.routers[0].array[0]
         sys_param_dict["y_num"] = self.routers[0].array[1]
+        for prot in self.protocols:
+            if (prot.name=="narrow" and prot.svdirection=="input"):
+                sys_param_dict["narrow_iw_in"] = prot.id_width
+            elif(prot.name=="narrow" and prot.svdirection=="output"):
+                sys_param_dict["narrow_iw_out"] = prot.id_width
+            elif(prot.name=="wide" and prot.svdirection=="input"):
+                sys_param_dict["wide_iw_in"] = prot.id_width
+            elif(prot.name=="wide" and prot.svdirection=="output"):
+                sys_param_dict["wide_iw_out"] = prot.id_width
         return sys_param_dict
 
     # Get port parameter for export to Chipletgen
