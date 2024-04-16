@@ -636,13 +636,29 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         sys_param_dict["y_num"] = self.routers[0].array[1]
         for prot in self.protocols:
             if (prot.name=="narrow" and prot.svdirection=="input"):
-                sys_param_dict["narrow_iw_in"] = prot.id_width
+                sys_param_dict["narrow_in"] = dict()
+                sys_param_dict["narrow_in"]["iw"] = prot.id_width
+                sys_param_dict["narrow_in"]["uw"] = prot.user_width
+                sys_param_dict["narrow_in"]["dw"] = prot.data_width
+                sys_param_dict["narrow_in"]["aw"] = prot.addr_width
             elif(prot.name=="narrow" and prot.svdirection=="output"):
-                sys_param_dict["narrow_iw_out"] = prot.id_width
+                sys_param_dict["narrow_out"] = dict()
+                sys_param_dict["narrow_out"]["iw"] = prot.id_width
+                sys_param_dict["narrow_out"]["uw"] = prot.user_width
+                sys_param_dict["narrow_out"]["dw"] = prot.data_width
+                sys_param_dict["narrow_out"]["aw"] = prot.addr_width
             elif(prot.name=="wide" and prot.svdirection=="input"):
-                sys_param_dict["wide_iw_in"] = prot.id_width
+                sys_param_dict["wide_in"] = dict()
+                sys_param_dict["wide_in"]["iw"] = prot.id_width
+                sys_param_dict["wide_in"]["uw"] = prot.user_width
+                sys_param_dict["wide_in"]["dw"] = prot.data_width
+                sys_param_dict["wide_in"]["aw"] = prot.addr_width
             elif(prot.name=="wide" and prot.svdirection=="output"):
-                sys_param_dict["wide_iw_out"] = prot.id_width
+                sys_param_dict["wide_out"] = dict()
+                sys_param_dict["wide_out"]["iw"] = prot.id_width
+                sys_param_dict["wide_out"]["uw"] = prot.user_width
+                sys_param_dict["wide_out"]["dw"] = prot.data_width
+                sys_param_dict["wide_out"]["aw"] = prot.addr_width
         return sys_param_dict
 
     # Get port parameter for export to Chipletgen
