@@ -14,7 +14,7 @@ dependencies:
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1 }
   axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
   #idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 } # Temporary remove to not conflict with iDMA that declared inside snitch_cluster repos
-  system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster}
+  #system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster} # Temporary remove to be bender package for chiplet gen
   #system-snitch-cluster : {path: ../PULP/snitch/hw/system/snitch_cluster}
 
 export_include_dirs:
