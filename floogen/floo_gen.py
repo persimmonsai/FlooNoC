@@ -147,7 +147,7 @@ def main(): # pylint: disable=too-many-branches
             rendered_testharness = network.render_testharness()
             
             # Write python util file for DMA jobs generation
-            if not no_testbench:
+            if not args.no_testbench:
                 util_outdir.mkdir(parents=True, exist_ok=True)
                 util_file_name = util_outdir / ("soc_config.py")
                 with open(util_file_name, "w+", encoding="utf-8") as util_file:
@@ -161,7 +161,7 @@ def main(): # pylint: disable=too-many-branches
                 rendered_tb_pkg = verible_format(rendered_tb_pkg)
                 rendered_testharness = verible_format(rendered_testharness)
             # Write toplevel testbench file for compute file array structure
-            if not no_testbench:
+            if not args.no_testbench:
                 tb_outdir.mkdir(parents=True, exist_ok=True)
                 tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
                 tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
