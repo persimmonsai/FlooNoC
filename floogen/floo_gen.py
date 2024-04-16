@@ -148,13 +148,14 @@ def main(): # pylint: disable=too-many-branches
             
             # Write python util file for DMA jobs generation
             if not args.no_testbench:
-                util_outdir.mkdir(parents=True, exist_ok=True)
-                util_file_name = util_outdir / ("soc_config.py")
-                with open(util_file_name, "w+", encoding="utf-8") as util_file:
-                    util_file.write(rendered_util)
-                print("Generating util_file : " + str(util_file_name))
-            else:
-                print(rendered_util)
+                if util_outdir:
+                    util_outdir.mkdir(parents=True, exist_ok=True)
+                    util_file_name = util_outdir / ("soc_config.py")
+                    with open(util_file_name, "w+", encoding="utf-8") as util_file:
+                        util_file.write(rendered_util)
+                    print("Generating util_file : " + str(util_file_name))
+                else:
+                    print(rendered_util)
             
             if not args.no_format:
                 rendered_tb = verible_format(rendered_tb)
@@ -162,21 +163,22 @@ def main(): # pylint: disable=too-many-branches
                 rendered_testharness = verible_format(rendered_testharness)
             # Write toplevel testbench file for compute file array structure
             if not args.no_testbench:
-                tb_outdir.mkdir(parents=True, exist_ok=True)
-                tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
-                tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
-                testharness_file_name = tb_outdir / "floo_testharness.sv"
-                with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
-                    tb_file.write(rendered_tb)
-                print("Generating tb_file : " + str(tb_file_name))
-                with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
-                    tb_file.write(rendered_tb_pkg)
-                print("Generating tbpkg_file : " + str(tb_pkg_file_name))
-                with open(testharness_file_name, "w+", encoding="utf-8") as tb_file:
-                    tb_file.write(rendered_testharness)
-                print("Generating testharness_file : " + str(testharness_file_name))
-            else:
-                print(rendered_tb)
+                if tb_outdir:
+                    tb_outdir.mkdir(parents=True, exist_ok=True)
+                    tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
+                    tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
+                    testharness_file_name = tb_outdir / "floo_testharness.sv"
+                    with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
+                        tb_file.write(rendered_tb)
+                    print("Generating tb_file : " + str(tb_file_name))
+                    with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
+                        tb_file.write(rendered_tb_pkg)
+                    print("Generating tbpkg_file : " + str(tb_pkg_file_name))
+                    with open(testharness_file_name, "w+", encoding="utf-8") as tb_file:
+                        tb_file.write(rendered_testharness)
+                    print("Generating testharness_file : " + str(testharness_file_name))
+                else:
+                    print(rendered_tb)
             
         # Export system parameter and port connection information to Chipletgen framework 
         # for SoC top level wrapper generating
