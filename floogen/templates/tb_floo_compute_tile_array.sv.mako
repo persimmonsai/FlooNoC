@@ -44,7 +44,7 @@ module tb_floo_${noc.name};
   assign mtip_i = 'b0;
   assign msip_i = 'b0;
 
-  occamy_cluster_pkg::sram_cfgs_t = sram_cfgs_i;
+  occamy_pkg::sram_cfgs_t = sram_cfgs_i;
   assign sram_cfgs_i = 'b0;
 
   ${noc.name}_floo_noc i_${noc.name}_floo_noc (

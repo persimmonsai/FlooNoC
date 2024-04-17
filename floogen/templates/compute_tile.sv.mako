@@ -39,7 +39,7 @@ module compute_tile
     input  floo_wide_t [West:North]     floo_wide_i,
     output floo_wide_t [West:North]     floo_wide_o,
     // SRAM configuration
-    input  occamy_cluster_pkg::sram_cfgs_t  sram_cfgs_i
+    input  occamy_pkg::sram_cfgs_t  sram_cfgs_i
 );
   // --- Cluster to NI ---
   // in/out direction type that is declared in this scope is respect to NI

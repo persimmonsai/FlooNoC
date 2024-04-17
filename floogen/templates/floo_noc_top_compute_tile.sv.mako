@@ -21,7 +21,7 @@ module ${noc.name}_floo_noc
 
   input logic [${irq_bit_num-1}:1] mtip_i, 
   input logic [${irq_bit_num-1}:1] msip_i, 
-  input  occamy_cluster_pkg::sram_cfgs_t  sram_cfgs_i,
+  input  occamy_pkg::sram_cfgs_t  sram_cfgs_i,
 
   ${noc.render_ports()}
 );
