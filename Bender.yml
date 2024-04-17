@@ -45,9 +45,9 @@ sources:
   - hw/floo_narrow_wide_router.sv
   #- hw/test/snitch_cluster_wrapper.sv # For Synthesis testing (exclude 'system-snitch-cluster')
   # Level 3
-  - hw/compute_tile.sv # Generated wrapper from floogen
-  - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
-  - hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level
+  #- hw/compute_tile.sv # Generated wrapper from floogen
+  #- hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
+  #- hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level
 
   - target: test
     include_dirs:
@@ -55,6 +55,7 @@ sources:
     files:
       # Level 0
       - hw/floo_pkg.sv
+      - hw/floo_narrow_wide_pkg.sv
       - hw/test/floo_test_pkg.sv
       - hw/tb/compute_tile_array_test_pkg.sv
       - hw/tb/chiplet_test_pkg.sv

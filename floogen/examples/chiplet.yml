@@ -46,7 +46,7 @@ protocols:
     addr_width: 48
     # id_width: 3 # iw_in, equal to iw_out of snitch cluster
     id_width: 4 # iw_in, equal to iw_out of + ro_cache_cfg (ro_cache_cfg + 1 for id width)
-    user_width: 0
+    user_width: 1
   - name: "wide"
     type: "AXI4"
     direction: "subordinate"
@@ -58,7 +58,7 @@ protocols:
     # iw_out = 3 + clog2(8*4 + 2*8 + 2*4) = 3 + clog2(56) = 3 + 6 = 9
     #id_width: 9 # iw_out, this ID will be remap before connect with snitch cluster
     id_width: 10 # iw_out + ro_cache_cfg (ro_cache_cfg + 1 for id width), this ID will be remap before connect with snitch cluster 
-    user_width: 0
+    user_width: 1
 
 # Define endpoint and slave address mapped
 endpoints:

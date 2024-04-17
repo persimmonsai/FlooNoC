@@ -44,19 +44,19 @@ package floo_narrow_wide_pkg;
   localparam int unsigned AxiWideInAddrWidth = 48;
   localparam int unsigned AxiWideInDataWidth = 512;
   localparam int unsigned AxiWideInIdWidth = 4;
-  localparam int unsigned AxiWideInUserWidth = 0;
+  localparam int unsigned AxiWideInUserWidth = 1;
 
 
   localparam int unsigned AxiWideOutAddrWidth = 48;
   localparam int unsigned AxiWideOutDataWidth = 512;
   localparam int unsigned AxiWideOutIdWidth = 10;
-  localparam int unsigned AxiWideOutUserWidth = 0;
+  localparam int unsigned AxiWideOutUserWidth = 1;
 
 
   localparam int unsigned AxiJoinOutAddrWidth = 48;
   localparam int unsigned AxiJoinOutDataWidth = 512;
   localparam int unsigned AxiJoinOutIdWidth = 11;
-  localparam int unsigned AxiJoinOutUserWidth = 0;
+  localparam int unsigned AxiJoinOutUserWidth = 1;
 
 
   typedef logic [47:0] axi_narrow_in_addr_t;
@@ -83,7 +83,7 @@ package floo_narrow_wide_pkg;
   typedef logic [511:0] axi_wide_in_data_t;
   typedef logic [63:0] axi_wide_in_strb_t;
   typedef logic [3:0] axi_wide_in_id_t;
-  typedef logic [-1:0] axi_wide_in_user_t;
+  typedef logic [0:0] axi_wide_in_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_in, axi_wide_in_req_t, axi_wide_in_rsp_t, axi_wide_in_addr_t,
                       axi_wide_in_id_t, axi_wide_in_data_t, axi_wide_in_strb_t, axi_wide_in_user_t)
 
@@ -92,7 +92,7 @@ package floo_narrow_wide_pkg;
   typedef logic [511:0] axi_wide_out_data_t;
   typedef logic [63:0] axi_wide_out_strb_t;
   typedef logic [9:0] axi_wide_out_id_t;
-  typedef logic [-1:0] axi_wide_out_user_t;
+  typedef logic [0:0] axi_wide_out_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_out, axi_wide_out_req_t, axi_wide_out_rsp_t, axi_wide_out_addr_t,
                       axi_wide_out_id_t, axi_wide_out_data_t, axi_wide_out_strb_t,
                       axi_wide_out_user_t)
@@ -102,7 +102,7 @@ package floo_narrow_wide_pkg;
   typedef logic [511:0] axi_join_out_data_t;
   typedef logic [63:0] axi_join_out_strb_t;
   typedef logic [10:0] axi_join_out_id_t;
-  typedef logic [-1:0] axi_join_out_user_t;
+  typedef logic [0:0] axi_join_out_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_join_out, axi_join_out_req_t, axi_join_out_rsp_t, axi_join_out_addr_t,
                       axi_join_out_id_t, axi_join_out_data_t, axi_join_out_strb_t,
                       axi_join_out_user_t)
@@ -485,13 +485,13 @@ package floo_narrow_wide_pkg;
   typedef struct packed {
     hdr_t hdr;
     axi_wide_in_b_chan_t b;
-    logic [69:0] rsvd;
+    logic [68:0] rsvd;
   } floo_wide_b_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
     axi_wide_in_ar_chan_t ar;
-    logic [10:0] rsvd;
+    logic [9:0] rsvd;
   } floo_wide_ar_flit_t;
 
   typedef struct packed {
@@ -512,7 +512,7 @@ package floo_narrow_wide_pkg;
 
   typedef struct packed {
     hdr_t hdr;
-    logic [576:0] rsvd;
+    logic [577:0] rsvd;
   } floo_wide_generic_flit_t;
 
 
