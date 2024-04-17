@@ -19,7 +19,8 @@ module compute_tile
     input  logic                        clk_i,
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
-
+    
+    input  logic [8:0]   meip_i,
     input  logic [8:0]   mtip_i,
     input  logic [8:0]   msip_i,
     input  logic [4:0]   tile_id_i,

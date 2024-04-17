@@ -25,7 +25,8 @@ module compute_tile
     input  logic                        clk_i,
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
-
+    
+    input  logic [${noc.num_snitch_core-1}:0]   meip_i,
     input  logic [${noc.num_snitch_core-1}:0]   mtip_i,
     input  logic [${noc.num_snitch_core-1}:0]   msip_i,
     input  logic [${tile_id_bit_num-1}:0]   tile_id_i,
