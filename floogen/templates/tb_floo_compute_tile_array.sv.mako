@@ -52,7 +52,7 @@ module tb_floo_${noc.name};
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
 
-      .msip_i(mtip_i),
+      .mtip_i(mtip_i),
       .msip_i(msip_i),
       .sram_cfgs_i(sram_cfgs_i),
 

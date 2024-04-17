@@ -14,7 +14,7 @@ module chiplet_floo_noc
 
   input logic [288:1] mtip_i, 
   input logic [288:1] msip_i, 
-  input  occamy_cluster_pkg::sram_cfgs_t  sram_cfgs_i,
+  input  occamy_pkg::sram_cfgs_t  sram_cfgs_i,
 
   output axi_narrow_out_req_t             [7:0] hbm_north_narrow_req_o,
   input axi_narrow_out_rsp_t             [7:0] hbm_north_narrow_rsp_i,

@@ -215,7 +215,7 @@ floo_hbm_model #(
   assign mtip_i = 'b0;
   assign msip_i = 'b0;
 
-  occamy_cluster_pkg::sram_cfgs_t = sram_cfgs_i;
+  occamy_pkg::sram_cfgs_t = sram_cfgs_i;
   assign sram_cfgs_i = 'b0;
 
   chiplet_floo_noc i_chiplet_floo_noc (
@@ -223,7 +223,7 @@ floo_hbm_model #(
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
 
-      .msip_i(mtip_i),
+      .mtip_i(mtip_i),
       .msip_i(msip_i),
       .sram_cfgs_i(sram_cfgs_i),
 
