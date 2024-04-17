@@ -1,5 +1,9 @@
-<%!
-    import datetime
+<%
+  import datetime
+  NUM_X = noc.routers[0].array[0]
+  NUM_Y = noc.routers[0].array[1]
+  num_core = NUM_X * NUM_Y * noc.num_snitch_core
+  irq_bit_num = num_core + 1 # +1 for CVA6 core
 %>\
 // Copyright ${datetime.datetime.now().year} ETH Zurich and University of Bologna.
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
@@ -35,15 +39,22 @@ module tb_floo_${noc.name};
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
-  logic [snitch_cluster_pkg::NrCores-1:0] msip_i;
-  assign msip_i = 'b0;  // unused port for snitch cluster
+  logic [${irq_bit_num-1}:0] mtip_i;
+  logic [${irq_bit_num-1}:0] msip_i;
+  assign mtip_i = 'b0;
+  assign msip_i = 'b0;
+
+  occamy_cluster_pkg::sram_cfgs_t = sram_cfgs_i;
+  assign sram_cfgs_i = 'b0;
 
   ${noc.name}_floo_noc i_${noc.name}_floo_noc (
       .clk_i(clk),
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
 
+      .msip_i(mtip_i),
       .msip_i(msip_i),
+      .sram_cfgs_i(sram_cfgs_i),
 
       ${noc.render_tb_dut_ports()}
   );

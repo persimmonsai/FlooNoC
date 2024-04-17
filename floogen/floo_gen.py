@@ -115,8 +115,10 @@ def main(): # pylint: disable=too-many-branches
 
         # Generate the network description
         rendered_top = network.render_network()
+        rendered_tile = network.render_tile()
         if not args.no_format:
             rendered_top = verible_format(rendered_top)
+            rendered_tile = verible_format(rendered_tile)
         # Write the network description to file or print it to stdout
         if outdir:
             outdir.mkdir(parents=True, exist_ok=True)
@@ -124,8 +126,13 @@ def main(): # pylint: disable=too-many-branches
             with open(top_file_name, "w+", encoding="utf-8") as top_file:
                 top_file.write(rendered_top)
             print("Generating top_file : " + str(top_file_name))
+            tile_file_name = outdir / "compute_tile.sv"
+            with open(tile_file_name, "w+", encoding="utf-8") as tile_file:
+                tile_file.write(rendered_tile)
+            print("Generating tile_file : " + str(tile_file_name))
         else:
             print(rendered_top)
+            print(rendered_tile)
         
         # Generating support file for compute tile array structure
         if network.compute_tile_gen:

@@ -41,7 +41,10 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     
     # Template for compute_tile_gen=True
     with as_file(files(floogen.templates).joinpath("floo_noc_top_compute_tile.sv.mako")) as _tpl_path:
-        tpl_tile: ClassVar = Template(filename=str(_tpl_path))
+        tpl_top: ClassVar = Template(filename=str(_tpl_path))
+    
+    with as_file(files(floogen.templates).joinpath("compute_tile.sv.mako")) as _tpl_path:
+        tpl_tile: ClassVar = Template(filename=str(_tpl_path))  
 
     with as_file(files(floogen.templates).joinpath("floo_flit_pkg.sv.mako")) as _tpl_path:
         tpl_pkg: ClassVar = Template(filename=str(_tpl_path))
@@ -61,6 +64,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     name: str
     description: Optional[str]
     compute_tile_gen : Optional[bool] = False
+    num_snitch_core : Optional[int] = 9
+    
     protocols: List[AXI4]
     endpoints: List[EndpointDesc]
     routers: List[RouterDesc]
@@ -688,7 +693,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         string = ""
         for rt in self.graph.get_rt_nodes():
             if self.compute_tile_gen:
-                string += rt.render_tile(self.routing.id_offset)
+                string += rt.render_tile(self.routing.id_offset, self.routers[0].array, self.num_snitch_core)
             else:
                 string += rt.render()
         return string
@@ -709,9 +714,13 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def render_network(self):
         """Render the network in the generated code."""
         if self.compute_tile_gen:
-            return self.tpl_tile.render(noc=self)
+            return self.tpl_top.render(noc=self)
         else:
             return self.tpl.render(noc=self)
+        
+    def render_tile(self):
+        """Render the compute tile in the generated code."""
+        return self.tpl_tile.render(noc=self)
 
     def render_link_cfg(self):
         """Render the link configuration file"""

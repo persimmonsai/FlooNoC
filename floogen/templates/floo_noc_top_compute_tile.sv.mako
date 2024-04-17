@@ -1,5 +1,9 @@
-<%!
-    import datetime
+<%
+  import datetime
+  NUM_X = noc.routers[0].array[0]
+  NUM_Y = noc.routers[0].array[1]
+  num_core = NUM_X * NUM_Y * noc.num_snitch_core
+  irq_bit_num = num_core + 1 # +1 for CVA6 core
 %>\
 // Copyright ${datetime.datetime.now().year} ETH Zurich and University of Bologna.
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
@@ -15,7 +19,9 @@ module ${noc.name}_floo_noc
   input logic rst_ni,
   input logic test_enable_i,
 
-  input logic [snitch_cluster_pkg::NrCores-1:0]  msip_i, 
+  input logic [${irq_bit_num-1}:1] mtip_i, 
+  input logic [${irq_bit_num-1}:1] msip_i, 
+  input  occamy_cluster_pkg::sram_cfgs_t  sram_cfgs_i,
 
   ${noc.render_ports()}
 );

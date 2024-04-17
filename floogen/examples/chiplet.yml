@@ -1,0 +1,292 @@
+# Copyright 2023 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+# Reuse variable
+# For the current configuration Y_NUM must be >= 4
+X_NUM: &X_NUM 8
+Y_NUM: &Y_NUM 4
+X_NUM_DEC: &X_NUM_DEC 7 # X_NUM minus by 1
+Y_NUM_DEC: &Y_NUM_DEC 3 # Y_NUM minus by 1
+
+name: chiplet
+description: "Top Level Chiplet"
+compute_tile_gen: true
+num_snitch_core: 9 # snitch core 8, dma core 1
+
+routing:
+  route_algo: "XY"
+  use_id_table: true
+  # If true, allow routing from X to Y only
+  xy_route_opt: false
+
+protocols:
+  - name: "narrow"
+    type: "AXI4"
+    direction: "manager"
+    data_width: 64
+    addr_width: 48
+    id_width: 4 # iw_in, equal to iw_out of snitch cluster
+    user_width: 5 # clog2(total number of clusters)
+  - name: "narrow"
+    type: "AXI4"
+    direction: "subordinate"
+    data_width: 64
+    addr_width: 48
+    # iw_out = iw_in + clog2(number of master to this interconnect, which is equal to number of endpoint)
+    # iw_out = iw_in + clog2(X_NUM*Y_NUM + 2*X_NUM + 2*Y_NUM)
+    # iw_out = 4 + clog2(8*4 + 2*8 + 2*4) = 4 + clog2(56) = 4 + 6 = 10
+    id_width: 10 # iw_out, this ID will be remap before connect with snitch cluster
+    user_width: 5 # clog2(total number of clusters)
+  - name: "wide"
+    type: "AXI4"
+    direction: "manager"
+    data_width: 512
+    #data_width: 64
+    addr_width: 48
+    # id_width: 3 # iw_in, equal to iw_out of snitch cluster
+    id_width: 4 # iw_in, equal to iw_out of + ro_cache_cfg (ro_cache_cfg + 1 for id width)
+    user_width: 0
+  - name: "wide"
+    type: "AXI4"
+    direction: "subordinate"
+    data_width: 512
+    #data_width: 64
+    addr_width: 48
+    # iw_out = iw_in + clog2(number of master to this interconnect, which is equal to number of endpoint)
+    # iw_out = iw_in + clog2(X_NUM*Y_NUM + 2*X_NUM + 2*Y_NUM)
+    # iw_out = 3 + clog2(8*4 + 2*8 + 2*4) = 3 + clog2(56) = 3 + 6 = 9
+    #id_width: 9 # iw_out, this ID will be remap before connect with snitch cluster
+    id_width: 10 # iw_out + ro_cache_cfg (ro_cache_cfg + 1 for id width), this ID will be remap before connect with snitch cluster 
+    user_width: 0
+
+# Define endpoint and slave address mapped
+endpoints:
+# Define compute tile array (snitch cluster) in XY mesh
+  - name: "cluster"
+    soc_type: "cluster"
+    array: [*X_NUM, *Y_NUM]
+    addr_range:
+      base: 0x0000_1000_0000
+      size: 0x0000_0004_0000 # size per single snitch cluster
+    mgr_port_protocol:
+      - "narrow"
+      - "wide"
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to X_NUM-1
+      y: 0 # 0 to Y_NUM-1
+# Define endpoint for each border side (North, East, South, and West)
+  ##### North border
+  # HBM memory
+  - name: "hbm_north"
+    soc_type: "memory"
+    array: [*X_NUM, 1]
+    addr_range:
+      base: 0x0010_0000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to X_NUM-1
+      y: *Y_NUM # Y_NUM mean border of the north side
+  ##### South border
+  # HBM memory
+  - name: "hbm_south"
+    soc_type: "memory"
+    array: [*X_NUM, 1]
+    addr_range:
+      base: 0x0002_0000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to X_NUM-1
+      y: -1 # -1 mean border of the south side
+  ##### West border
+  # PCIe interface
+  # address_io: 536870912, // 0x2000_0000
+  # address_mm: 1207959552, // 0x4800_0000
+  # length: 671088640, // 640 MiB 0x2800_0000
+  - name: "pcie"
+    soc_type: "serial_link"
+    addr_range:
+      base: 0x0000_2000_0000
+      size: 0x0000_5000_0000
+    mgr_port_protocol:
+      - "narrow"
+    sbr_port_protocol:
+      - "narrow"
+    id_offset: 
+      x: -1 # -1 mean border of the west side
+      y: 3
+  # Peripherals AXI xbar
+  # This xbar connected to rom, soc_ctrl, fll_system, fll_periph, fll_hbm2e, 
+  # uart, gpio, i2c, chip_ctrl, timer, spim, clint, pcie_cfg, hbm_cfg, plic
+  - name: "peripherals"
+    soc_type: "peripheral" # xbar that connect different peripheral
+    # soc_type: "xbar" # xbar that connect different peripheral
+    addr_range:
+      base: 0x0000_0100_0000
+      size: 0x0000_0E00_0000
+    sbr_port_protocol:
+      - "narrow"
+    id_offset:
+      x: -1 # -1 mean border of the west side
+      y: 2
+  # JTAG
+  - name: "jtag"
+    soc_type: "peripheral" # xbar that connect different peripheral
+    # soc_type: "xbar" # xbar that connect different peripheral
+    addr_range:
+      base: 0x0000_0000_0000
+      size: 0x0000_0000_1000 # 4 kiB
+    mgr_port_protocol:
+      - "narrow"
+    sbr_port_protocol:
+      - "narrow"
+    id_offset:
+      x: -1 # -1 mean border of the west side
+      y: 1
+  # CVA6
+  - name: "cva6" 
+    soc_type: "processor"
+    # No slave port so no endpoint address assign to its
+    mgr_port_protocol:
+      - "narrow"
+    id_offset:
+      x: -1 # -1 mean border of the west side
+      y: 0
+  ##### East border
+  # SPM Wide
+  - name: "spm_wide"
+    soc_type: "memory"
+    addr_range:
+      base: 0x0000_7100_0000
+      size: 0x0000_0010_0000
+    sbr_port_protocol:
+      - "wide"
+    id_offset:
+      x: *X_NUM # East size border
+      y: 3
+  # SPM Narrow
+  - name: "spm_narrow"
+    soc_type: "memory"
+    addr_range:
+      base: 0x0000_7000_0000
+      size: 0x0000_0008_0000 # 512 kiB
+    sbr_port_protocol:
+      - "narrow"
+    id_offset:
+      x: *X_NUM # East size border
+      y: 2
+  # iDMA, narrow configuration and wide transfer data
+  - name: "idma"
+    soc_type: "peripheral"
+    addr_range:
+      base: 0x0000_1100_0000
+      size: 0x0000_0001_0000 # 64 kiB
+    mgr_port_protocol:
+      - "wide"
+    sbr_port_protocol:
+      - "narrow" # iDMA frontend configuration
+    id_offset:
+      x: *X_NUM # East size border
+      y: 1
+  # AXI Zero-Memory
+  - name: "zero_mem"
+    soc_type: "memory"
+    addr_range:
+      base: 0x0080_0000_0000
+      size: 0x0002_0000_0000 # 8 GiB
+    sbr_port_protocol:
+      - "wide"
+    id_offset:
+      x: *X_NUM # East size border
+      y: 0
+
+routers:
+  # Router equal to cluster number
+  - name: "router"
+    array: [*X_NUM, *Y_NUM]
+
+connections:
+  # Each compute cluster (snitch cluster) connect to the router
+  - src: "cluster"
+    dst: "router"
+    src_range:
+    - [0, *X_NUM_DEC]
+    - [0, *Y_NUM_DEC]
+    dst_range:
+    - [0, *X_NUM_DEC]
+    - [0, *Y_NUM_DEC]
+    bidirectional: true
+  ##### North border
+  # HBM memory
+  - src: "hbm_north"
+    dst: "router"
+    src_range:
+    - [0, *X_NUM_DEC]
+    - [0, 0]
+    dst_range: # router index for north border
+    - [0, *X_NUM_DEC]
+    - [*Y_NUM_DEC, *Y_NUM_DEC]
+    bidirectional: true
+  ##### South border
+  # HBM memory
+  - src: "hbm_south"
+    dst: "router"
+    src_range:
+    - [0, *X_NUM_DEC]
+    - [0, 0]
+    dst_range: # router index for south border
+    - [0, *X_NUM_DEC]
+    - [0, 0]
+    bidirectional: true
+  ##### West border
+  # PCIe interface
+  - src: "pcie"
+    dst: "router"
+    dst_idx: [0, 3]
+    bidirectional: true
+  # Peripherals
+  - src: "peripherals"
+    dst: "router"
+    dst_idx: [0, 2]
+    bidirectional: true
+  # JTAG
+  - src: "jtag"
+    dst: "router"
+    dst_idx: [0, 1]
+    bidirectional: true
+  # CVA6
+  - src: "cva6"
+    dst: "router"
+    dst_idx: [0, 0]
+    bidirectional: true
+  ##### East border
+  # SPM Wide
+  - src: "spm_wide"
+    dst: "router"
+    dst_idx: [*X_NUM_DEC, 3]
+    bidirectional: true
+  # SPM Narrow
+  - src: "spm_narrow"
+    dst: "router"
+    dst_idx: [*X_NUM_DEC, 2]
+    bidirectional: true
+  # iDMA
+  - src: "idma"
+    dst: "router"
+    dst_idx: [*X_NUM_DEC, 1]
+    bidirectional: true
+  # AXI Zero Memory
+  - src: "zero_mem"
+    dst: "router"
+    dst_idx: [*X_NUM_DEC, 0]
+    bidirectional: true
+  

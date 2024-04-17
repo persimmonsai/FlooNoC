@@ -1,0 +1,21 @@
+# Copyright 2023 ETH Zurich and University of Bologna.
+# Solderpad Hardware License, Version 0.51, see LICENSE for details.
+# SPDX-License-Identifier: SHL-0.51
+
+package:
+  name: floo_sim
+  authors:
+    - "Michael Rogenmoser <michaero@iis.ee.ethz.ch>"
+    - "Tim Fischer <fischeti@iis.ee.ethz.ch>"
+
+dependencies:
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.32.0 }
+  common_verification: { git: "https://github.com/pulp-platform/common_verification.git", version: 0.2 }
+  axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1 }
+  axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
+  idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
+  system-snitch-cluster : {path: ../../snitch/hw/system/snitch_cluster}
+  floo_noc: {path: ../}
+  #system-snitch-cluster : {path: ../../PULP/snitch/hw/system/snitch_cluster}
+
+

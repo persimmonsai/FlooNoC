@@ -12,7 +12,9 @@ module chiplet_floo_noc
   input logic rst_ni,
   input logic test_enable_i,
 
-  input logic [snitch_cluster_pkg::NrCores-1:0]  msip_i, 
+  input logic [288:1] mtip_i, 
+  input logic [288:1] msip_i, 
+  input  occamy_cluster_pkg::sram_cfgs_t  sram_cfgs_i,
 
   output axi_narrow_out_req_t             [7:0] hbm_north_narrow_req_o,
   input axi_narrow_out_rsp_t             [7:0] hbm_north_narrow_rsp_i,
@@ -1448,17 +1450,21 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
 ) 
 `endif
  compute_tile_0_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd0),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[9:1]),
+  .msip_i (msip_i[9:1]),
   .id_i (compute_tile_0_0_id),
   .floo_req_i (router_0_0_req_in),
   .floo_rsp_o (router_0_0_rsp_out),
   .floo_req_o (router_0_0_req_out),
   .floo_rsp_i (router_0_0_rsp_in),
   .floo_wide_i (router_0_0_wide_in),
-  .floo_wide_o (router_0_0_wide_out)
+  .floo_wide_o (router_0_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1508,17 +1514,21 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
 ) 
 `endif
  compute_tile_0_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd8),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[81:73]),
+  .msip_i (msip_i[81:73]),
   .id_i (compute_tile_0_1_id),
   .floo_req_i (router_0_1_req_in),
   .floo_rsp_o (router_0_1_rsp_out),
   .floo_req_o (router_0_1_req_out),
   .floo_rsp_i (router_0_1_rsp_in),
   .floo_wide_i (router_0_1_wide_in),
-  .floo_wide_o (router_0_1_wide_out)
+  .floo_wide_o (router_0_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1568,17 +1578,21 @@ localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
 ) 
 `endif
  compute_tile_0_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd16),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[153:145]),
+  .msip_i (msip_i[153:145]),
   .id_i (compute_tile_0_2_id),
   .floo_req_i (router_0_2_req_in),
   .floo_rsp_o (router_0_2_rsp_out),
   .floo_req_o (router_0_2_req_out),
   .floo_rsp_i (router_0_2_rsp_in),
   .floo_wide_i (router_0_2_wide_in),
-  .floo_wide_o (router_0_2_wide_out)
+  .floo_wide_o (router_0_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1628,17 +1642,21 @@ localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
 ) 
 `endif
  compute_tile_0_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd24),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[225:217]),
+  .msip_i (msip_i[225:217]),
   .id_i (compute_tile_0_3_id),
   .floo_req_i (router_0_3_req_in),
   .floo_rsp_o (router_0_3_rsp_out),
   .floo_req_o (router_0_3_req_out),
   .floo_rsp_i (router_0_3_rsp_in),
   .floo_wide_i (router_0_3_wide_in),
-  .floo_wide_o (router_0_3_wide_out)
+  .floo_wide_o (router_0_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1688,17 +1706,21 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
 ) 
 `endif
  compute_tile_1_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd1),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[18:10]),
+  .msip_i (msip_i[18:10]),
   .id_i (compute_tile_1_0_id),
   .floo_req_i (router_1_0_req_in),
   .floo_rsp_o (router_1_0_rsp_out),
   .floo_req_o (router_1_0_req_out),
   .floo_rsp_i (router_1_0_rsp_in),
   .floo_wide_i (router_1_0_wide_in),
-  .floo_wide_o (router_1_0_wide_out)
+  .floo_wide_o (router_1_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1748,17 +1770,21 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
 ) 
 `endif
  compute_tile_1_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd9),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[90:82]),
+  .msip_i (msip_i[90:82]),
   .id_i (compute_tile_1_1_id),
   .floo_req_i (router_1_1_req_in),
   .floo_rsp_o (router_1_1_rsp_out),
   .floo_req_o (router_1_1_req_out),
   .floo_rsp_i (router_1_1_rsp_in),
   .floo_wide_i (router_1_1_wide_in),
-  .floo_wide_o (router_1_1_wide_out)
+  .floo_wide_o (router_1_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1808,17 +1834,21 @@ localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
 ) 
 `endif
  compute_tile_1_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd17),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[162:154]),
+  .msip_i (msip_i[162:154]),
   .id_i (compute_tile_1_2_id),
   .floo_req_i (router_1_2_req_in),
   .floo_rsp_o (router_1_2_rsp_out),
   .floo_req_o (router_1_2_req_out),
   .floo_rsp_i (router_1_2_rsp_in),
   .floo_wide_i (router_1_2_wide_in),
-  .floo_wide_o (router_1_2_wide_out)
+  .floo_wide_o (router_1_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1868,17 +1898,21 @@ localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
 ) 
 `endif
  compute_tile_1_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd25),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[234:226]),
+  .msip_i (msip_i[234:226]),
   .id_i (compute_tile_1_3_id),
   .floo_req_i (router_1_3_req_in),
   .floo_rsp_o (router_1_3_rsp_out),
   .floo_req_o (router_1_3_req_out),
   .floo_rsp_i (router_1_3_rsp_in),
   .floo_wide_i (router_1_3_wide_in),
-  .floo_wide_o (router_1_3_wide_out)
+  .floo_wide_o (router_1_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1928,17 +1962,21 @@ localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
 ) 
 `endif
  compute_tile_2_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd2),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[27:19]),
+  .msip_i (msip_i[27:19]),
   .id_i (compute_tile_2_0_id),
   .floo_req_i (router_2_0_req_in),
   .floo_rsp_o (router_2_0_rsp_out),
   .floo_req_o (router_2_0_req_out),
   .floo_rsp_i (router_2_0_rsp_in),
   .floo_wide_i (router_2_0_wide_in),
-  .floo_wide_o (router_2_0_wide_out)
+  .floo_wide_o (router_2_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -1988,17 +2026,21 @@ localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
 ) 
 `endif
  compute_tile_2_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd10),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[99:91]),
+  .msip_i (msip_i[99:91]),
   .id_i (compute_tile_2_1_id),
   .floo_req_i (router_2_1_req_in),
   .floo_rsp_o (router_2_1_rsp_out),
   .floo_req_o (router_2_1_req_out),
   .floo_rsp_i (router_2_1_rsp_in),
   .floo_wide_i (router_2_1_wide_in),
-  .floo_wide_o (router_2_1_wide_out)
+  .floo_wide_o (router_2_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2048,17 +2090,21 @@ localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
 ) 
 `endif
  compute_tile_2_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd18),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[171:163]),
+  .msip_i (msip_i[171:163]),
   .id_i (compute_tile_2_2_id),
   .floo_req_i (router_2_2_req_in),
   .floo_rsp_o (router_2_2_rsp_out),
   .floo_req_o (router_2_2_req_out),
   .floo_rsp_i (router_2_2_rsp_in),
   .floo_wide_i (router_2_2_wide_in),
-  .floo_wide_o (router_2_2_wide_out)
+  .floo_wide_o (router_2_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2108,17 +2154,21 @@ localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
 ) 
 `endif
  compute_tile_2_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd26),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[243:235]),
+  .msip_i (msip_i[243:235]),
   .id_i (compute_tile_2_3_id),
   .floo_req_i (router_2_3_req_in),
   .floo_rsp_o (router_2_3_rsp_out),
   .floo_req_o (router_2_3_req_out),
   .floo_rsp_i (router_2_3_rsp_in),
   .floo_wide_i (router_2_3_wide_in),
-  .floo_wide_o (router_2_3_wide_out)
+  .floo_wide_o (router_2_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2168,17 +2218,21 @@ localparam id_t compute_tile_3_0_id = '{x: 4, y: 1};
 ) 
 `endif
  compute_tile_3_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd3),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[36:28]),
+  .msip_i (msip_i[36:28]),
   .id_i (compute_tile_3_0_id),
   .floo_req_i (router_3_0_req_in),
   .floo_rsp_o (router_3_0_rsp_out),
   .floo_req_o (router_3_0_req_out),
   .floo_rsp_i (router_3_0_rsp_in),
   .floo_wide_i (router_3_0_wide_in),
-  .floo_wide_o (router_3_0_wide_out)
+  .floo_wide_o (router_3_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2228,17 +2282,21 @@ localparam id_t compute_tile_3_1_id = '{x: 4, y: 2};
 ) 
 `endif
  compute_tile_3_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd11),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[108:100]),
+  .msip_i (msip_i[108:100]),
   .id_i (compute_tile_3_1_id),
   .floo_req_i (router_3_1_req_in),
   .floo_rsp_o (router_3_1_rsp_out),
   .floo_req_o (router_3_1_req_out),
   .floo_rsp_i (router_3_1_rsp_in),
   .floo_wide_i (router_3_1_wide_in),
-  .floo_wide_o (router_3_1_wide_out)
+  .floo_wide_o (router_3_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2288,17 +2346,21 @@ localparam id_t compute_tile_3_2_id = '{x: 4, y: 3};
 ) 
 `endif
  compute_tile_3_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd19),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[180:172]),
+  .msip_i (msip_i[180:172]),
   .id_i (compute_tile_3_2_id),
   .floo_req_i (router_3_2_req_in),
   .floo_rsp_o (router_3_2_rsp_out),
   .floo_req_o (router_3_2_req_out),
   .floo_rsp_i (router_3_2_rsp_in),
   .floo_wide_i (router_3_2_wide_in),
-  .floo_wide_o (router_3_2_wide_out)
+  .floo_wide_o (router_3_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2348,17 +2410,21 @@ localparam id_t compute_tile_3_3_id = '{x: 4, y: 4};
 ) 
 `endif
  compute_tile_3_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd27),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[252:244]),
+  .msip_i (msip_i[252:244]),
   .id_i (compute_tile_3_3_id),
   .floo_req_i (router_3_3_req_in),
   .floo_rsp_o (router_3_3_rsp_out),
   .floo_req_o (router_3_3_req_out),
   .floo_rsp_i (router_3_3_rsp_in),
   .floo_wide_i (router_3_3_wide_in),
-  .floo_wide_o (router_3_3_wide_out)
+  .floo_wide_o (router_3_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2408,17 +2474,21 @@ localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
 ) 
 `endif
  compute_tile_4_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd4),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[45:37]),
+  .msip_i (msip_i[45:37]),
   .id_i (compute_tile_4_0_id),
   .floo_req_i (router_4_0_req_in),
   .floo_rsp_o (router_4_0_rsp_out),
   .floo_req_o (router_4_0_req_out),
   .floo_rsp_i (router_4_0_rsp_in),
   .floo_wide_i (router_4_0_wide_in),
-  .floo_wide_o (router_4_0_wide_out)
+  .floo_wide_o (router_4_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2468,17 +2538,21 @@ localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
 ) 
 `endif
  compute_tile_4_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd12),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[117:109]),
+  .msip_i (msip_i[117:109]),
   .id_i (compute_tile_4_1_id),
   .floo_req_i (router_4_1_req_in),
   .floo_rsp_o (router_4_1_rsp_out),
   .floo_req_o (router_4_1_req_out),
   .floo_rsp_i (router_4_1_rsp_in),
   .floo_wide_i (router_4_1_wide_in),
-  .floo_wide_o (router_4_1_wide_out)
+  .floo_wide_o (router_4_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2528,17 +2602,21 @@ localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
 ) 
 `endif
  compute_tile_4_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd20),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[189:181]),
+  .msip_i (msip_i[189:181]),
   .id_i (compute_tile_4_2_id),
   .floo_req_i (router_4_2_req_in),
   .floo_rsp_o (router_4_2_rsp_out),
   .floo_req_o (router_4_2_req_out),
   .floo_rsp_i (router_4_2_rsp_in),
   .floo_wide_i (router_4_2_wide_in),
-  .floo_wide_o (router_4_2_wide_out)
+  .floo_wide_o (router_4_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2588,17 +2666,21 @@ localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
 ) 
 `endif
  compute_tile_4_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd28),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[261:253]),
+  .msip_i (msip_i[261:253]),
   .id_i (compute_tile_4_3_id),
   .floo_req_i (router_4_3_req_in),
   .floo_rsp_o (router_4_3_rsp_out),
   .floo_req_o (router_4_3_req_out),
   .floo_rsp_i (router_4_3_rsp_in),
   .floo_wide_i (router_4_3_wide_in),
-  .floo_wide_o (router_4_3_wide_out)
+  .floo_wide_o (router_4_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2648,17 +2730,21 @@ localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
 ) 
 `endif
  compute_tile_5_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd5),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[54:46]),
+  .msip_i (msip_i[54:46]),
   .id_i (compute_tile_5_0_id),
   .floo_req_i (router_5_0_req_in),
   .floo_rsp_o (router_5_0_rsp_out),
   .floo_req_o (router_5_0_req_out),
   .floo_rsp_i (router_5_0_rsp_in),
   .floo_wide_i (router_5_0_wide_in),
-  .floo_wide_o (router_5_0_wide_out)
+  .floo_wide_o (router_5_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2708,17 +2794,21 @@ localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
 ) 
 `endif
  compute_tile_5_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd13),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[126:118]),
+  .msip_i (msip_i[126:118]),
   .id_i (compute_tile_5_1_id),
   .floo_req_i (router_5_1_req_in),
   .floo_rsp_o (router_5_1_rsp_out),
   .floo_req_o (router_5_1_req_out),
   .floo_rsp_i (router_5_1_rsp_in),
   .floo_wide_i (router_5_1_wide_in),
-  .floo_wide_o (router_5_1_wide_out)
+  .floo_wide_o (router_5_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2768,17 +2858,21 @@ localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
 ) 
 `endif
  compute_tile_5_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd21),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[198:190]),
+  .msip_i (msip_i[198:190]),
   .id_i (compute_tile_5_2_id),
   .floo_req_i (router_5_2_req_in),
   .floo_rsp_o (router_5_2_rsp_out),
   .floo_req_o (router_5_2_req_out),
   .floo_rsp_i (router_5_2_rsp_in),
   .floo_wide_i (router_5_2_wide_in),
-  .floo_wide_o (router_5_2_wide_out)
+  .floo_wide_o (router_5_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2828,17 +2922,21 @@ localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
 ) 
 `endif
  compute_tile_5_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd29),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[270:262]),
+  .msip_i (msip_i[270:262]),
   .id_i (compute_tile_5_3_id),
   .floo_req_i (router_5_3_req_in),
   .floo_rsp_o (router_5_3_rsp_out),
   .floo_req_o (router_5_3_req_out),
   .floo_rsp_i (router_5_3_rsp_in),
   .floo_wide_i (router_5_3_wide_in),
-  .floo_wide_o (router_5_3_wide_out)
+  .floo_wide_o (router_5_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2888,17 +2986,21 @@ localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
 ) 
 `endif
  compute_tile_6_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd6),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[63:55]),
+  .msip_i (msip_i[63:55]),
   .id_i (compute_tile_6_0_id),
   .floo_req_i (router_6_0_req_in),
   .floo_rsp_o (router_6_0_rsp_out),
   .floo_req_o (router_6_0_req_out),
   .floo_rsp_i (router_6_0_rsp_in),
   .floo_wide_i (router_6_0_wide_in),
-  .floo_wide_o (router_6_0_wide_out)
+  .floo_wide_o (router_6_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -2948,17 +3050,21 @@ localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
 ) 
 `endif
  compute_tile_6_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd14),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[135:127]),
+  .msip_i (msip_i[135:127]),
   .id_i (compute_tile_6_1_id),
   .floo_req_i (router_6_1_req_in),
   .floo_rsp_o (router_6_1_rsp_out),
   .floo_req_o (router_6_1_req_out),
   .floo_rsp_i (router_6_1_rsp_in),
   .floo_wide_i (router_6_1_wide_in),
-  .floo_wide_o (router_6_1_wide_out)
+  .floo_wide_o (router_6_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -3008,17 +3114,21 @@ localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
 ) 
 `endif
  compute_tile_6_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd22),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[207:199]),
+  .msip_i (msip_i[207:199]),
   .id_i (compute_tile_6_2_id),
   .floo_req_i (router_6_2_req_in),
   .floo_rsp_o (router_6_2_rsp_out),
   .floo_req_o (router_6_2_req_out),
   .floo_rsp_i (router_6_2_rsp_in),
   .floo_wide_i (router_6_2_wide_in),
-  .floo_wide_o (router_6_2_wide_out)
+  .floo_wide_o (router_6_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -3068,17 +3178,21 @@ localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
 ) 
 `endif
  compute_tile_6_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd30),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[279:271]),
+  .msip_i (msip_i[279:271]),
   .id_i (compute_tile_6_3_id),
   .floo_req_i (router_6_3_req_in),
   .floo_rsp_o (router_6_3_rsp_out),
   .floo_req_o (router_6_3_req_out),
   .floo_rsp_i (router_6_3_rsp_in),
   .floo_wide_i (router_6_3_wide_in),
-  .floo_wide_o (router_6_3_wide_out)
+  .floo_wide_o (router_6_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -3128,17 +3242,21 @@ localparam id_t compute_tile_7_0_id = '{x: 8, y: 1};
 ) 
 `endif
  compute_tile_7_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd7),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[72:64]),
+  .msip_i (msip_i[72:64]),
   .id_i (compute_tile_7_0_id),
   .floo_req_i (router_7_0_req_in),
   .floo_rsp_o (router_7_0_rsp_out),
   .floo_req_o (router_7_0_req_out),
   .floo_rsp_i (router_7_0_rsp_in),
   .floo_wide_i (router_7_0_wide_in),
-  .floo_wide_o (router_7_0_wide_out)
+  .floo_wide_o (router_7_0_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -3188,17 +3306,21 @@ localparam id_t compute_tile_7_1_id = '{x: 8, y: 2};
 ) 
 `endif
  compute_tile_7_1 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd15),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[144:136]),
+  .msip_i (msip_i[144:136]),
   .id_i (compute_tile_7_1_id),
   .floo_req_i (router_7_1_req_in),
   .floo_rsp_o (router_7_1_rsp_out),
   .floo_req_o (router_7_1_req_out),
   .floo_rsp_i (router_7_1_rsp_in),
   .floo_wide_i (router_7_1_wide_in),
-  .floo_wide_o (router_7_1_wide_out)
+  .floo_wide_o (router_7_1_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -3248,17 +3370,21 @@ localparam id_t compute_tile_7_2_id = '{x: 8, y: 3};
 ) 
 `endif
  compute_tile_7_2 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd23),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[216:208]),
+  .msip_i (msip_i[216:208]),
   .id_i (compute_tile_7_2_id),
   .floo_req_i (router_7_2_req_in),
   .floo_rsp_o (router_7_2_rsp_out),
   .floo_req_o (router_7_2_req_out),
   .floo_rsp_i (router_7_2_rsp_in),
   .floo_wide_i (router_7_2_wide_in),
-  .floo_wide_o (router_7_2_wide_out)
+  .floo_wide_o (router_7_2_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 
@@ -3308,17 +3434,21 @@ localparam id_t compute_tile_7_3_id = '{x: 8, y: 4};
 ) 
 `endif
  compute_tile_7_3 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .msip_i (msip_i),
+  .clk_i (clk_i),
+  .rst_ni (rst_ni),
+  .test_enable_i (test_mode_i),
+  .tile_id_i (5'd31),
+  .meip_i ('b0),
+  .mtip_i (mtip_i[288:280]),
+  .msip_i (msip_i[288:280]),
   .id_i (compute_tile_7_3_id),
   .floo_req_i (router_7_3_req_in),
   .floo_rsp_o (router_7_3_rsp_out),
   .floo_req_o (router_7_3_req_out),
   .floo_rsp_i (router_7_3_rsp_in),
   .floo_wide_i (router_7_3_wide_in),
-  .floo_wide_o (router_7_3_wide_out)
+  .floo_wide_o (router_7_3_wide_out),
+  .sram_cfgs_i (sram_cfgs_i)
 );
 
 

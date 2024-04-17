@@ -28,228 +28,235 @@ module tb_floo_chiplet;
   //////////////////////////////////
 
   axi_narrow_out_req_t [7:0] hbm_north_narrow_req;
-  axi_narrow_out_rsp_t [7:0] hbm_north_narrow_rsp;
-  axi_wide_out_req_t   [7:0] hbm_north_wide_req;
-  axi_wide_out_rsp_t   [7:0] hbm_north_wide_rsp;
+axi_narrow_out_rsp_t [7:0] hbm_north_narrow_rsp;
+axi_wide_out_req_t [7:0] hbm_north_wide_req;
+axi_wide_out_rsp_t [7:0] hbm_north_wide_rsp;
 
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiWideOutAddrWidth),
-      .DataWidth  (AxiWideOutDataWidth),
-      .UserWidth  (AxiWideOutUserWidth),
-      .IdWidth    (AxiWideOutIdWidth),
-      .axi_req_t  (axi_wide_out_req_t),
-      .axi_rsp_t  (axi_wide_out_rsp_t),
-      .aw_chan_t  (axi_wide_out_aw_chan_t),
-      .w_chan_t   (axi_wide_out_w_chan_t),
-      .b_chan_t   (axi_wide_out_b_chan_t),
-      .ar_chan_t  (axi_wide_out_ar_chan_t),
-      .r_chan_t   (axi_wide_out_r_chan_t)
-  ) i_floo_wide_hbm_north_model[7:0] (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(hbm_north_wide_req),
-      .hbm_rsp_o(hbm_north_wide_rsp)
-  );
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiNarrowOutAddrWidth),
-      .DataWidth  (AxiNarrowOutDataWidth),
-      .UserWidth  (AxiNarrowOutUserWidth),
-      .IdWidth    (AxiNarrowOutIdWidth),
-      .axi_req_t  (axi_narrow_out_req_t),
-      .axi_rsp_t  (axi_narrow_out_rsp_t),
-      .aw_chan_t  (axi_narrow_out_aw_chan_t),
-      .w_chan_t   (axi_narrow_out_w_chan_t),
-      .b_chan_t   (axi_narrow_out_b_chan_t),
-      .ar_chan_t  (axi_narrow_out_ar_chan_t),
-      .r_chan_t   (axi_narrow_out_r_chan_t)
-  ) i_floo_narrow_hbm_north_model[7:0] (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(hbm_north_narrow_req),
-      .hbm_rsp_o(hbm_north_narrow_rsp)
-  );
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiWideOutAddrWidth),
+    .DataWidth  (AxiWideOutDataWidth),
+    .UserWidth  (AxiWideOutUserWidth),
+    .IdWidth    (AxiWideOutIdWidth),
+    .axi_req_t  (axi_wide_out_req_t),
+    .axi_rsp_t  (axi_wide_out_rsp_t),
+    .aw_chan_t  (axi_wide_out_aw_chan_t),
+    .w_chan_t   (axi_wide_out_w_chan_t),
+    .b_chan_t   (axi_wide_out_b_chan_t),
+    .ar_chan_t  (axi_wide_out_ar_chan_t),
+    .r_chan_t   (axi_wide_out_r_chan_t)
+) i_floo_wide_hbm_north_model[7:0] (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(hbm_north_wide_req),
+    .hbm_rsp_o(hbm_north_wide_rsp)
+);
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiNarrowOutAddrWidth),
+    .DataWidth  (AxiNarrowOutDataWidth),
+    .UserWidth  (AxiNarrowOutUserWidth),
+    .IdWidth    (AxiNarrowOutIdWidth),
+    .axi_req_t  (axi_narrow_out_req_t),
+    .axi_rsp_t  (axi_narrow_out_rsp_t),
+    .aw_chan_t  (axi_narrow_out_aw_chan_t),
+    .w_chan_t   (axi_narrow_out_w_chan_t),
+    .b_chan_t   (axi_narrow_out_b_chan_t),
+    .ar_chan_t  (axi_narrow_out_ar_chan_t),
+    .r_chan_t   (axi_narrow_out_r_chan_t)
+) i_floo_narrow_hbm_north_model[7:0] (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(hbm_north_narrow_req),
+    .hbm_rsp_o(hbm_north_narrow_rsp)
+);
 
-  axi_narrow_out_req_t [7:0] hbm_south_narrow_req;
-  axi_narrow_out_rsp_t [7:0] hbm_south_narrow_rsp;
-  axi_wide_out_req_t   [7:0] hbm_south_wide_req;
-  axi_wide_out_rsp_t   [7:0] hbm_south_wide_rsp;
+axi_narrow_out_req_t [7:0] hbm_south_narrow_req;
+axi_narrow_out_rsp_t [7:0] hbm_south_narrow_rsp;
+axi_wide_out_req_t [7:0] hbm_south_wide_req;
+axi_wide_out_rsp_t [7:0] hbm_south_wide_rsp;
 
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiWideOutAddrWidth),
-      .DataWidth  (AxiWideOutDataWidth),
-      .UserWidth  (AxiWideOutUserWidth),
-      .IdWidth    (AxiWideOutIdWidth),
-      .axi_req_t  (axi_wide_out_req_t),
-      .axi_rsp_t  (axi_wide_out_rsp_t),
-      .aw_chan_t  (axi_wide_out_aw_chan_t),
-      .w_chan_t   (axi_wide_out_w_chan_t),
-      .b_chan_t   (axi_wide_out_b_chan_t),
-      .ar_chan_t  (axi_wide_out_ar_chan_t),
-      .r_chan_t   (axi_wide_out_r_chan_t)
-  ) i_floo_wide_hbm_south_model[7:0] (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(hbm_south_wide_req),
-      .hbm_rsp_o(hbm_south_wide_rsp)
-  );
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiNarrowOutAddrWidth),
-      .DataWidth  (AxiNarrowOutDataWidth),
-      .UserWidth  (AxiNarrowOutUserWidth),
-      .IdWidth    (AxiNarrowOutIdWidth),
-      .axi_req_t  (axi_narrow_out_req_t),
-      .axi_rsp_t  (axi_narrow_out_rsp_t),
-      .aw_chan_t  (axi_narrow_out_aw_chan_t),
-      .w_chan_t   (axi_narrow_out_w_chan_t),
-      .b_chan_t   (axi_narrow_out_b_chan_t),
-      .ar_chan_t  (axi_narrow_out_ar_chan_t),
-      .r_chan_t   (axi_narrow_out_r_chan_t)
-  ) i_floo_narrow_hbm_south_model[7:0] (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(hbm_south_narrow_req),
-      .hbm_rsp_o(hbm_south_narrow_rsp)
-  );
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiWideOutAddrWidth),
+    .DataWidth  (AxiWideOutDataWidth),
+    .UserWidth  (AxiWideOutUserWidth),
+    .IdWidth    (AxiWideOutIdWidth),
+    .axi_req_t  (axi_wide_out_req_t),
+    .axi_rsp_t  (axi_wide_out_rsp_t),
+    .aw_chan_t  (axi_wide_out_aw_chan_t),
+    .w_chan_t   (axi_wide_out_w_chan_t),
+    .b_chan_t   (axi_wide_out_b_chan_t),
+    .ar_chan_t  (axi_wide_out_ar_chan_t),
+    .r_chan_t   (axi_wide_out_r_chan_t)
+) i_floo_wide_hbm_south_model[7:0] (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(hbm_south_wide_req),
+    .hbm_rsp_o(hbm_south_wide_rsp)
+);
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiNarrowOutAddrWidth),
+    .DataWidth  (AxiNarrowOutDataWidth),
+    .UserWidth  (AxiNarrowOutUserWidth),
+    .IdWidth    (AxiNarrowOutIdWidth),
+    .axi_req_t  (axi_narrow_out_req_t),
+    .axi_rsp_t  (axi_narrow_out_rsp_t),
+    .aw_chan_t  (axi_narrow_out_aw_chan_t),
+    .w_chan_t   (axi_narrow_out_w_chan_t),
+    .b_chan_t   (axi_narrow_out_b_chan_t),
+    .ar_chan_t  (axi_narrow_out_ar_chan_t),
+    .r_chan_t   (axi_narrow_out_r_chan_t)
+) i_floo_narrow_hbm_south_model[7:0] (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(hbm_south_narrow_req),
+    .hbm_rsp_o(hbm_south_narrow_rsp)
+);
 
-  axi_wide_out_req_t spm_wide_wide_req;
-  axi_wide_out_rsp_t spm_wide_wide_rsp;
+axi_wide_out_req_t  spm_wide_wide_req;
+axi_wide_out_rsp_t  spm_wide_wide_rsp;
 
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiWideOutAddrWidth),
-      .DataWidth  (AxiWideOutDataWidth),
-      .UserWidth  (AxiWideOutUserWidth),
-      .IdWidth    (AxiWideOutIdWidth),
-      .axi_req_t  (axi_wide_out_req_t),
-      .axi_rsp_t  (axi_wide_out_rsp_t),
-      .aw_chan_t  (axi_wide_out_aw_chan_t),
-      .w_chan_t   (axi_wide_out_w_chan_t),
-      .b_chan_t   (axi_wide_out_b_chan_t),
-      .ar_chan_t  (axi_wide_out_ar_chan_t),
-      .r_chan_t   (axi_wide_out_r_chan_t)
-  ) i_floo_wide_spm_wide_model (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(spm_wide_wide_req),
-      .hbm_rsp_o(spm_wide_wide_rsp)
-  );
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiWideOutAddrWidth),
+    .DataWidth  (AxiWideOutDataWidth),
+    .UserWidth  (AxiWideOutUserWidth),
+    .IdWidth    (AxiWideOutIdWidth),
+    .axi_req_t  (axi_wide_out_req_t),
+    .axi_rsp_t  (axi_wide_out_rsp_t),
+    .aw_chan_t  (axi_wide_out_aw_chan_t),
+    .w_chan_t   (axi_wide_out_w_chan_t),
+    .b_chan_t   (axi_wide_out_b_chan_t),
+    .ar_chan_t  (axi_wide_out_ar_chan_t),
+    .r_chan_t   (axi_wide_out_r_chan_t)
+) i_floo_wide_spm_wide_model (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(spm_wide_wide_req),
+    .hbm_rsp_o(spm_wide_wide_rsp)
+);
 
-  axi_narrow_out_req_t spm_narrow_narrow_req;
-  axi_narrow_out_rsp_t spm_narrow_narrow_rsp;
+axi_narrow_out_req_t  spm_narrow_narrow_req;
+axi_narrow_out_rsp_t  spm_narrow_narrow_rsp;
 
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiNarrowOutAddrWidth),
-      .DataWidth  (AxiNarrowOutDataWidth),
-      .UserWidth  (AxiNarrowOutUserWidth),
-      .IdWidth    (AxiNarrowOutIdWidth),
-      .axi_req_t  (axi_narrow_out_req_t),
-      .axi_rsp_t  (axi_narrow_out_rsp_t),
-      .aw_chan_t  (axi_narrow_out_aw_chan_t),
-      .w_chan_t   (axi_narrow_out_w_chan_t),
-      .b_chan_t   (axi_narrow_out_b_chan_t),
-      .ar_chan_t  (axi_narrow_out_ar_chan_t),
-      .r_chan_t   (axi_narrow_out_r_chan_t)
-  ) i_floo_narrow_spm_narrow_model (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(spm_narrow_narrow_req),
-      .hbm_rsp_o(spm_narrow_narrow_rsp)
-  );
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiNarrowOutAddrWidth),
+    .DataWidth  (AxiNarrowOutDataWidth),
+    .UserWidth  (AxiNarrowOutUserWidth),
+    .IdWidth    (AxiNarrowOutIdWidth),
+    .axi_req_t  (axi_narrow_out_req_t),
+    .axi_rsp_t  (axi_narrow_out_rsp_t),
+    .aw_chan_t  (axi_narrow_out_aw_chan_t),
+    .w_chan_t   (axi_narrow_out_w_chan_t),
+    .b_chan_t   (axi_narrow_out_b_chan_t),
+    .ar_chan_t  (axi_narrow_out_ar_chan_t),
+    .r_chan_t   (axi_narrow_out_r_chan_t)
+) i_floo_narrow_spm_narrow_model (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(spm_narrow_narrow_req),
+    .hbm_rsp_o(spm_narrow_narrow_rsp)
+);
 
-  axi_wide_out_req_t zero_mem_wide_req;
-  axi_wide_out_rsp_t zero_mem_wide_rsp;
+axi_wide_out_req_t  zero_mem_wide_req;
+axi_wide_out_rsp_t  zero_mem_wide_rsp;
 
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiWideOutAddrWidth),
-      .DataWidth  (AxiWideOutDataWidth),
-      .UserWidth  (AxiWideOutUserWidth),
-      .IdWidth    (AxiWideOutIdWidth),
-      .axi_req_t  (axi_wide_out_req_t),
-      .axi_rsp_t  (axi_wide_out_rsp_t),
-      .aw_chan_t  (axi_wide_out_aw_chan_t),
-      .w_chan_t   (axi_wide_out_w_chan_t),
-      .b_chan_t   (axi_wide_out_b_chan_t),
-      .ar_chan_t  (axi_wide_out_ar_chan_t),
-      .r_chan_t   (axi_wide_out_r_chan_t)
-  ) i_floo_wide_zero_mem_model (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(zero_mem_wide_req),
-      .hbm_rsp_o(zero_mem_wide_rsp)
-  );
+floo_hbm_model #(
+    .TA         (ApplTime),
+    .TT         (TestTime),
+    .Latency    (HBMLatency),
+    .NumChannels(1),
+    .AddrWidth  (AxiWideOutAddrWidth),
+    .DataWidth  (AxiWideOutDataWidth),
+    .UserWidth  (AxiWideOutUserWidth),
+    .IdWidth    (AxiWideOutIdWidth),
+    .axi_req_t  (axi_wide_out_req_t),
+    .axi_rsp_t  (axi_wide_out_rsp_t),
+    .aw_chan_t  (axi_wide_out_aw_chan_t),
+    .w_chan_t   (axi_wide_out_w_chan_t),
+    .b_chan_t   (axi_wide_out_b_chan_t),
+    .ar_chan_t  (axi_wide_out_ar_chan_t),
+    .r_chan_t   (axi_wide_out_r_chan_t)
+) i_floo_wide_zero_mem_model (
+    .clk_i    (clk),
+    .rst_ni   (rst_n),
+    .hbm_req_i(zero_mem_wide_req),
+    .hbm_rsp_o(zero_mem_wide_rsp)
+);
 
 
   //////////////////////////////////
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
-  logic [snitch_cluster_pkg::NrCores-1:0] msip_i;
-  assign msip_i = 'b0;  // unused port for snitch cluster
+  logic [288:0] mtip_i;
+  logic [288:0] msip_i;
+  assign mtip_i = 'b0;
+  assign msip_i = 'b0;
+
+  occamy_cluster_pkg::sram_cfgs_t = sram_cfgs_i;
+  assign sram_cfgs_i = 'b0;
 
   chiplet_floo_noc i_chiplet_floo_noc (
       .clk_i(clk),
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
 
+      .msip_i(mtip_i),
       .msip_i(msip_i),
+      .sram_cfgs_i(sram_cfgs_i),
 
-      .hbm_north_narrow_req_o(hbm_north_narrow_req),
-      .hbm_north_narrow_rsp_i(hbm_north_narrow_rsp),
-      .hbm_north_wide_req_o(hbm_north_wide_req),
-      .hbm_north_wide_rsp_i(hbm_north_wide_rsp),
-      .hbm_south_narrow_req_o(hbm_south_narrow_req),
-      .hbm_south_narrow_rsp_i(hbm_south_narrow_rsp),
-      .hbm_south_wide_req_o(hbm_south_wide_req),
-      .hbm_south_wide_rsp_i(hbm_south_wide_rsp),
-      .pcie_narrow_req_i('0),
-      .pcie_narrow_rsp_o(),
-      .pcie_narrow_req_o(),
-      .pcie_narrow_rsp_i('0),
-      .peripherals_narrow_req_o(),
-      .peripherals_narrow_rsp_i('0),
-      .jtag_narrow_req_i('0),
-      .jtag_narrow_rsp_o(),
-      .jtag_narrow_req_o(),
-      .jtag_narrow_rsp_i('0),
-      .cva6_narrow_req_i('0),
-      .cva6_narrow_rsp_o(),
-      .spm_wide_wide_req_o(spm_wide_wide_req),
-      .spm_wide_wide_rsp_i(spm_wide_wide_rsp),
-      .spm_narrow_narrow_req_o(spm_narrow_narrow_req),
-      .spm_narrow_narrow_rsp_i(spm_narrow_narrow_rsp),
-      .idma_wide_req_i('0),
-      .idma_wide_rsp_o(),
-      .idma_narrow_req_o(),
-      .idma_narrow_rsp_i('0),
-      .zero_mem_wide_req_o(zero_mem_wide_req),
-      .zero_mem_wide_rsp_i(zero_mem_wide_rsp)
+      .hbm_north_narrow_req_o	(hbm_north_narrow_req),
+  .hbm_north_narrow_rsp_i	(hbm_north_narrow_rsp),
+  .hbm_north_wide_req_o	(hbm_north_wide_req),
+  .hbm_north_wide_rsp_i	(hbm_north_wide_rsp),
+  .hbm_south_narrow_req_o	(hbm_south_narrow_req),
+  .hbm_south_narrow_rsp_i	(hbm_south_narrow_rsp),
+  .hbm_south_wide_req_o	(hbm_south_wide_req),
+  .hbm_south_wide_rsp_i	(hbm_south_wide_rsp),
+  .pcie_narrow_req_i	('0),
+  .pcie_narrow_rsp_o	(),
+  .pcie_narrow_req_o	(),
+  .pcie_narrow_rsp_i	('0),
+  .peripherals_narrow_req_o	(),
+  .peripherals_narrow_rsp_i	('0),
+  .jtag_narrow_req_i	('0),
+  .jtag_narrow_rsp_o	(),
+  .jtag_narrow_req_o	(),
+  .jtag_narrow_rsp_i	('0),
+  .cva6_narrow_req_i	('0),
+  .cva6_narrow_rsp_o	(),
+  .spm_wide_wide_req_o	(spm_wide_wide_req),
+  .spm_wide_wide_rsp_i	(spm_wide_wide_rsp),
+  .spm_narrow_narrow_req_o	(spm_narrow_narrow_req),
+  .spm_narrow_narrow_rsp_i	(spm_narrow_narrow_rsp),
+  .idma_wide_req_i	('0),
+  .idma_wide_rsp_o	(),
+  .idma_narrow_req_o	(),
+  .idma_narrow_rsp_i	('0),
+  .zero_mem_wide_req_o	(zero_mem_wide_req),
+  .zero_mem_wide_rsp_i	(zero_mem_wide_rsp)
 
   );
 
