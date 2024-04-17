@@ -72,7 +72,7 @@ localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   .rst_ni (rst_ni),
   .test_enable_i (test_mode_i),
   .tile_id_i (${tile_id_bit_num}'d${tile_id}),
-  .meip_i ('b0),
+  .meip_i (${num_snitch_core}'b0),
   .mtip_i (mtip_i${sv_array_irq}),
   .msip_i (msip_i${sv_array_irq}),
   .id_i (${compute_tile_id}),
