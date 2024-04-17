@@ -724,14 +724,20 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
 
     def render_link_cfg(self):
         """Render the link configuration file"""
-        prot_names = [prot.name for prot in self.protocols]
+        # Filter for user width = 0
+        noc = deepcopy(self)
+        for prot in noc.protocols:
+            if prot.user_width==0:
+                prot.user_width = 1
+        
+        prot_names = [prot.name for prot in noc.protocols]
         if "wide" in prot_names and "narrow" in prot_names:
             axi_type, link_type = "narrow_wide", NarrowWideLink
         else:
             axi_type, link_type = "axi", NarrowLink
         # Add Join data type for HBM Narrow Wide Join
         max_id_in = 0;
-        for prot in self.protocols:
+        for prot in noc.protocols:
             # Copy type from wide out interface
             if prot.name=="wide" and prot.direction=="subordinate":
                 prot_join = deepcopy(prot)
@@ -747,9 +753,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         # max(`AxiNarrowIdWidth` and `AxiWideIdWidth`) == AxidOutWidth - 1
         prot_join.id_width = max_id_in + 1
         # Add new join output protocol to be generate into Package
-        self.protocols.append(prot_join)
+        noc.protocols.append(prot_join)
         return axi_type, self.tpl_pkg.render(
-            name=axi_type, noc=self, link=link_type
+            name=axi_type, noc=noc, link=link_type
         )
     
     def render_util_job(self):
