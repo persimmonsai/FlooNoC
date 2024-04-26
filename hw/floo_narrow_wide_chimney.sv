@@ -1055,7 +1055,10 @@ module floo_narrow_wide_chimney
         .MaxAtomicTxns(MaxAtomicTxns),
         .buf_t        (narrow_id_out_buf_t),
         .IdInWidth    (AxiNarrowInIdWidth),
-        .IdOutWidth   (AxiNarrowOutIdWidth),
+        //.IdOutWidth   (AxiNarrowOutIdWidth),
+        // ID in/out is equal since all interface input to this module are 
+        // already convert to 'axi_narrow_in_req_t' and 'axi_narrow_in_rsp_t' type
+        .IdOutWidth   (AxiNarrowInIdWidth),
         .axi_req_t    (axi_narrow_in_req_t),
         .axi_rsp_t    (axi_narrow_in_rsp_t)
     ) i_narrow_meta_buffer (
