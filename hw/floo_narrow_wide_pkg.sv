@@ -141,6 +141,7 @@ package floo_narrow_wide_pkg;
   typedef logic route_t;
   typedef id_t dst_t;
 
+
   typedef struct packed {
     logic rob_req;
     rob_idx_t rob_idx;
@@ -150,6 +151,8 @@ package floo_narrow_wide_pkg;
     logic atop;
     axi_ch_e axi_ch;
   } hdr_t;
+
+
 
   /////////////////////
   //   Address Map   //
