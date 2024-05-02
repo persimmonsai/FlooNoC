@@ -15,12 +15,8 @@ module floo_route_select
     parameter bit LockRouting = 1'b1,
     /// Used for ID-based and XY routing
     parameter int unsigned IdWidth = 0,
-    parameter floo_narrow_wide_pkg::border_id_t BorderId = '{
-        north: 5,
-        west: 0,
-        south: 0,
-        east: 9
-    },  // north, west, south, east
+    parameter type border_id_t = logic,
+    parameter border_id_t BorderId = 0,
     /// Used for ID-based routing
     parameter int unsigned NumAddrRules  = 1, // initial to 1 to avoid id_route_map_i start from -1:0
     parameter type addr_rule_t = logic,
@@ -114,10 +110,12 @@ module floo_route_select
     id_t id_in;
     assign id_in = id_t'(channel_i.hdr.dst_id);
     logic xy_not_equal;
+    logic no_route_detect;
     assign xy_not_equal = (id_in.x != xy_id_i.x) && (id_in.y != xy_id_i.y);
 
     always_comb begin : proc_route_sel
       route_sel = '0;
+      no_route_detect = 1'b0;
       if (id_in == xy_id_i) begin
         route_sel[Eject] = 1'b1;
         // Special condition to avoid routing to border of XY mesh that there is no router placed, and 
@@ -136,8 +134,8 @@ module floo_route_select
         end else if ((id_in.y > xy_id_i.y) && (xy_id_i.y + 1 != BorderId.north)) begin
           route_sel[North] = 1'b1;
 `ifdef VCS
-        end else if (valid_i) begin
-          $error("Unknown direction to route in case both X and Y position mismatch");
+        end else begin
+          no_route_detect = 1'b1;
 `endif
         end
         // Routing straight forward to the destination when X or Y position is match
@@ -154,6 +152,11 @@ module floo_route_select
           route_sel[East] = 1'b1;
         end
       end
+    end
+
+    always @(posedge clk_i) begin
+      if (ready_i && valid_i && no_route_detect)
+        $error("Unknown direction to route in case both X and Y position mismatch");
     end
 
     assign channel_o = channel_i;

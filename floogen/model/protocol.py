@@ -71,9 +71,17 @@ class AXI4(ProtocolDesc):
 
     def full_name(self) -> str:
         """Return the name of the protocol."""
-        if "axi" in self.name:
-            return f"{self.name}_{short_dir(self.svdirection)}"
-        return f"axi_{self.name}_{short_dir(self.svdirection)}"
+        if self.svdirection == "":
+            if "axi" in self.name:
+                full_name_out = f"{self.name}"
+            else:
+                full_name_out = f"axi_{self.name}"
+        else:
+            if "axi" in self.name:
+                full_name_out = f"{self.name}_{short_dir(self.svdirection)}"
+            else:
+                full_name_out = f"axi_{self.name}_{short_dir(self.svdirection)}"
+        return full_name_out
 
     def render_params(self) -> str:
         """Render the parameters of the protocol."""

@@ -12,13 +12,13 @@
 `include "common_cells/assertions.svh"
 `include "floo_noc/typedef.svh"
 
-module tb_floo_${noc.name};
+module tb_floo_compute_tile_array;
 
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
 
   // Import simulation parameter
-  import ${noc.name}_test_pkg::*;
+  import compute_tile_array_test_pkg::*;
 
   logic clk, rst_n;
 
@@ -39,13 +39,13 @@ module tb_floo_${noc.name};
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
-  logic [${irq_bit_num-1}:0] mtip_i;
-  logic [${irq_bit_num-1}:0] msip_i;
+  logic [${irq_bit_num-1}:1] mtip_i;
+  logic [${irq_bit_num-1}:1] msip_i;
   assign mtip_i = 'b0;
   assign msip_i = 'b0;
 
-  occamy_pkg::sram_cfgs_t = sram_cfgs_i;
-  assign sram_cfgs_i = 'b0;
+  // occamy_pkg::sram_cfgs_t = sram_cfgs_i;
+  // assign sram_cfgs_i = 'b0;
 
   ${noc.name}_floo_noc i_${noc.name}_floo_noc (
       .clk_i(clk),
@@ -54,7 +54,7 @@ module tb_floo_${noc.name};
 
       .mtip_i(mtip_i),
       .msip_i(msip_i),
-      .sram_cfgs_i(sram_cfgs_i),
+      // .sram_cfgs_i(sram_cfgs_i),
 
       ${noc.render_tb_dut_ports()}
   );
@@ -62,7 +62,7 @@ module tb_floo_${noc.name};
   logic [${len(cp_tiles)-1}:0] endsim_cluster;
   // Get end_of_sim signal inside DUT
 % for i in range(0,len(cp_tiles)):
-  assign endsim_cluster[${i}] = &tb_floo_${noc.name}.i_${noc.name}_floo_noc.compute_tile_${str(cp_tiles[i].id.x)}_${str(cp_tiles[i].id.y)}.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[${i}] = &tb_floo_compute_tile_array.i_${noc.name}_floo_noc.compute_tile_${str(cp_tiles[i].id.x)}_${str(cp_tiles[i].id.y)}.i_snitch_cluster_test_node.end_of_sim;
 % endfor
 
   initial begin

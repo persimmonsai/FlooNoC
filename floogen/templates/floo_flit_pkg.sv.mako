@@ -27,9 +27,9 @@ package floo_${name}_pkg;
   //   Header Typedefs   //
   /////////////////////////
 
-  ${noc.routing.render_param_decl()}
-
   ${noc.routing.render_typedefs()}
+
+  ${noc.routing.render_param_decl()}
 
   ${noc.routing.render_flit_header()}
 

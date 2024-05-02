@@ -7,48 +7,52 @@
 `include "common_cells/assertions.svh"
 
 /// A simple router with configurable number of ports, physical and virtual channels, and input/output buffers
-module floo_router import floo_pkg::*; #(
-  parameter int unsigned NumRoutes        = 0,
-  parameter int unsigned NumVirtChannels  = 0,
-  parameter int unsigned NumPhysChannels  = 1,
-  parameter type         flit_t           = logic,
-  parameter int unsigned ChannelFifoDepth = 0,
-  parameter int unsigned OutputFifoDepth  = 0,
-  parameter route_algo_e RouteAlgo        = IdTable,
-  /// Used for ID-based and XY routing
-  parameter int unsigned IdWidth          = 0,
-  parameter type         id_t             = logic[IdWidth-1:0],
-  /// Used for ID-based routing
-  parameter int unsigned NumAddrRules     = 1, // initial to 1 to avoid id_route_map_i start from -1:0
-  parameter type         addr_rule_t      = logic,
-  /// Configuration parameters for special network topologies
-  parameter int unsigned NumInput         = NumRoutes,
-  parameter int unsigned NumOutput        = NumRoutes,
-  parameter bit          XYRouteOpt       = 1'b1,
-  parameter bit          NoLoopback       = 1'b1
+module floo_router
+  import floo_pkg::*;
+#(
+    parameter int unsigned NumRoutes = 0,
+    parameter int unsigned NumVirtChannels = 0,
+    parameter int unsigned NumPhysChannels = 1,
+    parameter type flit_t = logic,
+    parameter int unsigned ChannelFifoDepth = 0,
+    parameter int unsigned OutputFifoDepth = 0,
+    parameter route_algo_e RouteAlgo = IdTable,
+    /// Used for ID-based and XY routing
+    parameter int unsigned IdWidth = 0,
+    parameter type id_t = logic [IdWidth-1:0],
+    parameter type border_id_t = logic,
+    parameter border_id_t BorderId = 0,
+    /// Used for ID-based routing
+    parameter int unsigned NumAddrRules     = 1, // initial to 1 to avoid id_route_map_i start from -1:0
+    parameter type addr_rule_t = logic,
+    /// Configuration parameters for special network topologies
+    parameter int unsigned NumInput = NumRoutes,
+    parameter int unsigned NumOutput = NumRoutes,
+    parameter bit XYRouteOpt = 1'b1,
+    parameter bit NoLoopback = 1'b1
 ) (
-  input  logic                                       clk_i,
-  input  logic                                       rst_ni,
-  input  logic                                       test_enable_i,
+    input logic clk_i,
+    input logic rst_ni,
+    input logic test_enable_i,
 
-  input  id_t                                        xy_id_i,        // if unused assign to '0
-  input  addr_rule_t [NumAddrRules-1:0]              id_route_map_i, // if unused assign to '0
+    input id_t                           xy_id_i,        // if unused assign to '0
+    input addr_rule_t [NumAddrRules-1:0] id_route_map_i, // if unused assign to '0
 
-  input  logic  [NumInput-1:0][NumVirtChannels-1:0]  valid_i, // NOT AXI, requires ready first
-  output logic  [NumInput-1:0][NumVirtChannels-1:0]  ready_o, // NOT AXI, requires ready first
-  input  flit_t [NumInput-1:0][NumPhysChannels-1:0]  data_i,
+    input  logic  [NumInput-1:0][NumVirtChannels-1:0] valid_i,  // NOT AXI, requires ready first
+    output logic  [NumInput-1:0][NumVirtChannels-1:0] ready_o,  // NOT AXI, requires ready first
+    input  flit_t [NumInput-1:0][NumPhysChannels-1:0] data_i,
 
-  output logic  [NumOutput-1:0][NumVirtChannels-1:0] valid_o, // NOT AXI, requires ready first
-  input  logic  [NumOutput-1:0][NumVirtChannels-1:0] ready_i, // NOT AXI, requires ready first
-  output flit_t [NumOutput-1:0][NumPhysChannels-1:0] data_o
+    output logic  [NumOutput-1:0][NumVirtChannels-1:0] valid_o,  // NOT AXI, requires ready first
+    input  logic  [NumOutput-1:0][NumVirtChannels-1:0] ready_i,  // NOT AXI, requires ready first
+    output flit_t [NumOutput-1:0][NumPhysChannels-1:0] data_o
 );
 
   // TODO MICHAERO: assert NumPhysChannels <= NumVirtChannels
 
   flit_t [NumInput-1:0][NumVirtChannels-1:0] in_data, in_routed_data;
-  logic  [NumInput-1:0][NumVirtChannels-1:0] in_valid, in_ready;
+  logic [NumInput-1:0][NumVirtChannels-1:0] in_valid, in_ready;
 
-  logic  [NumInput-1:0][NumVirtChannels-1:0][NumOutput-1:0] route_mask;
+  logic [NumInput-1:0][NumVirtChannels-1:0][NumOutput-1:0] route_mask;
 
   // Router input part
   for (genvar in_route = 0; in_route < NumInput; in_route++) begin : gen_input
@@ -65,48 +69,50 @@ module floo_router import floo_pkg::*; #(
 
       (* ungroup *)
       stream_fifo_optimal_wrap #(
-        .Depth  ( ChannelFifoDepth ),
-        .type_t ( flit_t           )
+          .Depth (ChannelFifoDepth),
+          .type_t(flit_t)
       ) i_stream_fifo (
-        .clk_i      ( clk_i         ),
-        .rst_ni     ( rst_ni        ),
-        .testmode_i ( test_enable_i ),
-        .flush_i    ( 1'b0   ),
-        .usage_o    (  ),
-        .data_i     ( data_i  [in_route][in_phys_channel] ),
-        .valid_i    ( valid_i [in_route][v_chan]          ),
-        .ready_o    ( ready_o [in_route][v_chan]          ),
-        .data_o     ( in_data [in_route][v_chan]          ),
-        .valid_o    ( in_valid[in_route][v_chan]          ),
-        .ready_i    ( in_ready[in_route][v_chan]          )
+          .clk_i     (clk_i),
+          .rst_ni    (rst_ni),
+          .testmode_i(test_enable_i),
+          .flush_i   (1'b0),
+          .usage_o   (),
+          .data_i    (data_i[in_route][in_phys_channel]),
+          .valid_i   (valid_i[in_route][v_chan]),
+          .ready_o   (ready_o[in_route][v_chan]),
+          .data_o    (in_data[in_route][v_chan]),
+          .valid_o   (in_valid[in_route][v_chan]),
+          .ready_i   (in_ready[in_route][v_chan])
       );
 
       floo_route_select #(
-        .NumRoutes    ( NumOutput    ),
-        .flit_t       ( flit_t       ),
-        .RouteAlgo    ( RouteAlgo    ),
-        .IdWidth      ( IdWidth      ),
-        .id_t         ( id_t         ),
-        .NumAddrRules ( NumAddrRules ),
-        .addr_rule_t  ( addr_rule_t  )
+          .NumRoutes   (NumOutput),
+          .flit_t      (flit_t),
+          .RouteAlgo   (RouteAlgo),
+          .IdWidth     (IdWidth),
+          .border_id_t (border_id_t),
+          .BorderId    (BorderId),
+          .id_t        (id_t),
+          .NumAddrRules(NumAddrRules),
+          .addr_rule_t (addr_rule_t)
       ) i_route_select (
-        .clk_i,
-        .rst_ni,
-        .test_enable_i,
+          .clk_i,
+          .rst_ni,
+          .test_enable_i,
 
-        .xy_id_i        ( xy_id_i                          ),
-        .id_route_map_i ( id_route_map_i                   ),
-        .channel_i      ( in_data       [in_route][v_chan] ),
-        .valid_i        ( in_valid      [in_route][v_chan] ),
-        .ready_i        ( in_ready      [in_route][v_chan] ),
-        .channel_o      ( in_routed_data[in_route][v_chan] ),
-        .route_sel_o    ( route_mask    [in_route][v_chan] )
+          .xy_id_i       (xy_id_i),
+          .id_route_map_i(id_route_map_i),
+          .channel_i     (in_data[in_route][v_chan]),
+          .valid_i       (in_valid[in_route][v_chan]),
+          .ready_i       (in_ready[in_route][v_chan]),
+          .channel_o     (in_routed_data[in_route][v_chan]),
+          .route_sel_o   (route_mask[in_route][v_chan])
       );
 
     end
   end
 
-  localparam int unsigned NumInputLimited = NoLoopback ? NumInput-1 : NumInput;
+  localparam int unsigned NumInputLimited = NoLoopback ? NumInput - 1 : NumInput;
 
   logic [NumOutput-1:0][NumVirtChannels-1:0][NumInputLimited-1:0] masked_valid, masked_ready;
   logic [NumInput-1:0][NumVirtChannels-1:0][NumOutput-1:0] masked_all_ready;
@@ -133,8 +139,7 @@ module floo_router import floo_pkg::*; #(
             masked_ready[out_route][v_chan][ModInRoute];
           assign masked_valid[out_route][v_chan][ModInRoute] =
             in_valid[in_route][v_chan] & route_mask[in_route][v_chan][out_route];
-          assign masked_data[out_route][v_chan][ModInRoute] =
-            in_routed_data[in_route][v_chan];
+          assign masked_data[out_route][v_chan][ModInRoute] = in_routed_data[in_route][v_chan];
         end
       end
       assign in_ready[in_route][v_chan] =
@@ -144,8 +149,8 @@ module floo_router import floo_pkg::*; #(
 
 
   flit_t [NumOutput-1:0][NumVirtChannels-1:0] out_data, out_buffered_data;
-  logic  [NumOutput-1:0][NumVirtChannels-1:0] out_valid, out_ready;
-  logic  [NumOutput-1:0][NumVirtChannels-1:0] out_buffered_valid, out_buffered_ready;
+  logic [NumOutput-1:0][NumVirtChannels-1:0] out_valid, out_ready;
+  logic [NumOutput-1:0][NumVirtChannels-1:0] out_buffered_valid, out_buffered_ready;
 
   for (genvar out_route = 0; out_route < NumOutput; out_route++) begin : gen_output
 
@@ -153,62 +158,62 @@ module floo_router import floo_pkg::*; #(
     for (genvar v_chan = 0; v_chan < NumVirtChannels; v_chan++) begin : gen_virt_output
 
       floo_wormhole_arbiter #(
-        .NumRoutes  ( NumInputLimited ),
-        .flit_t     ( flit_t          )
+          .NumRoutes(NumInputLimited),
+          .flit_t   (flit_t)
       ) i_wormhole_arbiter (
-        .clk_i,
-        .rst_ni,
+          .clk_i,
+          .rst_ni,
 
-        .valid_i ( masked_valid[out_route][v_chan] ),
-        .ready_o ( masked_ready[out_route][v_chan] ),
-        .data_i  ( masked_data [out_route][v_chan] ),
+          .valid_i(masked_valid[out_route][v_chan]),
+          .ready_o(masked_ready[out_route][v_chan]),
+          .data_i (masked_data[out_route][v_chan]),
 
-        .valid_o ( out_valid[out_route][v_chan] ),
-        .ready_i ( out_ready[out_route][v_chan] ),
-        .data_o  ( out_data [out_route][v_chan] )
+          .valid_o(out_valid[out_route][v_chan]),
+          .ready_i(out_ready[out_route][v_chan]),
+          .data_o (out_data[out_route][v_chan])
       );
 
       if (OutputFifoDepth > 0) begin : gen_out_fifo
         (* ungroup *)
         stream_fifo_optimal_wrap #(
-          .Depth  ( OutputFifoDepth ),
-          .type_t ( flit_t           )
+            .Depth (OutputFifoDepth),
+            .type_t(flit_t)
         ) i_stream_fifo (
-          .clk_i      ( clk_i         ),
-          .rst_ni     ( rst_ni        ),
-          .testmode_i ( test_enable_i ),
-          .flush_i    ( 1'b0   ),
-          .usage_o    (  ),
-          .data_i     ( out_data          [out_route][v_chan] ),
-          .valid_i    ( out_valid         [out_route][v_chan] ),
-          .ready_o    ( out_ready         [out_route][v_chan] ),
-          .data_o     ( out_buffered_data [out_route][v_chan] ),
-          .valid_o    ( out_buffered_valid[out_route][v_chan] ),
-          .ready_i    ( out_buffered_ready[out_route][v_chan] )
+            .clk_i     (clk_i),
+            .rst_ni    (rst_ni),
+            .testmode_i(test_enable_i),
+            .flush_i   (1'b0),
+            .usage_o   (),
+            .data_i    (out_data[out_route][v_chan]),
+            .valid_i   (out_valid[out_route][v_chan]),
+            .ready_o   (out_ready[out_route][v_chan]),
+            .data_o    (out_buffered_data[out_route][v_chan]),
+            .valid_o   (out_buffered_valid[out_route][v_chan]),
+            .ready_i   (out_buffered_ready[out_route][v_chan])
         );
       end else begin : gen_no_out_fifo
-        assign out_buffered_data [out_route][v_chan] = out_data          [out_route][v_chan];
-        assign out_buffered_valid[out_route][v_chan] = out_valid         [out_route][v_chan];
-        assign out_ready         [out_route][v_chan] = out_buffered_ready[out_route][v_chan];
+        assign out_buffered_data[out_route][v_chan]  = out_data[out_route][v_chan];
+        assign out_buffered_valid[out_route][v_chan] = out_valid[out_route][v_chan];
+        assign out_ready[out_route][v_chan]          = out_buffered_ready[out_route][v_chan];
       end
     end
 
     // Arbitrate virtual channels onto the physical channel
     floo_vc_arbiter #(
-      .NumVirtChannels ( NumVirtChannels ),
-      .flit_t          ( flit_t          ),
-      .NumPhysChannels ( NumPhysChannels )
+        .NumVirtChannels(NumVirtChannels),
+        .flit_t         (flit_t),
+        .NumPhysChannels(NumPhysChannels)
     ) i_vc_arbiter (
-      .clk_i,
-      .rst_ni,
+        .clk_i,
+        .rst_ni,
 
-      .valid_i ( out_buffered_valid[out_route] ),
-      .ready_o ( out_buffered_ready[out_route] ),
-      .data_i  ( out_buffered_data [out_route] ),
+        .valid_i(out_buffered_valid[out_route]),
+        .ready_o(out_buffered_ready[out_route]),
+        .data_i (out_buffered_data[out_route]),
 
-      .ready_i ( ready_i  [out_route] ),
-      .valid_o ( valid_o  [out_route] ),
-      .data_o  ( data_o   [out_route] )
+        .ready_i(ready_i[out_route]),
+        .valid_o(valid_o[out_route]),
+        .data_o (data_o[out_route])
     );
   end
 
@@ -234,7 +239,7 @@ module floo_router import floo_pkg::*; #(
   if ((RouteAlgo == XYRouting) && XYRouteOpt) begin : gen_xy_opt_assert
     for (genvar v = 0; v < NumVirtChannels; v++) begin : gen_virt
       `ASSERT(XYDirectionNotAllowed,
-          !(in_valid[South][v] && route_mask[South][v][East]) &&
+              !(in_valid[South][v] && route_mask[South][v][East]) &&
           !(in_valid[South][v] && route_mask[South][v][West]) &&
           !(in_valid[North][v] && route_mask[North][v][East]) &&
           !(in_valid[North][v] && route_mask[North][v][West]))

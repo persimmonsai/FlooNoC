@@ -463,6 +463,7 @@ class Routing(BaseModel):
     table: Optional[RouteMap] = None
     addr_offset_bits: Optional[int] = None
     id_offset: Optional[Id] = None
+    border_id: Optional[dict] = None
     num_endpoints: Optional[int] = None
     num_id_bits: Optional[int] = None
     num_x_bits: Optional[int] = None
@@ -498,6 +499,12 @@ class Routing(BaseModel):
         if self.route_algo == RouteAlgo.XY:
             string += sv_param_decl("XYAddrOffsetX", self.addr_offset_bits)
             string += sv_param_decl("XYAddrOffsetY", self.addr_offset_bits + self.num_x_bits)
+            border_id_render = ""
+            border_id_render += "'{{north: {}, ".format(self.border_id["north"])
+            border_id_render += "west: {}, ".format(self.border_id["west"])
+            border_id_render += "south: {}, ".format(self.border_id["south"])
+            border_id_render += "east: {}}}".format(self.border_id["east"])
+            string += sv_param_decl("BorderId", border_id_render, dtype="border_id_t")
         else:
             string += sv_param_decl("XYAddrOffsetX", 0)
             string += sv_param_decl("XYAddrOffsetY", 0)
@@ -505,6 +512,7 @@ class Routing(BaseModel):
             string += sv_param_decl("IdAddrOffset", self.addr_offset_bits)
         else:
             string += sv_param_decl("IdAddrOffset", 0)
+
         return string
 
     def render_typedefs(self) -> str:

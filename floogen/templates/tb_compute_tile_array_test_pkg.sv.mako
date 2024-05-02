@@ -8,7 +8,7 @@
 `include "floo_noc/typedef.svh"
 
 // Simulation parameter for compute tile array model
-package ${noc.name}_test_pkg;
+package compute_tile_array_test_pkg;
 
   import floo_narrow_wide_pkg::sam_rule_t;
   import floo_narrow_wide_pkg::Sam;

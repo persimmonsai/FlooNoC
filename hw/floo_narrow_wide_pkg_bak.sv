@@ -32,44 +32,50 @@ package floo_narrow_wide_pkg;
   localparam int unsigned AxiNarrowInAddrWidth = 48;
   localparam int unsigned AxiNarrowInDataWidth = 64;
   localparam int unsigned AxiNarrowInIdWidth = 4;
-  localparam int unsigned AxiNarrowInUserWidth = 5;
+  localparam int unsigned AxiNarrowInUserWidth = 1;
 
 
   localparam int unsigned AxiNarrowOutAddrWidth = 48;
   localparam int unsigned AxiNarrowOutDataWidth = 64;
-  localparam int unsigned AxiNarrowOutIdWidth = 10;
-  localparam int unsigned AxiNarrowOutUserWidth = 5;
+  localparam int unsigned AxiNarrowOutIdWidth = 2;
+  localparam int unsigned AxiNarrowOutUserWidth = 1;
 
 
   localparam int unsigned AxiWideInAddrWidth = 48;
-  localparam int unsigned AxiWideInDataWidth = 512;
+  localparam int unsigned AxiWideInDataWidth = 64;
   localparam int unsigned AxiWideInIdWidth = 4;
   localparam int unsigned AxiWideInUserWidth = 1;
 
 
   localparam int unsigned AxiWideOutAddrWidth = 48;
-  localparam int unsigned AxiWideOutDataWidth = 512;
-  localparam int unsigned AxiWideOutIdWidth = 10;
+  localparam int unsigned AxiWideOutDataWidth = 64;
+  localparam int unsigned AxiWideOutIdWidth = 1;
   localparam int unsigned AxiWideOutUserWidth = 1;
 
 
-  localparam int unsigned AxiNarrowMetabuffAddrWidth = 48;
-  localparam int unsigned AxiNarrowMetabuffDataWidth = 64;
-  localparam int unsigned AxiNarrowMetabuffIdWidth = 10;
-  localparam int unsigned AxiNarrowMetabuffUserWidth = 5;
+  localparam int unsigned AxiJoinOutAddrWidth = 48;
+  localparam int unsigned AxiJoinOutDataWidth = 64;
+  localparam int unsigned AxiJoinOutIdWidth = 3;
+  localparam int unsigned AxiJoinOutUserWidth = 1;
 
 
-  localparam int unsigned AxiWideMetabuffAddrWidth = 48;
-  localparam int unsigned AxiWideMetabuffDataWidth = 512;
-  localparam int unsigned AxiWideMetabuffIdWidth = 10;
-  localparam int unsigned AxiWideMetabuffUserWidth = 1;
+  localparam int unsigned AxiNarrowMetaBuffAddrWidth = 48;
+  localparam int unsigned AxiNarrowMetaBuffDataWidth = 64;
+  localparam int unsigned AxiNarrowMetaBuffIdWidth = 4; // = max(AxiNarrowInIdWidth, AxiNarrowOutIdWidth)
+  localparam int unsigned AxiNarrowMetaBuffUserWidth = 1;
+
+
+  localparam int unsigned AxiWideMetaBuffAddrWidth = 48;
+  localparam int unsigned AxiWideMetaBuffDataWidth = 64;
+  localparam int unsigned AxiWideMetaBuffIdWidth = 4;  // = max(AxiWideInIdWidth, AxiWideOutIdWidth)
+  localparam int unsigned AxiWideMetaBuffUserWidth = 1;
 
 
   typedef logic [47:0] axi_narrow_in_addr_t;
   typedef logic [63:0] axi_narrow_in_data_t;
   typedef logic [7:0] axi_narrow_in_strb_t;
   typedef logic [3:0] axi_narrow_in_id_t;
-  typedef logic [4:0] axi_narrow_in_user_t;
+  typedef logic [0:0] axi_narrow_in_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_narrow_in, axi_narrow_in_req_t, axi_narrow_in_rsp_t, axi_narrow_in_addr_t,
                       axi_narrow_in_id_t, axi_narrow_in_data_t, axi_narrow_in_strb_t,
                       axi_narrow_in_user_t)
@@ -78,16 +84,16 @@ package floo_narrow_wide_pkg;
   typedef logic [47:0] axi_narrow_out_addr_t;
   typedef logic [63:0] axi_narrow_out_data_t;
   typedef logic [7:0] axi_narrow_out_strb_t;
-  typedef logic [9:0] axi_narrow_out_id_t;
-  typedef logic [4:0] axi_narrow_out_user_t;
+  typedef logic [1:0] axi_narrow_out_id_t;
+  typedef logic [0:0] axi_narrow_out_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_narrow_out, axi_narrow_out_req_t, axi_narrow_out_rsp_t,
                       axi_narrow_out_addr_t, axi_narrow_out_id_t, axi_narrow_out_data_t,
                       axi_narrow_out_strb_t, axi_narrow_out_user_t)
 
 
   typedef logic [47:0] axi_wide_in_addr_t;
-  typedef logic [511:0] axi_wide_in_data_t;
-  typedef logic [63:0] axi_wide_in_strb_t;
+  typedef logic [63:0] axi_wide_in_data_t;
+  typedef logic [7:0] axi_wide_in_strb_t;
   typedef logic [3:0] axi_wide_in_id_t;
   typedef logic [0:0] axi_wide_in_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_in, axi_wide_in_req_t, axi_wide_in_rsp_t, axi_wide_in_addr_t,
@@ -95,20 +101,30 @@ package floo_narrow_wide_pkg;
 
 
   typedef logic [47:0] axi_wide_out_addr_t;
-  typedef logic [511:0] axi_wide_out_data_t;
-  typedef logic [63:0] axi_wide_out_strb_t;
-  typedef logic [9:0] axi_wide_out_id_t;
+  typedef logic [63:0] axi_wide_out_data_t;
+  typedef logic [7:0] axi_wide_out_strb_t;
+  typedef logic [0:0] axi_wide_out_id_t;
   typedef logic [0:0] axi_wide_out_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_out, axi_wide_out_req_t, axi_wide_out_rsp_t, axi_wide_out_addr_t,
                       axi_wide_out_id_t, axi_wide_out_data_t, axi_wide_out_strb_t,
                       axi_wide_out_user_t)
 
 
+  typedef logic [47:0] axi_join_out_addr_t;
+  typedef logic [63:0] axi_join_out_data_t;
+  typedef logic [7:0] axi_join_out_strb_t;
+  typedef logic [2:0] axi_join_out_id_t;
+  typedef logic [0:0] axi_join_out_user_t;
+  `AXI_TYPEDEF_ALL_CT(axi_join_out, axi_join_out_req_t, axi_join_out_rsp_t, axi_join_out_addr_t,
+                      axi_join_out_id_t, axi_join_out_data_t, axi_join_out_strb_t,
+                      axi_join_out_user_t)
+
+
   typedef logic [47:0] axi_narrow_metabuff_addr_t;
   typedef logic [63:0] axi_narrow_metabuff_data_t;
   typedef logic [7:0] axi_narrow_metabuff_strb_t;
-  typedef logic [9:0] axi_narrow_metabuff_id_t;
-  typedef logic [4:0] axi_narrow_metabuff_user_t;
+  typedef logic [3:0] axi_narrow_metabuff_id_t;
+  typedef logic [0:0] axi_narrow_metabuff_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_narrow_metabuff, axi_narrow_metabuff_req_t, axi_narrow_metabuff_rsp_t,
                       axi_narrow_metabuff_addr_t, axi_narrow_metabuff_id_t,
                       axi_narrow_metabuff_data_t, axi_narrow_metabuff_strb_t,
@@ -116,14 +132,13 @@ package floo_narrow_wide_pkg;
 
 
   typedef logic [47:0] axi_wide_metabuff_addr_t;
-  typedef logic [511:0] axi_wide_metabuff_data_t;
-  typedef logic [63:0] axi_wide_metabuff_strb_t;
-  typedef logic [9:0] axi_wide_metabuff_id_t;
+  typedef logic [63:0] axi_wide_metabuff_data_t;
+  typedef logic [7:0] axi_wide_metabuff_strb_t;
+  typedef logic [3:0] axi_wide_metabuff_id_t;
   typedef logic [0:0] axi_wide_metabuff_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_metabuff, axi_wide_metabuff_req_t, axi_wide_metabuff_rsp_t,
                       axi_wide_metabuff_addr_t, axi_wide_metabuff_id_t, axi_wide_metabuff_data_t,
                       axi_wide_metabuff_strb_t, axi_wide_metabuff_user_t)
-
 
 
   /////////////////////////
@@ -131,7 +146,7 @@ package floo_narrow_wide_pkg;
   /////////////////////////
 
   typedef logic [3:0] rob_idx_t;
-  typedef logic [3:0] x_bits_t;
+  typedef logic [2:0] x_bits_t;
   typedef logic [2:0] y_bits_t;
   typedef struct packed {
     x_bits_t x;
@@ -152,11 +167,11 @@ package floo_narrow_wide_pkg;
   localparam route_algo_e RouteAlgo = XYRouting;
   localparam bit XYRouteOpt = 1'b0;
   localparam bit UseIdTable = 1'b1;
-  localparam int unsigned NumXBits = 4;
+  localparam int unsigned NumXBits = 3;
   localparam int unsigned NumYBits = 3;
-  localparam int unsigned XYAddrOffsetX = 40;
-  localparam int unsigned XYAddrOffsetY = 44;
-  localparam border_id_t BorderId = '{north: 5, west: 0, south: 0, east: 9};
+  localparam int unsigned XYAddrOffsetX = 37;
+  localparam int unsigned XYAddrOffsetY = 40;
+  localparam border_id_t BorderId = '{north: 5, west: 0, south: 0, east: 6};
   localparam int unsigned IdAddrOffset = 0;
 
 
@@ -176,7 +191,7 @@ package floo_narrow_wide_pkg;
   //   Address Map   //
   /////////////////////
 
-  localparam int unsigned SamNumRules = 55;
+  localparam int unsigned SamNumRules = 38;
 
   typedef struct packed {
     id_t idx;
@@ -286,180 +301,95 @@ package floo_narrow_wide_pkg;
           end_addr: 48'h000010500000
       },  // cluster_ni_4_3
       '{
-          idx: '{x: 6, y: 1},
-          start_addr: 48'h000010500000,
-          end_addr: 48'h000010540000
-      },  // cluster_ni_5_0
-      '{
-          idx: '{x: 6, y: 2},
-          start_addr: 48'h000010540000,
-          end_addr: 48'h000010580000
-      },  // cluster_ni_5_1
-      '{
-          idx: '{x: 6, y: 3},
-          start_addr: 48'h000010580000,
-          end_addr: 48'h0000105c0000
-      },  // cluster_ni_5_2
-      '{
-          idx: '{x: 6, y: 4},
-          start_addr: 48'h0000105c0000,
-          end_addr: 48'h000010600000
-      },  // cluster_ni_5_3
-      '{
-          idx: '{x: 7, y: 1},
-          start_addr: 48'h000010600000,
-          end_addr: 48'h000010640000
-      },  // cluster_ni_6_0
-      '{
-          idx: '{x: 7, y: 2},
-          start_addr: 48'h000010640000,
-          end_addr: 48'h000010680000
-      },  // cluster_ni_6_1
-      '{
-          idx: '{x: 7, y: 3},
-          start_addr: 48'h000010680000,
-          end_addr: 48'h0000106c0000
-      },  // cluster_ni_6_2
-      '{
-          idx: '{x: 7, y: 4},
-          start_addr: 48'h0000106c0000,
-          end_addr: 48'h000010700000
-      },  // cluster_ni_6_3
-      '{
-          idx: '{x: 8, y: 1},
-          start_addr: 48'h000010700000,
-          end_addr: 48'h000010740000
-      },  // cluster_ni_7_0
-      '{
-          idx: '{x: 8, y: 2},
-          start_addr: 48'h000010740000,
-          end_addr: 48'h000010780000
-      },  // cluster_ni_7_1
-      '{
-          idx: '{x: 8, y: 3},
-          start_addr: 48'h000010780000,
-          end_addr: 48'h0000107c0000
-      },  // cluster_ni_7_2
-      '{
-          idx: '{x: 8, y: 4},
-          start_addr: 48'h0000107c0000,
-          end_addr: 48'h000010800000
-      },  // cluster_ni_7_3
-      '{
           idx: '{x: 1, y: 5},
-          start_addr: 48'h001000000000,
-          end_addr: 48'h001040000000
+          start_addr: 48'h000080000000,
+          end_addr: 48'h0000c0000000
       },  // hbm_north_ni_0_0
       '{
           idx: '{x: 2, y: 5},
-          start_addr: 48'h001040000000,
-          end_addr: 48'h001080000000
+          start_addr: 48'h0000c0000000,
+          end_addr: 48'h000100000000
       },  // hbm_north_ni_1_0
       '{
           idx: '{x: 3, y: 5},
-          start_addr: 48'h001080000000,
-          end_addr: 48'h0010c0000000
+          start_addr: 48'h000100000000,
+          end_addr: 48'h000140000000
       },  // hbm_north_ni_2_0
       '{
           idx: '{x: 4, y: 5},
-          start_addr: 48'h0010c0000000,
-          end_addr: 48'h001100000000
+          start_addr: 48'h000140000000,
+          end_addr: 48'h000180000000
       },  // hbm_north_ni_3_0
       '{
           idx: '{x: 5, y: 5},
-          start_addr: 48'h001100000000,
-          end_addr: 48'h001140000000
+          start_addr: 48'h000180000000,
+          end_addr: 48'h0001c0000000
       },  // hbm_north_ni_4_0
       '{
-          idx: '{x: 6, y: 5},
-          start_addr: 48'h001140000000,
-          end_addr: 48'h001180000000
-      },  // hbm_north_ni_5_0
-      '{
-          idx: '{x: 7, y: 5},
-          start_addr: 48'h001180000000,
-          end_addr: 48'h0011c0000000
-      },  // hbm_north_ni_6_0
-      '{
-          idx: '{x: 8, y: 5},
-          start_addr: 48'h0011c0000000,
-          end_addr: 48'h001200000000
-      },  // hbm_north_ni_7_0
-      '{
           idx: '{x: 1, y: 0},
-          start_addr: 48'h000200000000,
-          end_addr: 48'h000240000000
+          start_addr: 48'h000800000000,
+          end_addr: 48'h000840000000
       },  // hbm_south_ni_0_0
       '{
           idx: '{x: 2, y: 0},
-          start_addr: 48'h000240000000,
-          end_addr: 48'h000280000000
+          start_addr: 48'h000840000000,
+          end_addr: 48'h000880000000
       },  // hbm_south_ni_1_0
       '{
           idx: '{x: 3, y: 0},
-          start_addr: 48'h000280000000,
-          end_addr: 48'h0002c0000000
+          start_addr: 48'h000880000000,
+          end_addr: 48'h0008c0000000
       },  // hbm_south_ni_2_0
       '{
           idx: '{x: 4, y: 0},
-          start_addr: 48'h0002c0000000,
-          end_addr: 48'h000300000000
+          start_addr: 48'h0008c0000000,
+          end_addr: 48'h000900000000
       },  // hbm_south_ni_3_0
       '{
           idx: '{x: 5, y: 0},
-          start_addr: 48'h000300000000,
-          end_addr: 48'h000340000000
+          start_addr: 48'h000900000000,
+          end_addr: 48'h000940000000
       },  // hbm_south_ni_4_0
       '{
-          idx: '{x: 6, y: 0},
-          start_addr: 48'h000340000000,
-          end_addr: 48'h000380000000
-      },  // hbm_south_ni_5_0
+          idx: '{x: 6, y: 1},
+          start_addr: 48'h001000000000,
+          end_addr: 48'h001040000000
+      },  // hbm_east_ni_0_0
       '{
-          idx: '{x: 7, y: 0},
-          start_addr: 48'h000380000000,
-          end_addr: 48'h0003c0000000
-      },  // hbm_south_ni_6_0
+          idx: '{x: 6, y: 2},
+          start_addr: 48'h001040000000,
+          end_addr: 48'h001080000000
+      },  // hbm_east_ni_0_1
       '{
-          idx: '{x: 8, y: 0},
-          start_addr: 48'h0003c0000000,
-          end_addr: 48'h000400000000
-      },  // hbm_south_ni_7_0
+          idx: '{x: 6, y: 3},
+          start_addr: 48'h001080000000,
+          end_addr: 48'h0010c0000000
+      },  // hbm_east_ni_0_2
       '{
-          idx: '{x: 0, y: 4},
-          start_addr: 48'h000020000000,
-          end_addr: 48'h000070000000
-      },  // pcie_ni
+          idx: '{x: 6, y: 4},
+          start_addr: 48'h0010c0000000,
+          end_addr: 48'h001100000000
+      },  // hbm_east_ni_0_3
       '{
-          idx: '{x: 0, y: 3},
-          start_addr: 48'h000001000000,
-          end_addr: 48'h00000f000000
-      },  // peripherals_ni
+          idx: '{x: 0, y: 1},
+          start_addr: 48'h001800000000,
+          end_addr: 48'h001840000000
+      },  // hbm_west_ni_0_0
       '{
           idx: '{x: 0, y: 2},
-          start_addr: 48'h000000000000,
-          end_addr: 48'h000000001000
-      },  // jtag_ni
+          start_addr: 48'h001840000000,
+          end_addr: 48'h001880000000
+      },  // hbm_west_ni_0_1
       '{
-          idx: '{x: 9, y: 4},
-          start_addr: 48'h000071000000,
-          end_addr: 48'h000071100000
-      },  // spm_wide_ni
+          idx: '{x: 0, y: 3},
+          start_addr: 48'h001880000000,
+          end_addr: 48'h0018c0000000
+      },  // hbm_west_ni_0_2
       '{
-          idx: '{x: 9, y: 3},
-          start_addr: 48'h000070000000,
-          end_addr: 48'h000070080000
-      },  // spm_narrow_ni
-      '{
-          idx: '{x: 9, y: 2},
-          start_addr: 48'h000011000000,
-          end_addr: 48'h000011010000
-      },  // idma_ni
-      '{
-          idx: '{x: 9, y: 1},
-          start_addr: 48'h008000000000,
-          end_addr: 48'h008200000000
-      }  // zero_mem_ni
+          idx: '{x: 0, y: 4},
+          start_addr: 48'h0018c0000000,
+          end_addr: 48'h001900000000
+      }  // hbm_west_ni_0_3
 
   };
 
@@ -470,74 +400,84 @@ package floo_narrow_wide_pkg;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_narrow_in_aw_chan_t aw;
     axi_narrow_metabuff_aw_chan_t aw;
   } floo_narrow_aw_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_narrow_in_w_chan_t w;
     axi_narrow_metabuff_w_chan_t w;
-    logic [19:0] rsvd;
+    logic [13:0] rsvd;
   } floo_narrow_w_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_narrow_in_b_chan_t b;
     axi_narrow_metabuff_b_chan_t b;
     logic [64:0] rsvd;
   } floo_narrow_b_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_narrow_in_ar_chan_t ar;
     axi_narrow_metabuff_ar_chan_t ar;
     logic [5:0] rsvd;
   } floo_narrow_ar_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_narrow_in_r_chan_t r;
     axi_narrow_metabuff_r_chan_t r;
   } floo_narrow_r_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_wide_in_aw_chan_t aw;
     axi_wide_metabuff_aw_chan_t aw;
-    logic [483:0] rsvd;
   } floo_wide_aw_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_wide_in_w_chan_t w;
     axi_wide_metabuff_w_chan_t w;
+    logic [13:0] rsvd;
   } floo_wide_w_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_wide_in_b_chan_t b;
     axi_wide_metabuff_b_chan_t b;
-    logic [68:0] rsvd;
+    logic [64:0] rsvd;
   } floo_wide_b_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_wide_in_ar_chan_t ar;
     axi_wide_metabuff_ar_chan_t ar;
-    logic [9:0] rsvd;
+    logic [5:0] rsvd;
   } floo_wide_ar_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
+    // axi_wide_in_r_chan_t r;
     axi_wide_metabuff_r_chan_t r;
-    logic [51:0] rsvd;
+    logic [15:0] rsvd;
   } floo_wide_r_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
-    logic [97:0] rsvd;
+    logic [87:0] rsvd;
   } floo_req_generic_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
-    logic [81:0] rsvd;
+    logic [71:0] rsvd;
   } floo_rsp_generic_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
-    logic [577:0] rsvd;
+    logic [87:0] rsvd;
   } floo_wide_generic_flit_t;
 
 

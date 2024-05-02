@@ -40,7 +40,7 @@ SNITCH_SW ?= sw/tests/build/fp32_computation_vector.elf
 
 BENDER_FLAGS += -t rtl
 BENDER_FLAGS += -t test
-BENDER_FLAGS += -t dma_test # use for local simulation of FlooNoC system
+BENDER_FLAGS += -t floosim # use for local simulation of FlooNoC system
 #BENDER_FLAGS += -t simulation
 #BENDER_FLAGS += -t cv64a6_imafdc_sv39
 

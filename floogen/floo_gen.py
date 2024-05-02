@@ -172,8 +172,8 @@ def main(): # pylint: disable=too-many-branches
             if not args.no_testbench:
                 if tb_outdir:
                     tb_outdir.mkdir(parents=True, exist_ok=True)
-                    tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
-                    tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
+                    tb_file_name = tb_outdir / ("tb_floo_compute_tile_array.sv")
+                    tb_pkg_file_name = tb_outdir / ("compute_tile_array_test_pkg.sv")
                     testharness_file_name = tb_outdir / "floo_testharness.sv"
                     with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
                         tb_file.write(rendered_tb)

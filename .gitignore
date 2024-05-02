@@ -108,6 +108,7 @@ novas.rc
 simv.vdb
 bin
 logs
+sysBusyPLog
 
 # Fusion Compiler
 fc_output.txt

@@ -11,40 +11,40 @@
 /// that need to be stored until the response arrives.
 /// Also supports atomics with unique IDs.
 module floo_meta_buffer #(
-  /// Maximum number of non-atomic outstanding requests
-  parameter int MaxTxns       = 32'd0,
-  /// Enable support for atomics
-  parameter bit AtopSupport   = 1'b1,
-  /// Number of outstanding atomic requests
-  parameter int MaxAtomicTxns = 32'd1,
-  /// Information to be buffered for responses
-  parameter type buf_t        = logic,
-  /// ID width of incoming requests
-  parameter int IdInWidth     = 32'd4,
-  /// ID width of outgoing requests
-  parameter int IdOutWidth    = 32'd2,
-  /// AXI request channel
-  parameter type axi_req_t    = logic,
-  /// AXI response channel
-  parameter type axi_rsp_t    = logic,
-  /// ID type for incoming requests
-  localparam type id_in_t      = logic[IdInWidth-1:0],
-  /// ID type for outgoing responses
-  localparam type id_out_t     = logic[IdOutWidth-1:0],
-  /// Constant ID for non-atomic requests
-  localparam id_out_t  NonAtomicId = '1
+    /// Maximum number of non-atomic outstanding requests
+    parameter  int      MaxTxns       = 32'd0,
+    /// Enable support for atomics
+    parameter  bit      AtopSupport   = 1'b1,
+    /// Number of outstanding atomic requests
+    parameter  int      MaxAtomicTxns = 32'd1,
+    /// Information to be buffered for responses
+    parameter  type     buf_t         = logic,
+    /// ID width of incoming requests
+    parameter  int      IdInWidth     = 32'd4,
+    /// ID width of outgoing requests
+    parameter  int      IdOutWidth    = 32'd2,
+    /// AXI request channel
+    parameter  type     axi_req_t     = logic,
+    /// AXI response channel
+    parameter  type     axi_rsp_t     = logic,
+    /// ID type for incoming requests
+    localparam type     id_in_t       = logic [ IdInWidth-1:0],
+    /// ID type for outgoing responses
+    localparam type     id_out_t      = logic [IdOutWidth-1:0],
+    /// Constant ID for non-atomic requests
+    localparam id_out_t NonAtomicId   = '1
 ) (
-  input  logic clk_i,
-  input  logic rst_ni,
-  input  logic test_enable_i,
-  input  axi_req_t axi_req_i,
-  output axi_rsp_t axi_rsp_o,
-  output axi_req_t axi_req_o,
-  input  axi_rsp_t axi_rsp_i,
-  input  buf_t aw_buf_i,
-  input  buf_t ar_buf_i,
-  output buf_t r_buf_o,
-  output buf_t b_buf_o
+    input logic clk_i,
+    input logic rst_ni,
+    input logic test_enable_i,
+    input axi_req_t axi_req_i,  // Request in from network
+    output axi_rsp_t axi_rsp_o,  // Response out to network
+    output axi_req_t axi_req_o,  // Request out to the end point
+    input axi_rsp_t axi_rsp_i,  // Response in from the end point
+    input buf_t aw_buf_i,
+    input buf_t ar_buf_i,
+    output buf_t r_buf_o,
+    output buf_t b_buf_o
 );
 
   logic ar_no_atop_buf_full, aw_no_atop_buf_full;
@@ -57,39 +57,39 @@ module floo_meta_buffer #(
   buf_t [MaxAtomicTxns-1:0] atop_r_buf, atop_b_buf;
 
   fifo_v3 #(
-    .FALL_THROUGH ( 1'b0    ),
-    .DEPTH        ( MaxTxns ),
-    .dtype        ( buf_t   )
+      .FALL_THROUGH(1'b0),
+      .DEPTH       (MaxTxns),
+      .dtype       (buf_t)
   ) i_ar_no_atop_fifo (
-    .clk_i,
-    .rst_ni,
-    .flush_i    ( 1'b0                ),
-    .testmode_i ( test_enable_i       ),
-    .full_o     ( ar_no_atop_buf_full ),
-    .empty_o    (                     ),
-    .usage_o    (                     ),
-    .data_i     ( ar_buf_i            ),
-    .push_i     ( ar_no_atop_push     ),
-    .data_o     ( no_atop_r_buf       ),
-    .pop_i      ( ar_no_atop_pop      )
+      .clk_i,
+      .rst_ni,
+      .flush_i   (1'b0),
+      .testmode_i(test_enable_i),
+      .full_o    (ar_no_atop_buf_full),
+      .empty_o   (),
+      .usage_o   (),
+      .data_i    (ar_buf_i),
+      .push_i    (ar_no_atop_push),
+      .data_o    (no_atop_r_buf),
+      .pop_i     (ar_no_atop_pop)
   );
 
   fifo_v3 #(
-    .FALL_THROUGH ( 1'b0    ),
-    .DEPTH        ( MaxTxns ),
-    .dtype        ( buf_t   )
+      .FALL_THROUGH(1'b0),
+      .DEPTH       (MaxTxns),
+      .dtype       (buf_t)
   ) i_aw_no_atop_fifo (
-    .clk_i,
-    .rst_ni,
-    .flush_i    ( 1'b0                ),
-    .testmode_i ( test_enable_i       ),
-    .full_o     ( aw_no_atop_buf_full ),
-    .empty_o    (                     ),
-    .usage_o    (                     ),
-    .data_i     ( aw_buf_i            ),
-    .push_i     ( aw_no_atop_push     ),
-    .data_o     ( no_atop_b_buf       ),
-    .pop_i      ( aw_no_atop_pop      )
+      .clk_i,
+      .rst_ni,
+      .flush_i   (1'b0),
+      .testmode_i(test_enable_i),
+      .full_o    (aw_no_atop_buf_full),
+      .empty_o   (),
+      .usage_o   (),
+      .data_i    (aw_buf_i),
+      .push_i    (aw_no_atop_push),
+      .data_o    (no_atop_b_buf),
+      .pop_i     (aw_no_atop_pop)
   );
 
   // Non-atomic AR's
@@ -106,8 +106,8 @@ module floo_meta_buffer #(
   `ASSERT(NoAtopSupport, !(!AtopSupport && is_atop_aw),
           "Atomics not supported, but atomic request received!")
 
-  assign r_buf_o = (is_atop_r_rsp && AtopSupport)? atop_r_buf[axi_rsp_i.r.id] : no_atop_r_buf;
-  assign b_buf_o = (is_atop_b_rsp && AtopSupport)? atop_b_buf[axi_rsp_i.b.id] : no_atop_b_buf;
+  assign r_buf_o = (is_atop_r_rsp && AtopSupport) ? atop_r_buf[axi_rsp_i.r.id] : no_atop_r_buf;
+  assign b_buf_o = (is_atop_b_rsp && AtopSupport) ? atop_b_buf[axi_rsp_i.b.id] : no_atop_b_buf;
 
   if (AtopSupport) begin : gen_atop_support
 
@@ -123,33 +123,33 @@ module floo_meta_buffer #(
     assign no_atop_id_available = (available_atop_ids == '0);
 
     stream_register #(
-      .T(buf_t)
-    ) i_ar_atop_regs [MaxAtomicTxns-1:0] (
-      .clk_i,
-      .rst_ni,
-      .clr_i      ( '0                ),
-      .testmode_i ( test_enable_i     ),
-      .valid_i    ( ar_atop_reg_push  ),
-      .ready_o    ( ar_atop_reg_empty ),
-      .data_i     ( ar_buf_i          ),
-      .valid_o    ( ar_atop_reg_full  ),
-      .ready_i    ( ar_atop_reg_pop   ),
-      .data_o     ( atop_r_buf        )
+        .T(buf_t)
+    ) i_ar_atop_regs[MaxAtomicTxns-1:0] (
+        .clk_i,
+        .rst_ni,
+        .clr_i     ('0),
+        .testmode_i(test_enable_i),
+        .valid_i   (ar_atop_reg_push),
+        .ready_o   (ar_atop_reg_empty),
+        .data_i    (ar_buf_i),
+        .valid_o   (ar_atop_reg_full),
+        .ready_i   (ar_atop_reg_pop),
+        .data_o    (atop_r_buf)
     );
 
     stream_register #(
-      .T(buf_t)
-    ) i_aw_atop_regs [MaxAtomicTxns-1:0] (
-      .clk_i,
-      .rst_ni,
-      .clr_i      ( '0                ),
-      .testmode_i ( test_enable_i     ),
-      .valid_i    ( aw_atop_reg_push  ),
-      .ready_o    ( aw_atop_reg_empty ),
-      .data_i     ( aw_buf_i          ),
-      .valid_o    ( aw_atop_reg_full  ),
-      .ready_i    ( aw_atop_reg_pop   ),
-      .data_o     ( atop_b_buf        )
+        .T(buf_t)
+    ) i_aw_atop_regs[MaxAtomicTxns-1:0] (
+        .clk_i,
+        .rst_ni,
+        .clr_i     ('0),
+        .testmode_i(test_enable_i),
+        .valid_i   (aw_atop_reg_push),
+        .ready_o   (aw_atop_reg_empty),
+        .data_i    (aw_buf_i),
+        .valid_o   (aw_atop_reg_full),
+        .ready_i   (aw_atop_reg_pop),
+        .data_o    (atop_b_buf)
     );
 
     typedef logic [cf_math_pkg::idx_width(MaxAtomicTxns)-1:0] atop_req_id_t;
@@ -158,14 +158,14 @@ module floo_meta_buffer #(
     logic atop_req_pending_q, atop_req_pending_d;
 
     lzc #(
-      .WIDTH  (MaxAtomicTxns)
+        .WIDTH(MaxAtomicTxns)
     ) i_lzc (
-      .in_i     ( available_atop_ids  ),
-      .cnt_o    ( lzc_cnt_d           ),
-      .empty_o  (                     )
+        .in_i   (available_atop_ids),
+        .cnt_o  (lzc_cnt_d),
+        .empty_o()
     );
 
-    assign atop_req_id = (atop_req_pending_q)? lzc_cnt_q : lzc_cnt_d;
+    assign atop_req_id = (atop_req_pending_q) ? lzc_cnt_q : lzc_cnt_d;
     assign atop_req_pending_d = is_atop_aw && axi_req_o.aw_valid && !axi_rsp_i.aw_ready;
 
     `FF(atop_req_pending_q, atop_req_pending_d, '0)
@@ -189,7 +189,7 @@ module floo_meta_buffer #(
       axi_rsp_o = axi_rsp_i;
       // Use fixed ID for non-atomic requests and unique ID for atomic requests
       axi_req_o.ar.id = NonAtomicId;
-      axi_req_o.aw.id = (is_atop_aw && AtopSupport)? atop_req_id : NonAtomicId;
+      axi_req_o.aw.id = (is_atop_aw && AtopSupport) ? atop_req_id : NonAtomicId;
       // Use original, buffered ID again for responses
       axi_rsp_o.r.id = (is_atop_r_rsp && AtopSupport)?
                         atop_r_buf[axi_rsp_i.r.id] : no_atop_r_buf.id;

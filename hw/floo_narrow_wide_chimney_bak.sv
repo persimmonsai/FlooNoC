@@ -87,16 +87,16 @@ module floo_narrow_wide_chimney
 
   // Duplicate AXI port signals to degenerate ports
   // in case they are not used
-  axi_narrow_metabuff_req_t axi_narrow_req_in;
-  axi_narrow_metabuff_rsp_t axi_narrow_rsp_out;
-  axi_wide_metabuff_req_t axi_wide_req_in;
-  axi_wide_metabuff_rsp_t axi_wide_rsp_out;
+  axi_narrow_in_req_t axi_narrow_req_in;
+  axi_narrow_in_rsp_t axi_narrow_rsp_out;
+  axi_wide_in_req_t axi_wide_req_in;
+  axi_wide_in_rsp_t axi_wide_rsp_out;
 
   // AX queue
-  axi_narrow_metabuff_aw_chan_t axi_narrow_aw_queue;
-  axi_narrow_metabuff_ar_chan_t axi_narrow_ar_queue;
-  axi_wide_metabuff_aw_chan_t axi_wide_aw_queue;
-  axi_wide_metabuff_ar_chan_t axi_wide_ar_queue;
+  axi_narrow_in_aw_chan_t axi_narrow_aw_queue;
+  axi_narrow_in_ar_chan_t axi_narrow_ar_queue;
+  axi_wide_in_aw_chan_t axi_wide_aw_queue;
+  axi_wide_in_ar_chan_t axi_wide_ar_queue;
   logic axi_narrow_aw_queue_valid_out, axi_narrow_aw_queue_ready_in;
   logic axi_narrow_ar_queue_valid_out, axi_narrow_ar_queue_ready_in;
   logic axi_wide_aw_queue_valid_out, axi_wide_aw_queue_ready_in;
@@ -138,25 +138,25 @@ module floo_narrow_wide_chimney
   aw_w_sel_e wide_aw_w_sel_q, wide_aw_w_sel_d;
 
   // Flit unpacking
-  axi_narrow_metabuff_aw_chan_t axi_narrow_unpack_aw;
-  axi_narrow_metabuff_w_chan_t  axi_narrow_unpack_w;
-  axi_narrow_metabuff_b_chan_t  axi_narrow_unpack_b;
-  axi_narrow_metabuff_ar_chan_t axi_narrow_unpack_ar;
-  axi_narrow_metabuff_r_chan_t  axi_narrow_unpack_r;
-  axi_wide_metabuff_aw_chan_t   axi_wide_unpack_aw;
-  axi_wide_metabuff_w_chan_t    axi_wide_unpack_w;
-  axi_wide_metabuff_b_chan_t    axi_wide_unpack_b;
-  axi_wide_metabuff_ar_chan_t   axi_wide_unpack_ar;
-  axi_wide_metabuff_r_chan_t    axi_wide_unpack_r;
+  axi_narrow_in_aw_chan_t axi_narrow_unpack_aw;
+  axi_narrow_in_w_chan_t  axi_narrow_unpack_w;
+  axi_narrow_in_b_chan_t  axi_narrow_unpack_b;
+  axi_narrow_in_ar_chan_t axi_narrow_unpack_ar;
+  axi_narrow_in_r_chan_t  axi_narrow_unpack_r;
+  axi_wide_in_aw_chan_t   axi_wide_unpack_aw;
+  axi_wide_in_w_chan_t    axi_wide_unpack_w;
+  axi_wide_in_b_chan_t    axi_wide_unpack_b;
+  axi_wide_in_ar_chan_t   axi_wide_unpack_ar;
+  axi_wide_in_r_chan_t    axi_wide_unpack_r;
   floo_req_generic_flit_t   floo_req_unpack_generic;
   floo_rsp_generic_flit_t   floo_rsp_unpack_generic;
   floo_wide_generic_flit_t  floo_wide_unpack_generic;
 
   // Meta Buffers
-  axi_narrow_metabuff_req_t axi_narrow_meta_buf_req_in, axi_narrow_meta_buf_req_out;
-  axi_narrow_metabuff_rsp_t axi_narrow_meta_buf_rsp_in, axi_narrow_meta_buf_rsp_out;
-  axi_wide_metabuff_req_t axi_wide_meta_buf_req_in, axi_wide_meta_buf_req_out;
-  axi_wide_metabuff_rsp_t axi_wide_meta_buf_rsp_in, axi_wide_meta_buf_rsp_out;
+  axi_narrow_in_req_t axi_narrow_meta_buf_req_in, axi_narrow_meta_buf_req_out;
+  axi_narrow_in_rsp_t axi_narrow_meta_buf_rsp_in, axi_narrow_meta_buf_rsp_out;
+  axi_wide_in_req_t axi_wide_meta_buf_req_in, axi_wide_meta_buf_req_out;
+  axi_wide_in_rsp_t axi_wide_meta_buf_rsp_in, axi_wide_meta_buf_rsp_out;
   `AXI_ASSIGN_REQ_STRUCT(axi_narrow_out_req_o, axi_narrow_meta_buf_req_out)
   `AXI_ASSIGN_RESP_STRUCT(axi_narrow_meta_buf_rsp_in, axi_narrow_out_rsp_i)
   `AXI_ASSIGN_REQ_STRUCT(axi_wide_out_req_o, axi_wide_meta_buf_req_out)
@@ -164,18 +164,18 @@ module floo_narrow_wide_chimney
 
   // ID tracking
   typedef struct packed {
-    axi_narrow_metabuff_id_t id;
-    logic                    rob_req;
-    rob_idx_t                rob_idx;
-    id_t                     src_id;
-    logic                    atop;
+    axi_narrow_in_id_t id;
+    logic              rob_req;
+    rob_idx_t          rob_idx;
+    id_t               src_id;
+    logic              atop;
   } narrow_id_out_buf_t;
 
   typedef struct packed {
-    axi_wide_metabuff_id_t id;
-    logic                  rob_req;
-    rob_idx_t              rob_idx;
-    id_t                   src_id;
+    axi_wide_in_id_t id;
+    logic            rob_req;
+    rob_idx_t        rob_idx;
+    id_t             src_id;
   } wide_id_out_buf_t;
 
   // Routing
@@ -196,19 +196,17 @@ module floo_narrow_wide_chimney
 
   if (EnNarrowMgrPort) begin : gen_narrow_sbr_port
 
-    // assign axi_narrow_req_in   = axi_narrow_in_req_i;
-    // assign axi_narrow_in_rsp_o = axi_narrow_rsp_out;
-    `AXI_ASSIGN_REQ_STRUCT(axi_narrow_req_in, axi_narrow_in_req_i)
-    `AXI_ASSIGN_RESP_STRUCT(axi_narrow_in_rsp_o, axi_narrow_rsp_out)
+    assign axi_narrow_req_in   = axi_narrow_in_req_i;
+    assign axi_narrow_in_rsp_o = axi_narrow_rsp_out;
 
     if (CutAx) begin : gen_ax_cuts
       spill_register #(
-          .T(axi_narrow_metabuff_aw_chan_t)
+          .T(axi_narrow_in_aw_chan_t)
       ) i_narrow_aw_queue (
           .clk_i,
           .rst_ni,
-          .data_i (axi_narrow_req_in.aw),
-          .valid_i(axi_narrow_req_in.aw_valid),
+          .data_i (axi_narrow_in_req_i.aw),
+          .valid_i(axi_narrow_in_req_i.aw_valid),
           .ready_o(axi_narrow_rsp_out.aw_ready),
           .data_o (axi_narrow_aw_queue),
           .valid_o(axi_narrow_aw_queue_valid_out),
@@ -216,12 +214,12 @@ module floo_narrow_wide_chimney
       );
 
       spill_register #(
-          .T(axi_narrow_metabuff_ar_chan_t)
+          .T(axi_narrow_in_ar_chan_t)
       ) i_narrow_ar_queue (
           .clk_i,
           .rst_ni,
-          .data_i (axi_narrow_req_in.ar),
-          .valid_i(axi_narrow_req_in.ar_valid),
+          .data_i (axi_narrow_in_req_i.ar),
+          .valid_i(axi_narrow_in_req_i.ar_valid),
           .ready_o(axi_narrow_rsp_out.ar_ready),
           .data_o (axi_narrow_ar_queue),
           .valid_o(axi_narrow_ar_queue_valid_out),
@@ -229,11 +227,11 @@ module floo_narrow_wide_chimney
       );
 
     end else begin : gen_ax_no_cuts
-      assign axi_narrow_aw_queue = axi_narrow_req_in.aw;
-      assign axi_narrow_aw_queue_valid_out = axi_narrow_req_in.aw_valid;
+      assign axi_narrow_aw_queue = axi_narrow_in_req_i.aw;
+      assign axi_narrow_aw_queue_valid_out = axi_narrow_in_req_i.aw_valid;
       assign axi_narrow_rsp_out.aw_ready = axi_narrow_aw_queue_ready_in;
-      assign axi_narrow_ar_queue = axi_narrow_req_in.ar;
-      assign axi_narrow_ar_queue_valid_out = axi_narrow_req_in.ar_valid;
+      assign axi_narrow_ar_queue = axi_narrow_in_req_i.ar;
+      assign axi_narrow_ar_queue_valid_out = axi_narrow_in_req_i.ar_valid;
       assign axi_narrow_rsp_out.ar_ready = axi_narrow_ar_queue_ready_in;
     end
 
@@ -259,19 +257,17 @@ module floo_narrow_wide_chimney
 
   if (EnWideMgrPort) begin : gen_wide_sbr_port
 
-    // assign axi_wide_req_in   = axi_wide_in_req_i;
-    // assign axi_wide_in_rsp_o = axi_wide_rsp_out;
-    `AXI_ASSIGN_REQ_STRUCT(axi_wide_req_in, axi_wide_in_req_i)
-    `AXI_ASSIGN_RESP_STRUCT(axi_wide_in_rsp_o, axi_wide_rsp_out)
+    assign axi_wide_req_in   = axi_wide_in_req_i;
+    assign axi_wide_in_rsp_o = axi_wide_rsp_out;
 
     if (CutAx) begin : gen_ax_cuts
       spill_register #(
-          .T(axi_wide_metabuff_aw_chan_t)
+          .T(axi_wide_in_aw_chan_t)
       ) i_wide_aw_queue (
           .clk_i,
           .rst_ni,
-          .data_i (axi_wide_req_in.aw),
-          .valid_i(axi_wide_req_in.aw_valid),
+          .data_i (axi_wide_in_req_i.aw),
+          .valid_i(axi_wide_in_req_i.aw_valid),
           .ready_o(axi_wide_rsp_out.aw_ready),
           .data_o (axi_wide_aw_queue),
           .valid_o(axi_wide_aw_queue_valid_out),
@@ -279,23 +275,23 @@ module floo_narrow_wide_chimney
       );
 
       spill_register #(
-          .T(axi_wide_metabuff_ar_chan_t)
+          .T(axi_wide_in_ar_chan_t)
       ) i_wide_ar_queue (
           .clk_i,
           .rst_ni,
-          .data_i (axi_wide_req_in.ar),
-          .valid_i(axi_wide_req_in.ar_valid),
+          .data_i (axi_wide_in_req_i.ar),
+          .valid_i(axi_wide_in_req_i.ar_valid),
           .ready_o(axi_wide_rsp_out.ar_ready),
           .data_o (axi_wide_ar_queue),
           .valid_o(axi_wide_ar_queue_valid_out),
           .ready_i(axi_wide_ar_queue_ready_in)
       );
     end else begin : gen_ax_no_cuts
-      assign axi_wide_aw_queue = axi_wide_req_in.aw;
-      assign axi_wide_aw_queue_valid_out = axi_wide_req_in.aw_valid;
+      assign axi_wide_aw_queue = axi_wide_in_req_i.aw;
+      assign axi_wide_aw_queue_valid_out = axi_wide_in_req_i.aw_valid;
       assign axi_wide_rsp_out.aw_ready = axi_wide_aw_queue_ready_in;
-      assign axi_wide_ar_queue = axi_wide_req_in.ar;
-      assign axi_wide_ar_queue_valid_out = axi_wide_req_in.ar_valid;
+      assign axi_wide_ar_queue = axi_wide_in_req_i.ar;
+      assign axi_wide_ar_queue_valid_out = axi_wide_in_req_i.ar_valid;
       assign axi_wide_rsp_out.ar_ready = axi_wide_ar_queue_ready_in;
     end
   end else begin : gen_wide_err_slv_port
@@ -375,14 +371,14 @@ module floo_narrow_wide_chimney
   ///////////////////////
 
   // AW/B RoB
-  axi_narrow_metabuff_b_chan_t axi_narrow_b_rob_out, axi_narrow_b_rob_in;
+  axi_narrow_in_b_chan_t axi_narrow_b_rob_out, axi_narrow_b_rob_in;
   logic narrow_aw_rob_req_out;
   rob_idx_t narrow_aw_rob_idx_out;
   logic narrow_aw_rob_valid_out, narrow_aw_rob_ready_in;
   logic narrow_aw_rob_valid_in, narrow_aw_rob_ready_out;
   logic narrow_b_rob_valid_in, narrow_b_rob_ready_out;
   logic narrow_b_rob_valid_out, narrow_b_rob_ready_in;
-  axi_wide_metabuff_b_chan_t axi_wide_b_rob_out, axi_wide_b_rob_in;
+  axi_wide_in_b_chan_t axi_wide_b_rob_out, axi_wide_b_rob_in;
   logic wide_aw_rob_req_out;
   rob_idx_t wide_aw_rob_idx_out;
   logic wide_aw_rob_valid_out, wide_aw_rob_ready_in;
@@ -390,13 +386,13 @@ module floo_narrow_wide_chimney
   logic wide_b_rob_valid_out, wide_b_rob_ready_in;
 
   // AR/R RoB
-  axi_narrow_metabuff_r_chan_t axi_narrow_r_rob_out, axi_narrow_r_rob_in;
+  axi_narrow_in_r_chan_t axi_narrow_r_rob_out, axi_narrow_r_rob_in;
   logic narrow_ar_rob_req_out;
   rob_idx_t narrow_ar_rob_idx_out;
   logic narrow_ar_rob_valid_out, narrow_ar_rob_ready_in;
   logic narrow_r_rob_valid_in, narrow_r_rob_ready_out;
   logic narrow_r_rob_valid_out, narrow_r_rob_ready_in;
-  axi_wide_metabuff_r_chan_t axi_wide_r_rob_out, axi_wide_r_rob_in;
+  axi_wide_in_r_chan_t axi_wide_r_rob_out, axi_wide_r_rob_in;
   logic wide_ar_rob_req_out;
   rob_idx_t wide_ar_rob_idx_out;
   logic wide_ar_rob_valid_out, wide_ar_rob_ready_in;
@@ -429,9 +425,9 @@ module floo_narrow_wide_chimney
       .MaxRoTxnsPerId   (NarrowMaxTxnsPerId),
       .OnlyMetaData     (1'b1),
       .ax_len_t         (axi_pkg::len_t),
-      .ax_id_t          (axi_narrow_metabuff_id_t),
-      .rsp_chan_t       (axi_narrow_metabuff_b_chan_t),
-      .rsp_meta_t       (axi_narrow_metabuff_b_chan_t),
+      .ax_id_t          (axi_narrow_in_id_t),
+      .rsp_chan_t       (axi_narrow_in_b_chan_t),
+      .rsp_meta_t       (axi_narrow_in_b_chan_t),
       .rob_idx_t        (rob_idx_t),
       .dest_t           (id_t),
       .sram_cfg_t       (sram_cfg_t)
@@ -472,9 +468,9 @@ module floo_narrow_wide_chimney
       .MaxRoTxnsPerId   (WideMaxTxnsPerId),
       .OnlyMetaData     (1'b1),
       .ax_len_t         (axi_pkg::len_t),
-      .ax_id_t          (axi_wide_metabuff_id_t),
-      .rsp_chan_t       (axi_wide_metabuff_b_chan_t),
-      .rsp_meta_t       (axi_wide_metabuff_b_chan_t),
+      .ax_id_t          (axi_wide_in_id_t),
+      .rsp_chan_t       (axi_wide_in_b_chan_t),
+      .rsp_meta_t       (axi_wide_in_b_chan_t),
       .rob_idx_t        (rob_idx_t),
       .dest_t           (id_t),
       .sram_cfg_t       (sram_cfg_t)
@@ -503,17 +499,17 @@ module floo_narrow_wide_chimney
   );
 
   typedef struct packed {
-    axi_narrow_metabuff_id_t   id;
-    axi_narrow_metabuff_user_t user;
-    axi_pkg::resp_t            resp;
-    logic                      last;
+    axi_narrow_in_id_t   id;
+    axi_narrow_in_user_t user;
+    axi_pkg::resp_t      resp;
+    logic                last;
   } narrow_meta_t;
 
   typedef struct packed {
-    axi_wide_metabuff_id_t   id;
-    axi_wide_metabuff_user_t user;
-    axi_pkg::resp_t          resp;
-    logic                    last;
+    axi_wide_in_id_t   id;
+    axi_wide_in_user_t user;
+    axi_pkg::resp_t    resp;
+    logic              last;
   } wide_meta_t;
 
   logic narrow_r_rob_rob_req;
@@ -529,9 +525,9 @@ module floo_narrow_wide_chimney
       .MaxRoTxnsPerId   (NarrowMaxTxnsPerId),
       .OnlyMetaData     (1'b0),
       .ax_len_t         (axi_pkg::len_t),
-      .ax_id_t          (axi_narrow_metabuff_id_t),
-      .rsp_chan_t       (axi_narrow_metabuff_r_chan_t),
-      .rsp_data_t       (axi_narrow_metabuff_data_t),
+      .ax_id_t          (axi_narrow_in_id_t),
+      .rsp_chan_t       (axi_narrow_in_r_chan_t),
+      .rsp_data_t       (axi_narrow_in_data_t),
       .rsp_meta_t       (narrow_meta_t),
       .rob_idx_t        (rob_idx_t),
       .dest_t           (id_t),
@@ -573,9 +569,9 @@ module floo_narrow_wide_chimney
       .MaxRoTxnsPerId   (WideMaxTxnsPerId),
       .OnlyMetaData     (1'b0),
       .ax_len_t         (axi_pkg::len_t),
-      .ax_id_t          (axi_wide_metabuff_id_t),
-      .rsp_chan_t       (axi_wide_metabuff_r_chan_t),
-      .rsp_data_t       (axi_wide_metabuff_data_t),
+      .ax_id_t          (axi_wide_in_id_t),
+      .rsp_chan_t       (axi_wide_in_r_chan_t),
+      .rsp_data_t       (axi_wide_in_data_t),
       .rsp_meta_t       (wide_meta_t),
       .rob_idx_t        (rob_idx_t),
       .dest_t           (id_t),
@@ -608,7 +604,7 @@ module floo_narrow_wide_chimney
   //   ROUTING   //
   /////////////////
 
-  typedef axi_narrow_metabuff_addr_t addr_t;
+  typedef axi_narrow_in_addr_t addr_t;
 
   id_t [3:0] floo_route_comp_id_i;
   assign floo_route_comp_id_i = '0;
@@ -1058,13 +1054,13 @@ module floo_narrow_wide_chimney
         .AtopSupport  (AtopSupport),
         .MaxAtomicTxns(MaxAtomicTxns),
         .buf_t        (narrow_id_out_buf_t),
-        .IdInWidth    (AxiNarrowMetabuffIdWidth),
+        .IdInWidth    (AxiNarrowInIdWidth),
         .IdOutWidth   (AxiNarrowOutIdWidth),
         // ID in/out is equal since all interface input to this module are 
         // already convert to 'axi_narrow_in_req_t' and 'axi_narrow_in_rsp_t' type
         // .IdOutWidth   (AxiNarrowInIdWidth),
-        .axi_req_t    (axi_narrow_metabuff_req_t),
-        .axi_rsp_t    (axi_narrow_metabuff_rsp_t)
+        .axi_req_t    (axi_narrow_in_req_t),
+        .axi_rsp_t    (axi_narrow_in_rsp_t)
     ) i_narrow_meta_buffer (
         .clk_i,
         .rst_ni,
@@ -1080,10 +1076,10 @@ module floo_narrow_wide_chimney
     );
   end else begin : gen_no_narrow_mgr_port
     axi_err_slv #(
-        .AxiIdWidth(AxiNarrowMetabuffIdWidth),
+        .AxiIdWidth(AxiNarrowInIdWidth),
         .ATOPs     (AtopSupport),
-        .axi_req_t (axi_narrow_metabuff_req_t),
-        .axi_resp_t(axi_narrow_metabuff_rsp_t)
+        .axi_req_t (axi_narrow_in_req_t),
+        .axi_resp_t(axi_narrow_in_rsp_t)
     ) i_axi_err_slv (
         .clk_i     (clk_i),
         .rst_ni    (rst_ni),
@@ -1102,10 +1098,10 @@ module floo_narrow_wide_chimney
         .AtopSupport  (1'b1),
         .MaxAtomicTxns(MaxAtomicTxns),
         .buf_t        (wide_id_out_buf_t),
-        .IdInWidth    (AxiWideMetabuffIdWidth),
+        .IdInWidth    (AxiWideInIdWidth),
         .IdOutWidth   (AxiWideOutIdWidth),
-        .axi_req_t    (axi_wide_metabuff_req_t),
-        .axi_rsp_t    (axi_wide_metabuff_rsp_t)
+        .axi_req_t    (axi_wide_in_req_t),
+        .axi_rsp_t    (axi_wide_in_rsp_t)
     ) i_wide_meta_buffer (
         .clk_i,
         .rst_ni,
@@ -1121,10 +1117,10 @@ module floo_narrow_wide_chimney
     );
   end else begin : gen_no_wide_mgr_port
     axi_err_slv #(
-        .AxiIdWidth(AxiWideMetabuffIdWidth),
+        .AxiIdWidth(AxiWideInIdWidth),
         .ATOPs     (1'b1),
-        .axi_req_t (axi_wide_metabuff_req_t),
-        .axi_resp_t(axi_wide_metabuff_rsp_t)
+        .axi_req_t (axi_wide_in_req_t),
+        .axi_resp_t(axi_wide_in_rsp_t)
     ) i_axi_err_slv (
         .clk_i     (clk_i),
         .rst_ni    (rst_ni),

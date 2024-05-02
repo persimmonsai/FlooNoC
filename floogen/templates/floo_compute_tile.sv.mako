@@ -61,7 +61,7 @@ ${wide_type} [West:North] ${router.name}_wide_out;
 
 localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(${actual_xy_id.x}),
   .id_y(${actual_xy_id.y})
@@ -81,6 +81,8 @@ localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   .floo_req_o (${router.name}_req_out),
   .floo_rsp_i (${router.name}_rsp_in),
   .floo_wide_i (${router.name}_wide_in),
-  .floo_wide_o (${router.name}_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (${router.name}_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );

@@ -14,7 +14,7 @@
 module compute_tile
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
     // Additional simulation input port to control simulation behaviour
     parameter int unsigned id_x = 1,
@@ -38,9 +38,11 @@ module compute_tile
     output floo_req_t  [West:North]     floo_req_o,
     input  floo_rsp_t  [West:North]     floo_rsp_i,
     input  floo_wide_t [West:North]     floo_wide_i,
-    output floo_wide_t [West:North]     floo_wide_o,
+    output floo_wide_t [West:North]     floo_wide_o
+`ifndef TARGET_DMA_TEST
     // SRAM configuration
-    input  occamy_pkg::sram_cfgs_t  sram_cfgs_i
+    ,input  occamy_pkg::sram_cfgs_t  sram_cfgs_i
+`endif
 );
   // --- Cluster to NI ---
   // in/out direction type that is declared in this scope is respect to NI
@@ -75,15 +77,30 @@ module compute_tile
   floo_wide_t [NumDirections-1:0] router_wide_out;
 
 // Switch to instantiate module between simulation (with questa) and synthesis
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
   snitch_cluster_test_node  
   #(
     .id_x(id_x),
     .id_y(id_y)
   ) i_snitch_cluster_test_node
+  (
+    .clk_i (clk_i),
+    .rst_ni (rst_ni),
+    // Narrow AXI Master
+    .narrow_out_req_o (cluster_to_ni_narrow_req),
+    .narrow_out_resp_i (ni_to_cluster_narrow_resp),
+    // Narrow AXI Slave
+    .narrow_in_req_i (ni_to_cluster_narrow_req),
+    .narrow_in_resp_o (cluster_to_ni_narrow_resp),
+    // Wide AXI Master
+    .wide_out_req_o (cluster_to_ni_wide_req),
+    .wide_out_resp_i (ni_to_cluster_wide_resp),
+    // Wide AXI Slave
+    .wide_in_req_i (ni_to_cluster_wide_req),
+    .wide_in_resp_o (cluster_to_ni_wide_resp)
+  );
 `else
   occamy_quadrant_s1 i_occamy_quadrant_s1
-`endif
   (
     .clk_i (clk_i),
     .rst_ni (rst_ni),
@@ -108,6 +125,7 @@ module compute_tile
     // SRAM configuration
     .sram_cfg_i (sram_cfgs_i.quadrant)
   );
+`endif
 
   floo_narrow_wide_chimney #(
       .EnNarrowSbrPort(1'b1),
@@ -160,7 +178,9 @@ module compute_tile
       .OutputFifoDepth(2),
       .RouteAlgo(XYRouting),
       .XYRouteOpt(XYRouteOpt),
-      .id_t(id_t)
+      .id_t(id_t),
+      .border_id_t(floo_narrow_wide_pkg::border_id_t),
+      .BorderId(floo_narrow_wide_pkg::BorderId)
   ) i_router (
       .clk_i(clk_i),
       .rst_ni(rst_ni),

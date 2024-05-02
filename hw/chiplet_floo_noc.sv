@@ -14,8 +14,9 @@ module chiplet_floo_noc
 
   input logic [288:1] mtip_i, 
   input logic [288:1] msip_i, 
+`ifndef TARGET_DMA_TEST
   input  occamy_pkg::sram_cfgs_t  sram_cfgs_i,
-
+`endif
   output axi_narrow_out_req_t             [7:0] hbm_north_narrow_req_o,
   input axi_narrow_out_rsp_t             [7:0] hbm_north_narrow_rsp_i,
   output axi_wide_out_req_t             [7:0] hbm_north_wide_req_o,
@@ -1443,7 +1444,7 @@ floo_wide_t [West:North] router_0_0_wide_out;
 
 localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(1),
   .id_y(1)
@@ -1463,8 +1464,10 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   .floo_req_o (router_0_0_req_out),
   .floo_rsp_i (router_0_0_rsp_in),
   .floo_wide_i (router_0_0_wide_in),
-  .floo_wide_o (router_0_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_0_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1507,7 +1510,7 @@ floo_wide_t [West:North] router_0_1_wide_out;
 
 localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(1),
   .id_y(2)
@@ -1527,8 +1530,10 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   .floo_req_o (router_0_1_req_out),
   .floo_rsp_i (router_0_1_rsp_in),
   .floo_wide_i (router_0_1_wide_in),
-  .floo_wide_o (router_0_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_0_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1571,7 +1576,7 @@ floo_wide_t [West:North] router_0_2_wide_out;
 
 localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(1),
   .id_y(3)
@@ -1591,8 +1596,10 @@ localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
   .floo_req_o (router_0_2_req_out),
   .floo_rsp_i (router_0_2_rsp_in),
   .floo_wide_i (router_0_2_wide_in),
-  .floo_wide_o (router_0_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_0_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1635,7 +1642,7 @@ floo_wide_t [West:North] router_0_3_wide_out;
 
 localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(1),
   .id_y(4)
@@ -1655,8 +1662,10 @@ localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
   .floo_req_o (router_0_3_req_out),
   .floo_rsp_i (router_0_3_rsp_in),
   .floo_wide_i (router_0_3_wide_in),
-  .floo_wide_o (router_0_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_0_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1699,7 +1708,7 @@ floo_wide_t [West:North] router_1_0_wide_out;
 
 localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(2),
   .id_y(1)
@@ -1719,8 +1728,10 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   .floo_req_o (router_1_0_req_out),
   .floo_rsp_i (router_1_0_rsp_in),
   .floo_wide_i (router_1_0_wide_in),
-  .floo_wide_o (router_1_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_1_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1763,7 +1774,7 @@ floo_wide_t [West:North] router_1_1_wide_out;
 
 localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(2),
   .id_y(2)
@@ -1783,8 +1794,10 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   .floo_req_o (router_1_1_req_out),
   .floo_rsp_i (router_1_1_rsp_in),
   .floo_wide_i (router_1_1_wide_in),
-  .floo_wide_o (router_1_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_1_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1827,7 +1840,7 @@ floo_wide_t [West:North] router_1_2_wide_out;
 
 localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(2),
   .id_y(3)
@@ -1847,8 +1860,10 @@ localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
   .floo_req_o (router_1_2_req_out),
   .floo_rsp_i (router_1_2_rsp_in),
   .floo_wide_i (router_1_2_wide_in),
-  .floo_wide_o (router_1_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_1_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1891,7 +1906,7 @@ floo_wide_t [West:North] router_1_3_wide_out;
 
 localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(2),
   .id_y(4)
@@ -1911,8 +1926,10 @@ localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
   .floo_req_o (router_1_3_req_out),
   .floo_rsp_i (router_1_3_rsp_in),
   .floo_wide_i (router_1_3_wide_in),
-  .floo_wide_o (router_1_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_1_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -1955,7 +1972,7 @@ floo_wide_t [West:North] router_2_0_wide_out;
 
 localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(3),
   .id_y(1)
@@ -1975,8 +1992,10 @@ localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
   .floo_req_o (router_2_0_req_out),
   .floo_rsp_i (router_2_0_rsp_in),
   .floo_wide_i (router_2_0_wide_in),
-  .floo_wide_o (router_2_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_2_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2019,7 +2038,7 @@ floo_wide_t [West:North] router_2_1_wide_out;
 
 localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(3),
   .id_y(2)
@@ -2039,8 +2058,10 @@ localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
   .floo_req_o (router_2_1_req_out),
   .floo_rsp_i (router_2_1_rsp_in),
   .floo_wide_i (router_2_1_wide_in),
-  .floo_wide_o (router_2_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_2_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2083,7 +2104,7 @@ floo_wide_t [West:North] router_2_2_wide_out;
 
 localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(3),
   .id_y(3)
@@ -2103,8 +2124,10 @@ localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
   .floo_req_o (router_2_2_req_out),
   .floo_rsp_i (router_2_2_rsp_in),
   .floo_wide_i (router_2_2_wide_in),
-  .floo_wide_o (router_2_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_2_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2147,7 +2170,7 @@ floo_wide_t [West:North] router_2_3_wide_out;
 
 localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(3),
   .id_y(4)
@@ -2167,8 +2190,10 @@ localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
   .floo_req_o (router_2_3_req_out),
   .floo_rsp_i (router_2_3_rsp_in),
   .floo_wide_i (router_2_3_wide_in),
-  .floo_wide_o (router_2_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_2_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2211,7 +2236,7 @@ floo_wide_t [West:North] router_3_0_wide_out;
 
 localparam id_t compute_tile_3_0_id = '{x: 4, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(4),
   .id_y(1)
@@ -2231,8 +2256,10 @@ localparam id_t compute_tile_3_0_id = '{x: 4, y: 1};
   .floo_req_o (router_3_0_req_out),
   .floo_rsp_i (router_3_0_rsp_in),
   .floo_wide_i (router_3_0_wide_in),
-  .floo_wide_o (router_3_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_3_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2275,7 +2302,7 @@ floo_wide_t [West:North] router_3_1_wide_out;
 
 localparam id_t compute_tile_3_1_id = '{x: 4, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(4),
   .id_y(2)
@@ -2295,8 +2322,10 @@ localparam id_t compute_tile_3_1_id = '{x: 4, y: 2};
   .floo_req_o (router_3_1_req_out),
   .floo_rsp_i (router_3_1_rsp_in),
   .floo_wide_i (router_3_1_wide_in),
-  .floo_wide_o (router_3_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_3_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2339,7 +2368,7 @@ floo_wide_t [West:North] router_3_2_wide_out;
 
 localparam id_t compute_tile_3_2_id = '{x: 4, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(4),
   .id_y(3)
@@ -2359,8 +2388,10 @@ localparam id_t compute_tile_3_2_id = '{x: 4, y: 3};
   .floo_req_o (router_3_2_req_out),
   .floo_rsp_i (router_3_2_rsp_in),
   .floo_wide_i (router_3_2_wide_in),
-  .floo_wide_o (router_3_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_3_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2403,7 +2434,7 @@ floo_wide_t [West:North] router_3_3_wide_out;
 
 localparam id_t compute_tile_3_3_id = '{x: 4, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(4),
   .id_y(4)
@@ -2423,8 +2454,10 @@ localparam id_t compute_tile_3_3_id = '{x: 4, y: 4};
   .floo_req_o (router_3_3_req_out),
   .floo_rsp_i (router_3_3_rsp_in),
   .floo_wide_i (router_3_3_wide_in),
-  .floo_wide_o (router_3_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_3_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2467,7 +2500,7 @@ floo_wide_t [West:North] router_4_0_wide_out;
 
 localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(5),
   .id_y(1)
@@ -2487,8 +2520,10 @@ localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
   .floo_req_o (router_4_0_req_out),
   .floo_rsp_i (router_4_0_rsp_in),
   .floo_wide_i (router_4_0_wide_in),
-  .floo_wide_o (router_4_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_4_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2531,7 +2566,7 @@ floo_wide_t [West:North] router_4_1_wide_out;
 
 localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(5),
   .id_y(2)
@@ -2551,8 +2586,10 @@ localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
   .floo_req_o (router_4_1_req_out),
   .floo_rsp_i (router_4_1_rsp_in),
   .floo_wide_i (router_4_1_wide_in),
-  .floo_wide_o (router_4_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_4_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2595,7 +2632,7 @@ floo_wide_t [West:North] router_4_2_wide_out;
 
 localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(5),
   .id_y(3)
@@ -2615,8 +2652,10 @@ localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
   .floo_req_o (router_4_2_req_out),
   .floo_rsp_i (router_4_2_rsp_in),
   .floo_wide_i (router_4_2_wide_in),
-  .floo_wide_o (router_4_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_4_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2659,7 +2698,7 @@ floo_wide_t [West:North] router_4_3_wide_out;
 
 localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(5),
   .id_y(4)
@@ -2679,8 +2718,10 @@ localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
   .floo_req_o (router_4_3_req_out),
   .floo_rsp_i (router_4_3_rsp_in),
   .floo_wide_i (router_4_3_wide_in),
-  .floo_wide_o (router_4_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_4_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2723,7 +2764,7 @@ floo_wide_t [West:North] router_5_0_wide_out;
 
 localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(6),
   .id_y(1)
@@ -2743,8 +2784,10 @@ localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
   .floo_req_o (router_5_0_req_out),
   .floo_rsp_i (router_5_0_rsp_in),
   .floo_wide_i (router_5_0_wide_in),
-  .floo_wide_o (router_5_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_5_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2787,7 +2830,7 @@ floo_wide_t [West:North] router_5_1_wide_out;
 
 localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(6),
   .id_y(2)
@@ -2807,8 +2850,10 @@ localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
   .floo_req_o (router_5_1_req_out),
   .floo_rsp_i (router_5_1_rsp_in),
   .floo_wide_i (router_5_1_wide_in),
-  .floo_wide_o (router_5_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_5_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2851,7 +2896,7 @@ floo_wide_t [West:North] router_5_2_wide_out;
 
 localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(6),
   .id_y(3)
@@ -2871,8 +2916,10 @@ localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
   .floo_req_o (router_5_2_req_out),
   .floo_rsp_i (router_5_2_rsp_in),
   .floo_wide_i (router_5_2_wide_in),
-  .floo_wide_o (router_5_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_5_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2915,7 +2962,7 @@ floo_wide_t [West:North] router_5_3_wide_out;
 
 localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(6),
   .id_y(4)
@@ -2935,8 +2982,10 @@ localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
   .floo_req_o (router_5_3_req_out),
   .floo_rsp_i (router_5_3_rsp_in),
   .floo_wide_i (router_5_3_wide_in),
-  .floo_wide_o (router_5_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_5_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -2979,7 +3028,7 @@ floo_wide_t [West:North] router_6_0_wide_out;
 
 localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(7),
   .id_y(1)
@@ -2999,8 +3048,10 @@ localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
   .floo_req_o (router_6_0_req_out),
   .floo_rsp_i (router_6_0_rsp_in),
   .floo_wide_i (router_6_0_wide_in),
-  .floo_wide_o (router_6_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_6_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3043,7 +3094,7 @@ floo_wide_t [West:North] router_6_1_wide_out;
 
 localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(7),
   .id_y(2)
@@ -3063,8 +3114,10 @@ localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
   .floo_req_o (router_6_1_req_out),
   .floo_rsp_i (router_6_1_rsp_in),
   .floo_wide_i (router_6_1_wide_in),
-  .floo_wide_o (router_6_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_6_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3107,7 +3160,7 @@ floo_wide_t [West:North] router_6_2_wide_out;
 
 localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(7),
   .id_y(3)
@@ -3127,8 +3180,10 @@ localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
   .floo_req_o (router_6_2_req_out),
   .floo_rsp_i (router_6_2_rsp_in),
   .floo_wide_i (router_6_2_wide_in),
-  .floo_wide_o (router_6_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_6_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3171,7 +3226,7 @@ floo_wide_t [West:North] router_6_3_wide_out;
 
 localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(7),
   .id_y(4)
@@ -3191,8 +3246,10 @@ localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
   .floo_req_o (router_6_3_req_out),
   .floo_rsp_i (router_6_3_rsp_in),
   .floo_wide_i (router_6_3_wide_in),
-  .floo_wide_o (router_6_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_6_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3235,7 +3292,7 @@ floo_wide_t [West:North] router_7_0_wide_out;
 
 localparam id_t compute_tile_7_0_id = '{x: 8, y: 1};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(8),
   .id_y(1)
@@ -3255,8 +3312,10 @@ localparam id_t compute_tile_7_0_id = '{x: 8, y: 1};
   .floo_req_o (router_7_0_req_out),
   .floo_rsp_i (router_7_0_rsp_in),
   .floo_wide_i (router_7_0_wide_in),
-  .floo_wide_o (router_7_0_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_7_0_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3299,7 +3358,7 @@ floo_wide_t [West:North] router_7_1_wide_out;
 
 localparam id_t compute_tile_7_1_id = '{x: 8, y: 2};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(8),
   .id_y(2)
@@ -3319,8 +3378,10 @@ localparam id_t compute_tile_7_1_id = '{x: 8, y: 2};
   .floo_req_o (router_7_1_req_out),
   .floo_rsp_i (router_7_1_rsp_in),
   .floo_wide_i (router_7_1_wide_in),
-  .floo_wide_o (router_7_1_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_7_1_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3363,7 +3424,7 @@ floo_wide_t [West:North] router_7_2_wide_out;
 
 localparam id_t compute_tile_7_2_id = '{x: 8, y: 3};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(8),
   .id_y(3)
@@ -3383,8 +3444,10 @@ localparam id_t compute_tile_7_2_id = '{x: 8, y: 3};
   .floo_req_o (router_7_2_req_out),
   .floo_rsp_i (router_7_2_rsp_in),
   .floo_wide_i (router_7_2_wide_in),
-  .floo_wide_o (router_7_2_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_7_2_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 
@@ -3427,7 +3490,7 @@ floo_wide_t [West:North] router_7_3_wide_out;
 
 localparam id_t compute_tile_7_3_id = '{x: 8, y: 4};
   compute_tile 
-`ifdef DMA_TESTNODE
+`ifdef TARGET_DMA_TEST
 #(
   .id_x(8),
   .id_y(4)
@@ -3447,8 +3510,10 @@ localparam id_t compute_tile_7_3_id = '{x: 8, y: 4};
   .floo_req_o (router_7_3_req_out),
   .floo_rsp_i (router_7_3_rsp_in),
   .floo_wide_i (router_7_3_wide_in),
-  .floo_wide_o (router_7_3_wide_out),
-  .sram_cfgs_i (sram_cfgs_i)
+  .floo_wide_o (router_7_3_wide_out)
+`ifndef TARGET_DMA_TEST
+  ,.sram_cfgs_i (sram_cfgs_i)
+`endif
 );
 
 

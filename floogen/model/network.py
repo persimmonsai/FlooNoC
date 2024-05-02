@@ -543,6 +543,12 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         xy_routing_info["num_y_bits"] = clog2(max_y - min_y + 1)
         xy_routing_info["addr_offset_bits"] = clog2(max_address)
         xy_routing_info["id_offset"] = Coord(x=min_x, y=min_y)
+        border_id = {}
+        border_id["north"] = max_y - xy_routing_info["id_offset"].y
+        border_id["west"] = min_x - xy_routing_info["id_offset"].x
+        border_id["south"] = min_y - xy_routing_info["id_offset"].y
+        border_id["east"] = max_x - xy_routing_info["id_offset"].x
+        xy_routing_info["border_id"] = border_id
         return xy_routing_info
 
     def gen_routes(self):
@@ -735,25 +741,49 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             axi_type, link_type = "narrow_wide", NarrowWideLink
         else:
             axi_type, link_type = "axi", NarrowLink
-        # Add Join data type for HBM Narrow Wide Join
-        max_id_in = 0;
-        for prot in noc.protocols:
-            # Copy type from wide out interface
-            if prot.name=="wide" and prot.direction=="subordinate":
-                prot_join = deepcopy(prot)
-                prot_join.name = "join" 
-            # Find maximum value of id_width between narrow out and wide out interface
-            # Which is input to floo_narrow_wide_join
-            if prot.direction=="subordinate":
-                if prot.id_width > max_id_in:
-                    max_id_in = prot.id_width
-        # ID width of the resulting AXI bus
-        # To prevent the instantiation of any ID remappers,
-        # `AxiIdOutWidth` should be chosen, such that:
-        # max(`AxiNarrowIdWidth` and `AxiWideIdWidth`) == AxidOutWidth - 1
-        prot_join.id_width = max_id_in + 1
-        # Add new join output protocol to be generate into Package
-        noc.protocols.append(prot_join)
+        # # Add Join data type for HBM Narrow Wide Join
+        # prot_join = [prot for prot in noc.protocols if prot.name=="wide" and prot.direction=="subordinate"]
+        # prot_join = deepcopy(prot_join[0]) # Copy type from wide out interface
+        # prot_join.name = "join" 
+        # # Find maximum value of id_width between narrow out and wide out interface
+        # # Which is input to floo_narrow_wide_join
+        # prot_narrow_out = [prot for prot in noc.protocols if prot.name=="narrow" and prot.direction=="subordinate"]
+        # prot_narrow_out = prot_narrow_out[0]
+        # if prot_join.id_width > prot_narrow_out.id_width:
+        #     max_id_in = prot_narrow_out.id_width
+        # else:
+        #     max_id_in = prot_join.id_width
+        # # ID width of the resulting AXI bus
+        # # To prevent the instantiation of any ID remappers,
+        # # `AxiIdOutWidth` should be chosen, such that:
+        # # max(`AxiNarrowIdWidth` and `AxiWideIdWidth`) == AxidOutWidth - 1
+        # prot_join.id_width = max_id_in + 1
+        # noc.protocols.append(prot_join) # Add new join output protocol to be generate into Package
+        # Add metabuff type that is data type of routing package
+        # Narrow Meta Buffer Interface
+        prot_narrow_metabuff = [prot for prot in noc.protocols if prot.name=="narrow" and prot.direction=="subordinate"]
+        prot_narrow_metabuff = deepcopy(prot_narrow_metabuff[0])
+        prot_narrow_metabuff.name = "narrow_metabuff"
+        prot_narrow_metabuff.svdirection = ""
+        prot_narrow_in = [prot for prot in noc.protocols if prot.name=="narrow" and prot.direction=="manager"]
+        prot_narrow_in = prot_narrow_in[0]
+        if prot_narrow_metabuff.id_width < prot_narrow_in.id_width:
+            prot_narrow_metabuff.id_width = prot_narrow_in.id_width
+        if prot_narrow_metabuff.user_width < prot_narrow_in.user_width:
+            prot_narrow_metabuff.user_width = prot_narrow_in.user_width
+        noc.protocols.append(prot_narrow_metabuff)
+        # Wide Meta Buffer Interface
+        prot_wide_metabuff = [prot for prot in noc.protocols if prot.name=="wide" and prot.direction=="subordinate"]
+        prot_wide_metabuff = deepcopy(prot_wide_metabuff[0])
+        prot_wide_metabuff.name = "wide_metabuff"
+        prot_wide_metabuff.svdirection = ""
+        prot_wide_in = [prot for prot in noc.protocols if prot.name=="wide" and prot.direction=="manager"]
+        prot_wide_in = prot_wide_in[0]
+        if prot_wide_metabuff.id_width < prot_wide_in.id_width:
+            prot_wide_metabuff.id_width = prot_wide_in.id_width
+        if prot_wide_metabuff.user_width < prot_wide_in.user_width:
+            prot_wide_metabuff.user_width = prot_wide_in.user_width
+        noc.protocols.append(prot_wide_metabuff)
         return axi_type, self.tpl_pkg.render(
             name=axi_type, noc=noc, link=link_type
         )
