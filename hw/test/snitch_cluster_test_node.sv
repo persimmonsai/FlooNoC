@@ -1,6 +1,4 @@
 
-//`include "test_snitch_cluster_pkg.svh"
-
 // Simple random simulation to generate 
 module snitch_cluster_test_node
   import compute_tile_array_test_pkg::*; // Simulation setting parameter modified through macro for each difference testbench

@@ -200,13 +200,26 @@ class AXI4Bus(AXI4):
         )
         return ports
     
-    def render_tb_connect_port(self) -> List[str]:
+    def render_tb_mem_connect_port(self) -> List[str]:
         """Render the port of the protocol."""
         ports = []
         # AXI Request
         ports.append(f".{self.req_name(port=True)}\t({self.base_name}_req)")
         # AXI Response
         ports.append(f".{self.rsp_name(port=True)}\t({self.base_name}_rsp)")
+        return ports
+    
+    def render_tb_dma_connect_port(self) -> List[str]:
+        """Render the port of the protocol."""
+        ports = []
+        if self.svdirection=="input":
+            # AXI Request
+            ports.append(f".{self.req_name(port=True)}\t({self.base_name}_in_req)")
+            ports.append(f".{self.rsp_name(port=True)}\t({self.base_name}_in_rsp)")
+        else:
+            # AXI Response
+            ports.append(f".{self.req_name(port=True)}\t({self.base_name}_out_req)")
+            ports.append(f".{self.rsp_name(port=True)}\t({self.base_name}_out_rsp)")
         return ports
     
     def render_tb_trim_port(self) -> List[str]:

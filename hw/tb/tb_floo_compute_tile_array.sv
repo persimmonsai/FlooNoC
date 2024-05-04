@@ -127,6 +127,114 @@ module tb_floo_compute_tile_array;
       .hbm_rsp_o(hbm_south_narrow_rsp)
   );
 
+  axi_narrow_out_req_t pcie_narrow_out_req;
+  axi_narrow_out_rsp_t pcie_narrow_out_rsp;
+  axi_narrow_in_req_t  pcie_narrow_in_req;
+  axi_narrow_in_rsp_t  pcie_narrow_in_rsp;
+
+  dma_test_node #(
+      .id_x         (0),
+      .id_y         (4),
+      .is_narrow    (1'b1),
+      .axi_out_req_t(axi_narrow_out_req_t),
+      .axi_out_rsp_t(axi_narrow_out_rsp_t),
+      .axi_in_req_t (axi_narrow_in_req_t),
+      .axi_in_rsp_t (axi_narrow_in_rsp_t),
+      .AxiAddrWidth (AxiNarrowOutAddrWidth),
+      .AxiDataWidth (AxiNarrowOutDataWidth),
+      .AxiUserWidth (AxiNarrowOutUserWidth),
+      .AxiOutIdWidth(AxiNarrowOutIdWidth),
+      .AxiInIdWidth (AxiNarrowInIdWidth),
+      .MaxTxnsPerId (NarrowMaxTxnsPerId)
+  ) i_floo_narrow_pcie_model (
+      .clk_i         (clk),
+      .rst_ni        (rst_n),
+      .axi_in_req_i  (pcie_narrow_out_req),
+      .axi_in_resp_o (pcie_narrow_out_rsp),
+      .axi_out_req_o (pcie_narrow_in_req),
+      .axi_out_resp_i(pcie_narrow_in_rsp)
+  );
+
+  axi_narrow_out_req_t peripherals_narrow_req;
+  axi_narrow_out_rsp_t peripherals_narrow_rsp;
+
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiNarrowOutAddrWidth),
+      .DataWidth  (AxiNarrowOutDataWidth),
+      .UserWidth  (AxiNarrowOutUserWidth),
+      .IdWidth    (AxiNarrowOutIdWidth),
+      .axi_req_t  (axi_narrow_out_req_t),
+      .axi_rsp_t  (axi_narrow_out_rsp_t),
+      .aw_chan_t  (axi_narrow_out_aw_chan_t),
+      .w_chan_t   (axi_narrow_out_w_chan_t),
+      .b_chan_t   (axi_narrow_out_b_chan_t),
+      .ar_chan_t  (axi_narrow_out_ar_chan_t),
+      .r_chan_t   (axi_narrow_out_r_chan_t)
+  ) i_floo_narrow_peripherals_model (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(peripherals_narrow_req),
+      .hbm_rsp_o(peripherals_narrow_rsp)
+  );
+
+  axi_narrow_out_req_t jtag_narrow_out_req;
+  axi_narrow_out_rsp_t jtag_narrow_out_rsp;
+  axi_narrow_in_req_t  jtag_narrow_in_req;
+  axi_narrow_in_rsp_t  jtag_narrow_in_rsp;
+
+  dma_test_node #(
+      .id_x         (0),
+      .id_y         (2),
+      .is_narrow    (1'b1),
+      .axi_out_req_t(axi_narrow_out_req_t),
+      .axi_out_rsp_t(axi_narrow_out_rsp_t),
+      .axi_in_req_t (axi_narrow_in_req_t),
+      .axi_in_rsp_t (axi_narrow_in_rsp_t),
+      .AxiAddrWidth (AxiNarrowOutAddrWidth),
+      .AxiDataWidth (AxiNarrowOutDataWidth),
+      .AxiUserWidth (AxiNarrowOutUserWidth),
+      .AxiOutIdWidth(AxiNarrowOutIdWidth),
+      .AxiInIdWidth (AxiNarrowInIdWidth),
+      .MaxTxnsPerId (NarrowMaxTxnsPerId)
+  ) i_floo_narrow_jtag_model (
+      .clk_i         (clk),
+      .rst_ni        (rst_n),
+      .axi_in_req_i  (jtag_narrow_out_req),
+      .axi_in_resp_o (jtag_narrow_out_rsp),
+      .axi_out_req_o (jtag_narrow_in_req),
+      .axi_out_resp_i(jtag_narrow_in_rsp)
+  );
+
+  axi_narrow_in_req_t cva6_narrow_in_req;
+  axi_narrow_in_rsp_t cva6_narrow_in_rsp;
+
+  dma_test_node #(
+      .id_x         (0),
+      .id_y         (1),
+      .is_narrow    (1'b1),
+      .axi_out_req_t(axi_narrow_out_req_t),
+      .axi_out_rsp_t(axi_narrow_out_rsp_t),
+      .axi_in_req_t (axi_narrow_in_req_t),
+      .axi_in_rsp_t (axi_narrow_in_rsp_t),
+      .AxiAddrWidth (AxiNarrowOutAddrWidth),
+      .AxiDataWidth (AxiNarrowOutDataWidth),
+      .AxiUserWidth (AxiNarrowOutUserWidth),
+      .AxiOutIdWidth(AxiNarrowOutIdWidth),
+      .AxiInIdWidth (AxiNarrowInIdWidth),
+      .MaxTxnsPerId (NarrowMaxTxnsPerId)
+  ) i_floo_narrow_cva6_model (
+      .clk_i         (clk),
+      .rst_ni        (rst_n),
+      .axi_in_req_i  ('0),
+      .axi_in_resp_o (),
+      .axi_out_req_o (cva6_narrow_in_req),
+      .axi_out_resp_i(cva6_narrow_in_rsp)
+  );
+
   axi_wide_out_req_t spm_wide_wide_req;
   axi_wide_out_rsp_t spm_wide_wide_rsp;
 
@@ -177,6 +285,56 @@ module tb_floo_compute_tile_array;
       .rst_ni   (rst_n),
       .hbm_req_i(spm_narrow_narrow_req),
       .hbm_rsp_o(spm_narrow_narrow_rsp)
+  );
+
+  axi_narrow_out_req_t idma_narrow_out_req;
+  axi_narrow_out_rsp_t idma_narrow_out_rsp;
+  axi_wide_in_req_t idma_wide_in_req;
+  axi_wide_in_rsp_t idma_wide_in_rsp;
+
+  dma_test_node #(
+      .id_x         (9),
+      .id_y         (2),
+      .is_narrow    (1'b1),
+      .axi_out_req_t(axi_wide_out_req_t),
+      .axi_out_rsp_t(axi_wide_out_rsp_t),
+      .axi_in_req_t (axi_wide_in_req_t),
+      .axi_in_rsp_t (axi_wide_in_rsp_t),
+      .AxiAddrWidth (AxiWideOutAddrWidth),
+      .AxiDataWidth (AxiWideOutDataWidth),
+      .AxiUserWidth (AxiWideOutUserWidth),
+      .AxiOutIdWidth(AxiWideOutIdWidth),
+      .AxiInIdWidth (AxiWideInIdWidth),
+      .MaxTxnsPerId (WideMaxTxnsPerId)
+  ) i_floo_wide_idma_model (
+      .clk_i         (clk),
+      .rst_ni        (rst_n),
+      .axi_in_req_i  ('0),
+      .axi_in_resp_o (),
+      .axi_out_req_o (idma_wide_in_req),
+      .axi_out_resp_i(idma_wide_in_rsp)
+  );
+  dma_test_node #(
+      .id_x         (9),
+      .id_y         (2),
+      .is_narrow    (1'b1),
+      .axi_out_req_t(axi_narrow_out_req_t),
+      .axi_out_rsp_t(axi_narrow_out_rsp_t),
+      .axi_in_req_t (axi_narrow_in_req_t),
+      .axi_in_rsp_t (axi_narrow_in_rsp_t),
+      .AxiAddrWidth (AxiNarrowOutAddrWidth),
+      .AxiDataWidth (AxiNarrowOutDataWidth),
+      .AxiUserWidth (AxiNarrowOutUserWidth),
+      .AxiOutIdWidth(AxiNarrowOutIdWidth),
+      .AxiInIdWidth (AxiNarrowInIdWidth),
+      .MaxTxnsPerId (NarrowMaxTxnsPerId)
+  ) i_floo_narrow_idma_model (
+      .clk_i         (clk),
+      .rst_ni        (rst_n),
+      .axi_in_req_i  (idma_narrow_out_req),
+      .axi_in_resp_o (idma_narrow_out_rsp),
+      .axi_out_req_o (),
+      .axi_out_resp_i('0)
   );
 
   axi_wide_out_req_t zero_mem_wide_req;
@@ -235,32 +393,32 @@ module tb_floo_compute_tile_array;
       .hbm_south_narrow_rsp_i(hbm_south_narrow_rsp),
       .hbm_south_wide_req_o(hbm_south_wide_req),
       .hbm_south_wide_rsp_i(hbm_south_wide_rsp),
-      .pcie_narrow_req_i('0),
-      .pcie_narrow_rsp_o(),
-      .pcie_narrow_req_o(),
-      .pcie_narrow_rsp_i('0),
-      .peripherals_narrow_req_o(),
-      .peripherals_narrow_rsp_i('0),
-      .jtag_narrow_req_i('0),
-      .jtag_narrow_rsp_o(),
-      .jtag_narrow_req_o(),
-      .jtag_narrow_rsp_i('0),
-      .cva6_narrow_req_i('0),
-      .cva6_narrow_rsp_o(),
+      .pcie_narrow_req_i(pcie_narrow_in_req),
+      .pcie_narrow_rsp_o(pcie_narrow_in_rsp),
+      .pcie_narrow_req_o(pcie_narrow_out_req),
+      .pcie_narrow_rsp_i(pcie_narrow_out_rsp),
+      .peripherals_narrow_req_o(peripherals_narrow_req),
+      .peripherals_narrow_rsp_i(peripherals_narrow_rsp),
+      .jtag_narrow_req_i(jtag_narrow_in_req),
+      .jtag_narrow_rsp_o(jtag_narrow_in_rsp),
+      .jtag_narrow_req_o(jtag_narrow_out_req),
+      .jtag_narrow_rsp_i(jtag_narrow_out_rsp),
+      .cva6_narrow_req_i(cva6_narrow_in_req),
+      .cva6_narrow_rsp_o(cva6_narrow_in_rsp),
       .spm_wide_wide_req_o(spm_wide_wide_req),
       .spm_wide_wide_rsp_i(spm_wide_wide_rsp),
       .spm_narrow_narrow_req_o(spm_narrow_narrow_req),
       .spm_narrow_narrow_rsp_i(spm_narrow_narrow_rsp),
-      .idma_wide_req_i('0),
-      .idma_wide_rsp_o(),
-      .idma_narrow_req_o(),
-      .idma_narrow_rsp_i('0),
+      .idma_wide_req_i(idma_wide_in_req),
+      .idma_wide_rsp_o(idma_wide_in_rsp),
+      .idma_narrow_req_o(idma_narrow_out_req),
+      .idma_narrow_rsp_i(idma_narrow_out_rsp),
       .zero_mem_wide_req_o(zero_mem_wide_req),
       .zero_mem_wide_rsp_i(zero_mem_wide_rsp)
 
   );
 
-  logic [31:0] endsim_cluster;
+  logic [35:0] endsim_cluster;
   // Get end_of_sim signal inside DUT
   assign endsim_cluster[0] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_0.i_snitch_cluster_test_node.end_of_sim;
   assign endsim_cluster[1] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_1.i_snitch_cluster_test_node.end_of_sim;
@@ -294,6 +452,10 @@ module tb_floo_compute_tile_array;
   assign endsim_cluster[29] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_7_1.i_snitch_cluster_test_node.end_of_sim;
   assign endsim_cluster[30] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_7_2.i_snitch_cluster_test_node.end_of_sim;
   assign endsim_cluster[31] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_7_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[32] = &tb_floo_compute_tile_array.i_floo_narrow_pcie_model.end_of_sim;
+  assign endsim_cluster[33] = &tb_floo_compute_tile_array.i_floo_narrow_jtag_model.end_of_sim;
+  assign endsim_cluster[34] = &tb_floo_compute_tile_array.i_floo_narrow_cva6_model.end_of_sim;
+  assign endsim_cluster[35] = &tb_floo_compute_tile_array.i_floo_wide_idma_model.end_of_sim;
 
   initial begin
     wait (&endsim_cluster);

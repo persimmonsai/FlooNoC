@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator, field_valida
 
 from copy import deepcopy
 
+from floogen.model.protocol import AXI4
 from floogen.utils import (
     cdiv,
     py_param_decl,
@@ -213,9 +214,13 @@ class RouteMapRule(BaseModel):
 
     dest: Id
     addr_range: AddrRange
-    soc_type: Optional[str] = "cluster"
+    # soc_type: Optional[str] = "cluster"
     name: Optional[str] = "none"
     desc: Optional[str] = None
+    mgr_narrow_port: Optional[AXI4] = None
+    sbr_narrow_port: Optional[AXI4] = None
+    mgr_wide_port: Optional[AXI4] = None
+    sbr_wide_port: Optional[AXI4] = None
 
     def __str__(self):
         return f"{self.addr_range} -> {self.dest}"
@@ -236,6 +241,12 @@ class RouteMapRule(BaseModel):
             f"start_addr: {self.addr_range.start}, "
             f"end_addr: {self.addr_range.end}}}"
         )
+        
+    def render_prot_util(self, prot_port):
+        if prot_port is not None:
+            return ("True")
+        else:
+            return ("False")
     
     def render_util(self, aw=None):
         """Render the Python Util routing rule."""
@@ -243,14 +254,16 @@ class RouteMapRule(BaseModel):
             return (
                 f"{{\"idx\": {self.dest.render_util()}, "
                 f"\"name\": \"{self.name}\", "
-                f"\"soc_type\": \"{self.soc_type}\", "
+                # f"\"soc_type\": \"{self.soc_type}\", "
+                f"\"mgr_port\": {{\"narrow\": {self.render_prot_util(self.mgr_narrow_port)}, \"wide\": {self.render_prot_util(self.mgr_wide_port)}}}, "
+                f"\"sbr_port\": {{\"narrow\": {self.render_prot_util(self.sbr_narrow_port)}, \"wide\": {self.render_prot_util(self.sbr_wide_port)}}}, "
                 f"\"start_addr\": int(\"0x{self.addr_range.start:0{cdiv(aw,4)}x}\",16), "
                 f"\"end_addr\": int(\"0x{self.addr_range.end:0{cdiv(aw,4)}x}\",16)}}"
             )
         return (
             f"{{\"idx\": {self.dest.render_util()}, "
             f"\"name\": \"{self.name}\", "
-            f"\"soc_type\": \"{self.soc_type}\", "
+            # f"\"soc_type\": \"{self.soc_type}\", "
             f"\"start_addr\": {self.addr_range.start}, "
             f"\"end_addr\": {self.addr_range.end}}}"
         )

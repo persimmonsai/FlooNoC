@@ -523,7 +523,11 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 out_idx = rt.outgoing.index(out_link)
                 dest = SimpleId(id=out_idx)
                 addr_range = AddrRange(start=ni.id.id, size=1)
-                routing_table.append(RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name))
+                routing_table.append(RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, \
+                                                  mgr_narrow_port=ni.mgr_narrow_port, \
+                                                  sbr_narrow_port=ni.sbr_narrow_port, \
+                                                  mgr_wide_port=ni.mgr_wide_port, \
+                                                  sbr_wide_port=ni.sbr_wide_port))
 
             # Add routing table to the router
             rt.table = RouteMap(name=rt.name + "_map", rules=routing_table)
@@ -592,7 +596,12 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             if self.routing.id_offset is not None:
                 dest -= self.routing.id_offset
             addr_range = ni.addr_range
-            addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name)
+            # addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name, \
+            addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, name=ni.endpoint.name, \
+                                                  mgr_narrow_port=ni.mgr_narrow_port, \
+                                                  sbr_narrow_port=ni.sbr_narrow_port, \
+                                                  mgr_wide_port=ni.mgr_wide_port, \
+                                                  sbr_wide_port=ni.sbr_wide_port)
             addr_table.append(addr_rule)
         return RouteMap(name="sam", rules=addr_table)
 
@@ -804,8 +813,6 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
             ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
-        # Due to limitation of current version, only memory simulation model is supported
-        ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
 
         for ep in ep_nodes:
             # Skip for port that already declared
@@ -813,7 +820,16 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             # cause the program will not filter that out and declared full range of array interface
             if ep.name in declared_endpoints:
                 continue
-            endpoints += ep.render_tb() + "\n"
+            if ep.is_memory_tb():
+                endpoints += ep.render_tb_mem() + "\n"
+            else:
+                if ep.array is not None:
+                    raise ValueError(
+                        "The current version is not support for generating testbench for an array of non-memory endpoint"
+                    )
+                endpoint_id = self.graph.get_node_id(ep.name)
+                endpoint_id = endpoint_id - self.routing.id_offset
+                endpoints += ep.render_tb_dma(endpoint_id) + "\n"
             declared_endpoints.append(ep.name)
         return endpoints
     
@@ -826,7 +842,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
             ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
         # Due to limitation of current version, only memory simulation model is supported
-        ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
+        #ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
+        ep_nodes = [ep for ep in ep_nodes if ep.is_memory_tb()]
 
         for ep in ep_nodes:
             # Skip for port that already declared
@@ -861,7 +878,17 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def render_tb(self):
         """Render the testbench of the generated network."""
         routers = self.graph.get_rt_nodes() # 1 Compute tile have one router
-        return self.tpl_tb.render(noc=self, cp_tiles=routers)
+        
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        endpoint_mgr = [ep for ep in ep_nodes if ep.mgr_port_protocol is not None]
+        endpoint_mgr_num = 0;
+        for ep in endpoint_mgr:
+            endpoint_mgr_num += len(ep.mgr_port_protocol)
+        return self.tpl_tb.render(noc=self, cp_tiles=routers, \
+            endpoint_mgr=endpoint_mgr, endpoint_mgr_num=endpoint_mgr_num)
     
     def render_testharness(self):
         """Render the testbench of the generated network."""

@@ -95,6 +95,7 @@ sources:
       # Level 2
       # - hw/test/floo_hbm_model.sv
       - hw/test/snitch_cluster_test_node.sv
+      - hw/test/dma_test_node.sv
       # Level 3
       - hw/tb/tb_floo_compute_tile_array.sv
       

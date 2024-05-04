@@ -64,7 +64,6 @@ protocols:
 endpoints:
 # Define compute tile array (snitch cluster) in XY mesh
   - name: "cluster"
-    soc_type: "cluster"
     array: [*X_NUM, *Y_NUM]
     addr_range:
       base: 0x0000_1000_0000
@@ -82,7 +81,6 @@ endpoints:
   ##### North border
   # HBM memory
   - name: "hbm_north"
-    soc_type: "memory"
     array: [*X_NUM, 1]
     addr_range:
       base: 0x0010_0000_0000
@@ -96,7 +94,6 @@ endpoints:
   ##### South border
   # HBM memory
   - name: "hbm_south"
-    soc_type: "memory"
     array: [*X_NUM, 1]
     addr_range:
       base: 0x0002_0000_0000
@@ -113,7 +110,6 @@ endpoints:
   # address_mm: 1207959552, // 0x4800_0000
   # length: 671088640, // 640 MiB 0x2800_0000
   - name: "pcie"
-    soc_type: "serial_link"
     addr_range:
       base: 0x0000_2000_0000
       size: 0x0000_5000_0000
@@ -128,8 +124,6 @@ endpoints:
   # This xbar connected to rom, soc_ctrl, fll_system, fll_periph, fll_hbm2e, 
   # uart, gpio, i2c, chip_ctrl, timer, spim, clint, pcie_cfg, hbm_cfg, plic
   - name: "peripherals"
-    soc_type: "peripheral" # xbar that connect different peripheral
-    # soc_type: "xbar" # xbar that connect different peripheral
     addr_range:
       base: 0x0000_0100_0000
       size: 0x0000_0E00_0000
@@ -140,8 +134,6 @@ endpoints:
       y: 2
   # JTAG
   - name: "jtag"
-    soc_type: "peripheral" # xbar that connect different peripheral
-    # soc_type: "xbar" # xbar that connect different peripheral
     addr_range:
       base: 0x0000_0000_0000
       size: 0x0000_0000_1000 # 4 kiB
@@ -154,7 +146,6 @@ endpoints:
       y: 1
   # CVA6
   - name: "cva6" 
-    soc_type: "processor"
     # No slave port so no endpoint address assign to its
     mgr_port_protocol:
       - "narrow"
@@ -164,7 +155,6 @@ endpoints:
   ##### East border
   # SPM Wide
   - name: "spm_wide"
-    soc_type: "memory"
     addr_range:
       base: 0x0000_7100_0000
       size: 0x0000_0010_0000
@@ -175,7 +165,6 @@ endpoints:
       y: 3
   # SPM Narrow
   - name: "spm_narrow"
-    soc_type: "memory"
     addr_range:
       base: 0x0000_7000_0000
       size: 0x0000_0008_0000 # 512 kiB
@@ -186,7 +175,6 @@ endpoints:
       y: 2
   # iDMA, narrow configuration and wide transfer data
   - name: "idma"
-    soc_type: "peripheral"
     addr_range:
       base: 0x0000_1100_0000
       size: 0x0000_0001_0000 # 64 kiB
@@ -199,7 +187,6 @@ endpoints:
       y: 1
   # AXI Zero-Memory
   - name: "zero_mem"
-    soc_type: "memory"
     addr_range:
       base: 0x0080_0000_0000
       size: 0x0002_0000_0000 # 8 GiB

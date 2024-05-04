@@ -83,6 +83,23 @@ module floo_testharness
       .rsp_o (hbm_south_narrow_rsp)
   );
 
+  axi_narrow_out_req_t peripherals_narrow_req;
+  axi_narrow_out_rsp_t peripherals_narrow_rsp;
+
+  tb_memory_axi #(
+      .AxiAddrWidth(AxiNarrowOutAddrWidth),
+      .AxiDataWidth(AxiNarrowOutDataWidth),
+      .AxiUserWidth(AxiNarrowOutUserWidth),
+      .AxiIdWidth  (AxiNarrowOutIdWidth),
+      .req_t       (axi_narrow_out_req_t),
+      .rsp_t       (axi_narrow_out_rsp_t)
+  ) i_narrow_peripherals_memory (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+      .req_i (peripherals_narrow_req),
+      .rsp_o (peripherals_narrow_rsp)
+  );
+
   axi_wide_out_req_t spm_wide_wide_req;
   axi_wide_out_rsp_t spm_wide_wide_rsp;
 
@@ -170,26 +187,26 @@ module floo_testharness
       .hbm_south_narrow_rsp_i(hbm_south_narrow_rsp),
       .hbm_south_wide_req_o(hbm_south_wide_req),
       .hbm_south_wide_rsp_i(hbm_south_wide_rsp),
-      .pcie_narrow_req_i('0),
-      .pcie_narrow_rsp_o(),
-      .pcie_narrow_req_o(),
-      .pcie_narrow_rsp_i('0),
-      .peripherals_narrow_req_o(),
-      .peripherals_narrow_rsp_i('0),
-      .jtag_narrow_req_i('0),
-      .jtag_narrow_rsp_o(),
-      .jtag_narrow_req_o(),
-      .jtag_narrow_rsp_i('0),
-      .cva6_narrow_req_i('0),
-      .cva6_narrow_rsp_o(),
+      .pcie_narrow_req_i(pcie_narrow_in_req),
+      .pcie_narrow_rsp_o(pcie_narrow_in_rsp),
+      .pcie_narrow_req_o(pcie_narrow_out_req),
+      .pcie_narrow_rsp_i(pcie_narrow_out_rsp),
+      .peripherals_narrow_req_o(peripherals_narrow_req),
+      .peripherals_narrow_rsp_i(peripherals_narrow_rsp),
+      .jtag_narrow_req_i(jtag_narrow_in_req),
+      .jtag_narrow_rsp_o(jtag_narrow_in_rsp),
+      .jtag_narrow_req_o(jtag_narrow_out_req),
+      .jtag_narrow_rsp_i(jtag_narrow_out_rsp),
+      .cva6_narrow_req_i(cva6_narrow_in_req),
+      .cva6_narrow_rsp_o(cva6_narrow_in_rsp),
       .spm_wide_wide_req_o(spm_wide_wide_req),
       .spm_wide_wide_rsp_i(spm_wide_wide_rsp),
       .spm_narrow_narrow_req_o(spm_narrow_narrow_req),
       .spm_narrow_narrow_rsp_i(spm_narrow_narrow_rsp),
-      .idma_wide_req_i('0),
-      .idma_wide_rsp_o(),
-      .idma_narrow_req_o(),
-      .idma_narrow_rsp_i('0),
+      .idma_wide_req_i(idma_wide_in_req),
+      .idma_wide_rsp_o(idma_wide_in_rsp),
+      .idma_narrow_req_o(idma_narrow_out_req),
+      .idma_narrow_rsp_i(idma_narrow_out_rsp),
       .zero_mem_wide_req_o(zero_mem_wide_req),
       .zero_mem_wide_rsp_i(zero_mem_wide_rsp)
 
