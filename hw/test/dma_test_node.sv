@@ -27,17 +27,11 @@ module dma_test_node
     output axi_in_req_t  axi_out_req_o,
     input  axi_in_rsp_t  axi_out_resp_i
 );
-  // Make its switch able between DMA and normal AXI package
-
-  // Convert between id_i of base 1 to base 0 index
-  localparam int unsigned x = id_x - 1;
-  localparam int unsigned y = id_y - 1;
-
   localparam string TypeName = is_narrow ? "narrow" : "wide";
-  localparam string DmaName = $sformatf("%s_dma_%0d_%0d", TypeName, x, y);
+  localparam string DmaName = $sformatf("%s_dma_%0d_%0d", TypeName, id_x, id_y);
 
   // Assign unique job ID for each DMA test node
-  localparam int unsigned Index = y * NumX + x + 1;
+  localparam int unsigned Index = id_y * NumX + id_x;
   localparam int unsigned JobId = is_narrow ? Index + 1000 : Index;
 
   localparam sam_rule_t local_addrmap = find_addrmap_by_xy_id(id_x, id_y);

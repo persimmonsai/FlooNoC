@@ -20,17 +20,11 @@ module snitch_cluster_test_node
     input axi_wide_out_req_t wide_in_req_i,
     output axi_wide_out_rsp_t wide_in_resp_o
 );
-  // Make its switch able between DMA and normal AXI package
-
-  // Convert between id_i of base 1 to base 0 index
-  localparam int unsigned x = id_x - 1;
-  localparam int unsigned y = id_y - 1;
-
-  localparam string NarrowDmaName = $sformatf("narrow_dma_%0d_%0d", x, y);
-  localparam string WideDmaName = $sformatf("wide_dma_%0d_%0d", x, y);
+  localparam string NarrowDmaName = $sformatf("narrow_dma_%0d_%0d", id_x, id_y);
+  localparam string WideDmaName = $sformatf("wide_dma_%0d_%0d", id_x, id_y);
 
   // Assign unique job ID for each DMA test node
-  localparam int unsigned Index = y * NumX + x + 1;
+  localparam int unsigned Index = id_y * NumX + id_x;
 
   localparam sam_rule_t local_addrmap = find_addrmap_by_xy_id(id_x, id_y);
   localparam logic [AxiNarrowInAddrWidth-1:0] DMAMemBaseAddr = local_addrmap.start_addr;  // byte unit

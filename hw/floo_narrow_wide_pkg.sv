@@ -154,8 +154,8 @@ package floo_narrow_wide_pkg;
   localparam bit UseIdTable = 1'b1;
   localparam int unsigned NumXBits = 4;
   localparam int unsigned NumYBits = 3;
-  localparam int unsigned XYAddrOffsetX = 40;
-  localparam int unsigned XYAddrOffsetY = 44;
+  localparam int unsigned XYAddrOffsetX = 48;
+  localparam int unsigned XYAddrOffsetY = 52;
   localparam border_id_t BorderId = '{north: 5, west: 0, south: 0, east: 9};
   localparam int unsigned IdAddrOffset = 0;
 
@@ -176,7 +176,7 @@ package floo_narrow_wide_pkg;
   //   Address Map   //
   /////////////////////
 
-  localparam int unsigned SamNumRules = 55;
+  localparam int unsigned SamNumRules = 56;
 
   typedef struct packed {
     id_t idx;
@@ -440,6 +440,11 @@ package floo_narrow_wide_pkg;
           start_addr: 48'h000000000000,
           end_addr: 48'h000000001000
       },  // jtag_ni
+      '{
+          idx: '{x: 0, y: 1},
+          start_addr: 48'h800000000000,
+          end_addr: 48'h800000100000
+      },  // cva6_ni
       '{
           idx: '{x: 9, y: 4},
           start_addr: 48'h000071000000,

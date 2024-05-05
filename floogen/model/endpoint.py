@@ -141,12 +141,18 @@ class Endpoint(EndpointDesc):
         if (self.is_memory_tb()):
             for port in self.sbr_ports:
                 ports += port.render_tb_mem_connect_port()
-        # Render as trimmed port (unsupport simulation model endpoint)
-        else:
+        # Render as connected port (support simulation model endpoint)
+        elif self.sbr_port_protocol == self.mgr_port_protocol:
             for port in self.mgr_ports:
                 ports += port.render_tb_dma_connect_port()
             for port in self.sbr_ports:
                 ports += port.render_tb_dma_connect_port()
+        # Render as trimmed port (unsupport simulation model endpoint)
+        else:
+            for port in self.mgr_ports:
+                ports += port.render_tb_trim_port()
+            for port in self.sbr_ports:
+                ports += port.render_tb_trim_port()
         return ports
     
     def render_tb_mem(self) -> str:

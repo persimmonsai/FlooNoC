@@ -59,9 +59,10 @@ AddrMap = [
 	{"idx": {"x": 0, "y": 4}, "name": "pcie", "mgr_port": {"narrow": True, "wide": False}, "sbr_port": {"narrow": True, "wide": False}, "start_addr": int("0x000020000000",16), "end_addr": int("0x000070000000",16)},
 	{"idx": {"x": 0, "y": 3}, "name": "peripherals", "mgr_port": {"narrow": False, "wide": False}, "sbr_port": {"narrow": True, "wide": False}, "start_addr": int("0x000001000000",16), "end_addr": int("0x00000f000000",16)},
 	{"idx": {"x": 0, "y": 2}, "name": "jtag", "mgr_port": {"narrow": True, "wide": False}, "sbr_port": {"narrow": True, "wide": False}, "start_addr": int("0x000000000000",16), "end_addr": int("0x000000001000",16)},
+	{"idx": {"x": 0, "y": 1}, "name": "cva6", "mgr_port": {"narrow": True, "wide": False}, "sbr_port": {"narrow": True, "wide": False}, "start_addr": int("0x800000000000",16), "end_addr": int("0x800000100000",16)},
 	{"idx": {"x": 9, "y": 4}, "name": "spm_wide", "mgr_port": {"narrow": False, "wide": False}, "sbr_port": {"narrow": False, "wide": True}, "start_addr": int("0x000071000000",16), "end_addr": int("0x000071100000",16)},
 	{"idx": {"x": 9, "y": 3}, "name": "spm_narrow", "mgr_port": {"narrow": False, "wide": False}, "sbr_port": {"narrow": True, "wide": False}, "start_addr": int("0x000070000000",16), "end_addr": int("0x000070080000",16)},
-	{"idx": {"x": 9, "y": 2}, "name": "idma", "mgr_port": {"narrow": False, "wide": True}, "sbr_port": {"narrow": True, "wide": False}, "start_addr": int("0x000011000000",16), "end_addr": int("0x000011010000",16)},
+	{"idx": {"x": 9, "y": 2}, "name": "idma", "mgr_port": {"narrow": True, "wide": True}, "sbr_port": {"narrow": True, "wide": True}, "start_addr": int("0x000011000000",16), "end_addr": int("0x000011010000",16)},
 	{"idx": {"x": 9, "y": 1}, "name": "zero_mem", "mgr_port": {"narrow": False, "wide": False}, "sbr_port": {"narrow": False, "wide": True}, "start_addr": int("0x008000000000",16), "end_addr": int("0x008200000000",16)}
 ]
 

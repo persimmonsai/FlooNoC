@@ -25,12 +25,54 @@ def get_xy_base_addr(x: int, y: int):
     assert x <= NUM_X+1 and y <= NUM_Y+1
     return (x + 2 ** clog2(NUM_X + 2) * y) * MEM_SIZE
 
-def find_soc_type(AddrMap, target_soc_type):
+# def find_soc_type(AddrMap, target_soc_type):
+#     addrmap_soc = list()
+#     for node_addr in AddrMap:
+#         if (node_addr["soc_type"]==target_soc_type):
+#             addrmap_soc.append(node_addr)
+#     return addrmap_soc
+
+def find_sbr_module(AddrMap):
     addrmap_soc = list()
     for node_addr in AddrMap:
-        if (node_addr["soc_type"]==target_soc_type):
+        if (node_addr["sbr_port"]["narrow"]==True or node_addr["sbr_port"]["wide"]==True):
             addrmap_soc.append(node_addr)
     return addrmap_soc
+
+def find_mgr_module(AddrMap):
+    addrmap_soc = list()
+    for node_addr in AddrMap:
+        if (node_addr["mgr_port"]["narrow"]==True or node_addr["mgr_port"]["wide"]==True):
+            addrmap_soc.append(node_addr)
+    return addrmap_soc
+
+def find_memory(AddrMap):
+    addrmap_soc = list()
+    for node_addr in AddrMap:
+         if (node_addr["mgr_port"]["narrow"]==False and node_addr["mgr_port"]["wide"]==False):
+            addrmap_soc.append(node_addr)
+    return addrmap_soc
+
+def filter_sbr_type(node_list, node_type):
+    if node_type=="narrow_wide":
+        return node_list
+    node_out = list()
+    for node in node_list:
+        if node["sbr_port"][node_type]:
+            node_out.append(node)
+    return node_out
+
+def filter_exclude_idx(node_list, idx):
+    # Generate cluster list that self cluster
+    node_out = node_list.copy()
+    rm_node = None
+    for node in node_list:
+        if (node["idx"]["x"]==idx["x"] and node["idx"]["y"]==idx["y"]):
+            rm_node = node
+            break
+    if rm_node is not None:
+        node_out.remove(rm_node)
+    return node_out
 
 def find_shortest_path(node_list, idx):
     shortest_node = dict()
@@ -213,87 +255,111 @@ def gen_compute_tile_array_traffic(
     
     # pylint: disable=too-many-arguments, too-many-locals
     """Generate compute tile array traffic."""
-    cluster_list = find_soc_type(soc_config.AddrMap, "cluster")
-    hbm_list = find_soc_type(soc_config.AddrMap, "memory")
+    # cluster_list = find_soc_type(soc_config.AddrMap, "cluster")
+    # hbm_list = find_soc_type(soc_config.AddrMap, "memory")
+    
+    mgr_module_list = find_mgr_module(soc_config.AddrMap)
+    sbr_module_list = find_sbr_module(soc_config.AddrMap)
+    memory_list = find_memory(soc_config.AddrMap)
+    # sbr_narrow_list = find_sbr_module(soc_config.AddrMap, "narrow")
+    # sbr_wide_list = find_sbr_module(soc_config.AddrMap, "wide")
+    # sbr_narrow_wide_list = find_sbr_module(soc_config.AddrMap, ["narrow_wide"])
     # ID table based DMA jobs generation
-    for cluster in cluster_list:
+    for mgr_module in mgr_module_list:
         wide_jobs = ""
         narrow_jobs = ""
+        mgr_port_type = "narrow_wide"
         wide_length = wide_burst_length * soc_config.data_widths["wide"] / 8 # total data to be transfer over wide DMA interface in byte unit
         narrow_length = narrow_burst_length * soc_config.data_widths["narrow"] / 8  # total data to be transfer over narrow DMA interface in byte unit
+        if mgr_module["mgr_port"]["narrow"]==False:
+            mgr_port_type = "wide"
+        elif mgr_module["mgr_port"]["wide"]==False:
+            mgr_port_type = "narrow"
         # assert wide_length <= MEM_SIZE and narrow_length <= MEM_SIZE
-        # 1) cluster DMA from shortest path hbm
-        if traffic_type == "hbm":
-            ext = find_shortest_path(hbm_list, cluster["idx"])
-            src_addr = ext["start_addr"] if rw == "read" else cluster["start_addr"]
-            dst_addr = cluster["start_addr"] if rw == "read" else ext["start_addr"]
-        # 2) cluster DMA from random hbm
-        elif traffic_type == "hbm_rand":
+        # 1) master node DMA from shortest path memory
+        if traffic_type == "memory":
+            sel_sbr_module_list = filter_sbr_type(memory_list, mgr_port_type) # No filter for mgr_port_type="narrow_wide"
+            sel_sbr_module_list = filter_exclude_idx(sel_sbr_module_list, mgr_module["idx"])
+            ext = find_shortest_path(sel_sbr_module_list, mgr_module["idx"])
+            src_addr = ext["start_addr"] if rw == "read" else mgr_module["start_addr"]
+            dst_addr = mgr_module["start_addr"] if rw == "read" else ext["start_addr"]
+        # 2) master node DMA from random memory
+        elif traffic_type == "memory_rand":
+            sel_sbr_module_list = filter_sbr_type(memory_list, mgr_port_type) # No filter for mgr_port_type="narrow_wide"
+            sel_sbr_module_list = filter_exclude_idx(sel_sbr_module_list, mgr_module["idx"])
             # Find possible number of hbm target node
-            hbm_node_num = len(hbm_list)
-            # Ramdom picking target node
-            rand_idx = random.randint(0, hbm_node_num-1)
-            ext = hbm_list[rand_idx]
-            src_addr = ext["start_addr"] if rw == "read" else cluster["start_addr"]
-            dst_addr = cluster["start_addr"] if rw == "read" else ext["start_addr"]
-        # 3) cluster DMA from random hbm and random cluster
+            sbr_node_num = len(sel_sbr_module_list)
+            # Random picking target node
+            rand_idx = random.randint(0, sbr_node_num-1)
+            ext = sel_sbr_module_list[rand_idx]
+            src_addr = ext["start_addr"] if rw == "read" else mgr_module["start_addr"]
+            dst_addr = mgr_module["start_addr"] if rw == "read" else ext["start_addr"]
+        # 3) master node DMA from random slave node
         elif traffic_type == "random":
-            # Generate cluster list that self cluster
-            cluster_noself_list = cluster_list.copy()
-            cluster_noself_list.remove(cluster)
+            sel_sbr_module_list = filter_sbr_type(sbr_module_list, mgr_port_type) # No filter for mgr_port_type="narrow_wide"
+            sel_sbr_module_list = filter_exclude_idx(sel_sbr_module_list, mgr_module["idx"])
             # Find possible number of target node for both cluster and hbm
-            cluster_node_num = len(cluster_noself_list)
-            hbm_node_num = len(hbm_list)
-            # Ramdom picking target node
-            rand_idx = random.randint(0, cluster_node_num+hbm_node_num-1)
-            if (rand_idx < cluster_node_num):
-                ext = cluster_noself_list[rand_idx]
-            else:
-                ext = hbm_list[rand_idx-cluster_node_num]
-            src_addr = ext["start_addr"] if rw == "read" else cluster["start_addr"]
-            dst_addr = cluster["start_addr"] if rw == "read" else ext["start_addr"]
-        # 4) cluster DMA from random cluster
-        elif traffic_type == "cluster_rand":
-            # Generate cluster list that self cluster
-            cluster_noself_list = cluster_list.copy()
-            cluster_noself_list.remove(cluster)
+            sbr_node_num = len(sel_sbr_module_list)
+            # Random picking target node
+            rand_idx = random.randint(0, sbr_node_num-1)
+            ext = sel_sbr_module_list[rand_idx]
+            src_addr = ext["start_addr"] if rw == "read" else mgr_module["start_addr"]
+            dst_addr = mgr_module["start_addr"] if rw == "read" else ext["start_addr"]
+        # 4) master node DMA from other master node
+        elif traffic_type == "mgr_rand":
+            sel_sbr_module_list = find_sbr_module(mgr_module_list)
+            sel_sbr_module_list = filter_sbr_type(sel_sbr_module_list, mgr_port_type) # No filter for mgr_port_type="narrow_wide"
+            sel_sbr_module_list = filter_exclude_idx(sel_sbr_module_list, mgr_module["idx"])
             # Find possible number of cluster target node
-            cluster_node_num = len(cluster_noself_list)
-            # Ramdom picking target node
-            rand_idx = random.randint(0, cluster_node_num-1)
-            ext = cluster_noself_list[rand_idx]
-            src_addr = ext["start_addr"] if rw == "read" else cluster["start_addr"]
-            dst_addr = cluster["start_addr"] if rw == "read" else ext["start_addr"]
-        # 5) cluster DMA from the next upper node
+            sbr_node_num = len(sel_sbr_module_list)
+            # Random picking target node
+            rand_idx = random.randint(0, sbr_node_num-1)
+            ext = sel_sbr_module_list[rand_idx]
+            src_addr = ext["start_addr"] if rw == "read" else mgr_module["start_addr"]
+            dst_addr = mgr_module["start_addr"] if rw == "read" else ext["start_addr"]
+        # 5) cluster DMA from the next right node
         elif traffic_type == "onehop":
-            # Filter only hbm memory and cluster
-            all_node_list = cluster_list + hbm_list
+            sel_sbr_module_list = filter_sbr_type(sbr_module_list, mgr_port_type) # No filter for mgr_port_type="narrow_wide"
+            sel_sbr_module_list = filter_exclude_idx(sel_sbr_module_list, mgr_module["idx"])
             # Access to next upper hop
-            ext_idx = {"x": cluster["idx"]["x"], "y": cluster["idx"]["y"]+1};
+            ext_idx = {"x": mgr_module["idx"]["x"]+1, "y": mgr_module["idx"]["y"]};
             # Find matching target idx
-            ext = find_target_node(all_node_list, ext_idx);
+            ext = find_target_node(sel_sbr_module_list, ext_idx);
             if (ext==-1):
                 wide_length = 0
                 narrow_length = 0
                 src_addr = 0
                 dst_addr = 0
             else:
-                src_addr = ext["start_addr"] if rw == "read" else cluster["start_addr"]
-                dst_addr = cluster["start_addr"] if rw == "read" else ext["start_addr"]
+                src_addr = ext["start_addr"] if rw == "read" else mgr_module["start_addr"]
+                dst_addr = mgr_module["start_addr"] if rw == "read" else ext["start_addr"]
         else:
             raise ValueError(f"Unknown traffic type: {traffic_type}")
         
-        ext_mem_size = ext["end_addr"] - ext["start_addr"]
-        assert wide_length <= ext_mem_size and narrow_length <= ext_mem_size
-        # Print DMA sumary
-        print("  [jobs] " + cluster["name"] + str(cluster["idx"]) + " DMA " + rw + " to " + ext["name"] + str(ext["idx"]))
-        # Write DMA jobs to file
+        if ext!=-1:
+            ext_mem_size = ext["end_addr"] - ext["start_addr"]
+            assert wide_length <= ext_mem_size and narrow_length <= ext_mem_size
+            sbr_port_type = "narrow_wide"
+            if ext["sbr_port"]["narrow"]==False:
+                sbr_port_type = "wide"
+            elif ext["sbr_port"]["wide"]==False:
+                sbr_port_type = "narrow"
+            if sbr_port_type == "narrow_wide" and mgr_port_type != "narrow_wide":
+                sbr_port_type = mgr_port_type
+            # Print DMA summary
+            print("  [jobs] " + mgr_module["name"] + str(mgr_module["idx"]) + 
+                " " + sbr_port_type + " DMA " + rw + " to " + ext["name"] + str(ext["idx"]))
+            # Write DMA jobs to file separately between narrow and wide interface
+            if "wide" not in sbr_port_type:
+                wide_length = 0
+            if "narrow" not in sbr_port_type:
+                narrow_length = 0
         for _ in range(num_wide_bursts):
             wide_jobs += gen_job_str(wide_length, src_addr, dst_addr)
+        emit_jobs(wide_jobs, out_dir, "compute_tile_array", mgr_module["idx"]["x"] + mgr_module["idx"]["y"] * soc_config.NUM_X)
         for _ in range(num_narrow_bursts):
             narrow_jobs += gen_job_str(narrow_length, src_addr, dst_addr)
-        emit_jobs(wide_jobs, out_dir, "compute_tile_array", cluster["idx"]["x"] + (cluster["idx"]["y"] - 1) * soc_config.NUM_X)
-        emit_jobs(narrow_jobs, out_dir, "compute_tile_array", cluster["idx"]["x"] + (cluster["idx"]["y"] - 1) * soc_config.NUM_X + 1000)
+        emit_jobs(narrow_jobs, out_dir, "compute_tile_array", mgr_module["idx"]["x"] + mgr_module["idx"]["y"] * soc_config.NUM_X + 1000)
 
 def main():
     """Main function."""

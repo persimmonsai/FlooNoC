@@ -209,8 +209,10 @@ module tb_floo_compute_tile_array;
       .axi_out_resp_i(jtag_narrow_in_rsp)
   );
 
-  axi_narrow_in_req_t cva6_narrow_in_req;
-  axi_narrow_in_rsp_t cva6_narrow_in_rsp;
+  axi_narrow_out_req_t cva6_narrow_out_req;
+  axi_narrow_out_rsp_t cva6_narrow_out_rsp;
+  axi_narrow_in_req_t  cva6_narrow_in_req;
+  axi_narrow_in_rsp_t  cva6_narrow_in_rsp;
 
   dma_test_node #(
       .id_x         (0),
@@ -229,8 +231,8 @@ module tb_floo_compute_tile_array;
   ) i_floo_narrow_cva6_model (
       .clk_i         (clk),
       .rst_ni        (rst_n),
-      .axi_in_req_i  ('0),
-      .axi_in_resp_o (),
+      .axi_in_req_i  (cva6_narrow_out_req),
+      .axi_in_resp_o (cva6_narrow_out_rsp),
       .axi_out_req_o (cva6_narrow_in_req),
       .axi_out_resp_i(cva6_narrow_in_rsp)
   );
@@ -289,6 +291,10 @@ module tb_floo_compute_tile_array;
 
   axi_narrow_out_req_t idma_narrow_out_req;
   axi_narrow_out_rsp_t idma_narrow_out_rsp;
+  axi_wide_out_req_t idma_wide_out_req;
+  axi_wide_out_rsp_t idma_wide_out_rsp;
+  axi_narrow_in_req_t idma_narrow_in_req;
+  axi_narrow_in_rsp_t idma_narrow_in_rsp;
   axi_wide_in_req_t idma_wide_in_req;
   axi_wide_in_rsp_t idma_wide_in_rsp;
 
@@ -309,8 +315,8 @@ module tb_floo_compute_tile_array;
   ) i_floo_wide_idma_model (
       .clk_i         (clk),
       .rst_ni        (rst_n),
-      .axi_in_req_i  ('0),
-      .axi_in_resp_o (),
+      .axi_in_req_i  (idma_wide_out_req),
+      .axi_in_resp_o (idma_wide_out_rsp),
       .axi_out_req_o (idma_wide_in_req),
       .axi_out_resp_i(idma_wide_in_rsp)
   );
@@ -333,8 +339,8 @@ module tb_floo_compute_tile_array;
       .rst_ni        (rst_n),
       .axi_in_req_i  (idma_narrow_out_req),
       .axi_in_resp_o (idma_narrow_out_rsp),
-      .axi_out_req_o (),
-      .axi_out_resp_i('0)
+      .axi_out_req_o (idma_narrow_in_req),
+      .axi_out_resp_i(idma_narrow_in_rsp)
   );
 
   axi_wide_out_req_t zero_mem_wide_req;
@@ -405,20 +411,26 @@ module tb_floo_compute_tile_array;
       .jtag_narrow_rsp_i(jtag_narrow_out_rsp),
       .cva6_narrow_req_i(cva6_narrow_in_req),
       .cva6_narrow_rsp_o(cva6_narrow_in_rsp),
+      .cva6_narrow_req_o(cva6_narrow_out_req),
+      .cva6_narrow_rsp_i(cva6_narrow_out_rsp),
       .spm_wide_wide_req_o(spm_wide_wide_req),
       .spm_wide_wide_rsp_i(spm_wide_wide_rsp),
       .spm_narrow_narrow_req_o(spm_narrow_narrow_req),
       .spm_narrow_narrow_rsp_i(spm_narrow_narrow_rsp),
+      .idma_narrow_req_i(idma_narrow_in_req),
+      .idma_narrow_rsp_o(idma_narrow_in_rsp),
       .idma_wide_req_i(idma_wide_in_req),
       .idma_wide_rsp_o(idma_wide_in_rsp),
       .idma_narrow_req_o(idma_narrow_out_req),
       .idma_narrow_rsp_i(idma_narrow_out_rsp),
+      .idma_wide_req_o(idma_wide_out_req),
+      .idma_wide_rsp_i(idma_wide_out_rsp),
       .zero_mem_wide_req_o(zero_mem_wide_req),
       .zero_mem_wide_rsp_i(zero_mem_wide_rsp)
 
   );
 
-  logic [35:0] endsim_cluster;
+  logic [36:0] endsim_cluster;
   // Get end_of_sim signal inside DUT
   assign endsim_cluster[0] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_0.i_snitch_cluster_test_node.end_of_sim;
   assign endsim_cluster[1] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_1.i_snitch_cluster_test_node.end_of_sim;
@@ -455,7 +467,8 @@ module tb_floo_compute_tile_array;
   assign endsim_cluster[32] = &tb_floo_compute_tile_array.i_floo_narrow_pcie_model.end_of_sim;
   assign endsim_cluster[33] = &tb_floo_compute_tile_array.i_floo_narrow_jtag_model.end_of_sim;
   assign endsim_cluster[34] = &tb_floo_compute_tile_array.i_floo_narrow_cva6_model.end_of_sim;
-  assign endsim_cluster[35] = &tb_floo_compute_tile_array.i_floo_wide_idma_model.end_of_sim;
+  assign endsim_cluster[35] = &tb_floo_compute_tile_array.i_floo_narrow_idma_model.end_of_sim;
+  assign endsim_cluster[36] = &tb_floo_compute_tile_array.i_floo_wide_idma_model.end_of_sim;
 
   initial begin
     wait (&endsim_cluster);

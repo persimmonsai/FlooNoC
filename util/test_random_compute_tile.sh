@@ -10,7 +10,7 @@ job_type="compute_tile_array"
 
 print_jobs="true"
 rw_type=("read" "write")
-traffic_type=("hbm" "hbm_rand" "random" "cluster_rand" "onehop")
+traffic_type=("memory" "memory_rand" "random" "mgr_rand" "onehop")
 repeat_num_test=(10 50 50 50 10) # match with traffic_type
 #repeat_num_test=(1 1 1 1 1) # match with traffic_type
 out_dir="test/jobs"
@@ -28,6 +28,9 @@ LEN_WD_BURST_RANGE=$((${wide_burst_length_range[0]}-${wide_burst_length_range[1]
 RANDOM=$$
 
 make clean-test-random
+mkdir -p ${out_dir}
+# One time build of VCS simulation binary
+make bin/floo_noc_batch.vcs TB_DUT=$tb_dut 2>&1 | tee ${out_dir}/vcs_build_bin.log
 
 # Running the simulation
 for rw in ${rw_type[@]}
@@ -65,7 +68,8 @@ do
                 TRAFFIC_NR_BURST_NUM=$num_narrow_bursts TRAFFIC_NR_BURST_LEN=$narrow_burst_length \
                 TRAFFIC_WD_BURST_NUM=$num_wide_bursts TRAFFIC_WD_BURST_LEN=$wide_burst_length 2>&1 | tee $job_dir/job_stats.log
             # Run the simulation
-            make run-vcs-batch TB_DUT=$tb_dut JOB_NAME=$job_type JOB_DIR=$job_dir DMA_TESTNODE=TRUE 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
+            #make run-vcs-batch TB_DUT=$tb_dut JOB_NAME=$job_type JOB_DIR=$job_dir DMA_TESTNODE=TRUE 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
+            make run-vcs-batch JOB_NAME=$job_type JOB_DIR=$job_dir 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
         done
     done
     echo ""

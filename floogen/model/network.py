@@ -822,7 +822,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 continue
             if ep.is_memory_tb():
                 endpoints += ep.render_tb_mem() + "\n"
-            else:
+            # DMA test node require each endpoint to have both active in mgr and sbr
+            elif ep.sbr_port_protocol == ep.mgr_port_protocol:
                 if ep.array is not None:
                     raise ValueError(
                         "The current version is not support for generating testbench for an array of non-memory endpoint"
@@ -883,12 +884,13 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         ep_eject_nodes = self.graph.get_ep_eject_nodes()
         ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
-        endpoint_mgr = [ep for ep in ep_nodes if ep.mgr_port_protocol is not None]
-        endpoint_mgr_num = 0;
-        for ep in endpoint_mgr:
-            endpoint_mgr_num += len(ep.mgr_port_protocol)
+        # DMA node need to have both master and slave
+        endpoint_dma = [ep for ep in ep_nodes if ep.sbr_port_protocol == ep.mgr_port_protocol]
+        endpoint_dma_num = 0;
+        for ep in endpoint_dma:
+            endpoint_dma_num += len(ep.mgr_port_protocol)
         return self.tpl_tb.render(noc=self, cp_tiles=routers, \
-            endpoint_mgr=endpoint_mgr, endpoint_mgr_num=endpoint_mgr_num)
+            endpoint_dma=endpoint_dma, endpoint_dma_num=endpoint_dma_num)
     
     def render_testharness(self):
         """Render the testbench of the generated network."""

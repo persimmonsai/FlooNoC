@@ -37,14 +37,20 @@ module chiplet_floo_noc
   input axi_narrow_out_rsp_t              jtag_narrow_rsp_i,
   input axi_narrow_in_req_t              cva6_narrow_req_i,
   output axi_narrow_in_rsp_t              cva6_narrow_rsp_o,
+  output axi_narrow_out_req_t              cva6_narrow_req_o,
+  input axi_narrow_out_rsp_t              cva6_narrow_rsp_i,
   output axi_wide_out_req_t              spm_wide_wide_req_o,
   input axi_wide_out_rsp_t              spm_wide_wide_rsp_i,
   output axi_narrow_out_req_t              spm_narrow_narrow_req_o,
   input axi_narrow_out_rsp_t              spm_narrow_narrow_rsp_i,
+  input axi_narrow_in_req_t              idma_narrow_req_i,
+  output axi_narrow_in_rsp_t              idma_narrow_rsp_o,
   input axi_wide_in_req_t              idma_wide_req_i,
   output axi_wide_in_rsp_t              idma_wide_rsp_o,
   output axi_narrow_out_req_t              idma_narrow_req_o,
   input axi_narrow_out_rsp_t              idma_narrow_rsp_i,
+  output axi_wide_out_req_t              idma_wide_req_o,
+  input axi_wide_out_rsp_t              idma_wide_rsp_i,
   output axi_wide_out_req_t              zero_mem_wide_req_o,
   input axi_wide_out_rsp_t              zero_mem_wide_rsp_i
 
@@ -1253,7 +1259,7 @@ localparam id_t cva6_ni_id = '{x: 0, y: 1};
 
 
 floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b0),
+  .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b1),
   .EnWideSbrPort(1'b0),
   .EnWideMgrPort(1'b0)
@@ -1264,8 +1270,8 @@ floo_narrow_wide_chimney  #(
   .sram_cfg_i ( '0 ),
   .axi_narrow_in_req_i  ( cva6_narrow_req_i ),
   .axi_narrow_in_rsp_o  ( cva6_narrow_rsp_o ),
-  .axi_narrow_out_req_o (    ),
-  .axi_narrow_out_rsp_i ( '0 ),
+  .axi_narrow_out_req_o ( cva6_narrow_req_o ),
+  .axi_narrow_out_rsp_i ( cva6_narrow_rsp_i ),
   .axi_wide_in_req_i  ( '0 ),
   .axi_wide_in_rsp_o  (    ),
   .axi_wide_out_req_o (    ),
@@ -1347,22 +1353,22 @@ localparam id_t idma_ni_id = '{x: 9, y: 2};
 
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b0),
+  .EnNarrowMgrPort(1'b1),
+  .EnWideSbrPort(1'b1),
   .EnWideMgrPort(1'b1)
 ) idma_ni (
   .clk_i,
   .rst_ni,
   .test_enable_i,
   .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_in_req_i  ( idma_narrow_req_i ),
+  .axi_narrow_in_rsp_o  ( idma_narrow_rsp_o ),
   .axi_narrow_out_req_o ( idma_narrow_req_o ),
   .axi_narrow_out_rsp_i ( idma_narrow_rsp_i ),
   .axi_wide_in_req_i  ( idma_wide_req_i ),
   .axi_wide_in_rsp_o  ( idma_wide_rsp_o ),
-  .axi_wide_out_req_o (    ),
-  .axi_wide_out_rsp_i ( '0 ),
+  .axi_wide_out_req_o ( idma_wide_req_o ),
+  .axi_wide_out_rsp_i ( idma_wide_rsp_i ),
   .id_i             ( idma_ni_id    ),
   .route_table_i    ( '0                          ),
   .floo_req_o       ( idma_ni_to_router_7_1_req   ),

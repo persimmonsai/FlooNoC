@@ -212,31 +212,43 @@ compile-vcs-batch: work-vcs/compile_vcs.sh
 compile-vcs: VLOGAN_ARGS+=-debug_access+all
 compile-vcs: compile-vcs-batch
 
-run-vcs: VCS_FLAGS+=-debug_access+all
-run-vcs: SIMV_FLAGS+=-gui=elite
 
-run-vcs-common:
-ifdef DMA_TESTNODE
-	$(VCS) $(VCS_FLAGS) $(TB_DUT)
-	./simv $(SIMV_FLAGS)
-else
-# Generate VCS simulation binary
+
+# run-vcs-common:
+# ifdef DMA_TESTNODE
+# 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
+# 	./simv $(SIMV_FLAGS)
+# else
+# # Generate VCS simulation binary
+# 	mkdir -p bin
+# 	$(VCS) $(VCS_FLAGS) -o bin/snitch_cluster.vcs -cc cc -cpp g++ $(TB_DUT) \
+# 	$(SNITCH_PATH)/../../../hw/ip/test/src/rtl_lib.cc \
+# 	$(SNITCH_PATH)/../../../hw/ip/test/src/common_lib.cc \
+# 	$(SNITCH_PATH)/generated/bootdata.cc \
+#     -CFLAGS "-std=c++14 -I$(SNITCH_PATH)/ \
+# 	-I$(SNITCH_PATH)/test \
+# 	-I$(SNITCH_PATH)/work/include \
+# 	-I$(SNITCH_PATH)/../../../hw/ip/test/src" \
+# 	-LDFLAGS "-L$(SNITCH_PATH)/work/lib" -lfesvr
+# # Run VCS simulation binary
+# 	./bin/snitch_cluster.vcs $(SNITCH_PATH)/$(SNITCH_SW) $(SIMV_FLAGS)
+# endif
+
+bin/floo_noc_gui.vcs: VCS_FLAGS+=-debug_access+all
+bin/floo_noc_gui.vcs: compile-vcs
 	mkdir -p bin
-	$(VCS) $(VCS_FLAGS) -o bin/snitch_cluster.vcs -cc cc -cpp g++ $(TB_DUT) \
-	$(SNITCH_PATH)/../../../hw/ip/test/src/rtl_lib.cc \
-	$(SNITCH_PATH)/../../../hw/ip/test/src/common_lib.cc \
-	$(SNITCH_PATH)/generated/bootdata.cc \
-    -CFLAGS "-std=c++14 -I$(SNITCH_PATH)/ \
-	-I$(SNITCH_PATH)/test \
-	-I$(SNITCH_PATH)/work/include \
-	-I$(SNITCH_PATH)/../../../hw/ip/test/src" \
-	-LDFLAGS "-L$(SNITCH_PATH)/work/lib" -lfesvr
-# Run VCS simulation binary
-	./bin/snitch_cluster.vcs $(SNITCH_PATH)/$(SNITCH_SW) $(SIMV_FLAGS)
-endif
+	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_gui.vcs $(TB_DUT)
 
-run-vcs: compile-vcs run-vcs-common
-run-vcs-batch: compile-vcs-batch run-vcs-common
+bin/floo_noc_batch.vcs: compile-vcs-batch
+	mkdir -p bin
+	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_batch.vcs $(TB_DUT)
+
+run-vcs: SIMV_FLAGS+=-gui=elite
+run-vcs:
+	./bin/floo_noc_gui.vcs $(SIMV_FLAGS)
+
+run-vcs-batch:
+	./bin/floo_noc_batch.vcs $(SIMV_FLAGS)
 
 clean-vcs:
 	rm -rf work-vcs/compile_vcs.sh
@@ -256,6 +268,7 @@ clean-vcs:
 	rm -rf verdi_config_file
 	rm -rf verdiLog
 	rm -rf simv.vdb
+	rm -rf sysBusyPLog
 
 #############################################
 # Random testing for Compute tile structure #

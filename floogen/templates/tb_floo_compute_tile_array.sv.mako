@@ -59,13 +59,13 @@ module tb_floo_compute_tile_array;
       ${noc.render_tb_dut_ports()}
   );
 
-  logic [${len(cp_tiles)+endpoint_mgr_num-1}:0] endsim_cluster;
+  logic [${len(cp_tiles)+endpoint_dma_num-1}:0] endsim_cluster;
   // Get end_of_sim signal inside DUT
 % for i in range(0,len(cp_tiles)):
   assign endsim_cluster[${i}] = &tb_floo_compute_tile_array.i_${noc.name}_floo_noc.compute_tile_${str(cp_tiles[i].id.x)}_${str(cp_tiles[i].id.y)}.i_snitch_cluster_test_node.end_of_sim;
 % endfor
 <% i = 0 %>\
-% for ep in endpoint_mgr:
+% for ep in endpoint_dma:
   % for ep_mgr_prot in ep.mgr_port_protocol:
     assign endsim_cluster[${i+len(cp_tiles)}] = &tb_floo_compute_tile_array.i_floo_${ep_mgr_prot}_${ep.name}_model.end_of_sim;
   <% i += 1 %>\
