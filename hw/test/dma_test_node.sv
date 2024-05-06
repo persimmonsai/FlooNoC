@@ -55,6 +55,7 @@ module dma_test_node
       .axi_in_rsp_t (axi_out_rsp_t),
       .axi_out_req_t(axi_in_req_t),
       .axi_out_rsp_t(axi_in_rsp_t),
+      //.EnableDebug  (1'b1),
       .JobId        (JobId)
   ) i_dma_node (
       .clk_i        (clk_i),

@@ -32,7 +32,7 @@ ${port.rsp_type()} ${port._array_to_sv_array()} ${port.base_name}_in_rsp;
 dma_test_node #(
     .id_x          (${endpoint_id.x}),
     .id_y          (${endpoint_id.y}),
-    .is_narrow     (1'b1),
+    .is_narrow     (1'b0),
     .axi_out_req_t (axi_wide_out_req_t),
     .axi_out_rsp_t (axi_wide_out_rsp_t),
     .axi_in_req_t  (axi_wide_in_req_t),

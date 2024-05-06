@@ -45,7 +45,8 @@ BENDER_FLAGS += -t dma_test # use for local simulation of FlooNoC system
 #BENDER_FLAGS += -t cv64a6_imafdc_sv39
 
 TB_DUT ?= tb_floo_compute_tile_array
-SIM_TIME ?= 1500000
+#SIM_TIME ?= 1500000
+SIM_TIME ?= 3000000
 
 # VSIM
 VLOG_ARGS += -suppress vlog-2583
