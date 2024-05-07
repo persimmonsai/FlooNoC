@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 name: compute_tile_array
-description: "Computile array configuration in XY routing for FlooGen"
+description: "Compute tile array configuration in XY routing for FlooGen"
 compute_tile_gen: true
 
 routing:
@@ -49,7 +49,6 @@ protocols:
 endpoints:
 # Define compute tile array (snitch cluster) in XY mesh
   - name: "cluster"
-    soc_type: "cluster"
     array: [2, 2]
     addr_range:
       base: 0x0000_1000_0000
@@ -67,7 +66,6 @@ endpoints:
 # Define endpoint for each border side (North, East, South, and West)
   # North border HBM memory
   - name: "hbm_north"
-    soc_type: "memory"
     array: [2, 1]
     addr_range:
       base: 0x0000_8000_0000
@@ -80,7 +78,6 @@ endpoints:
       y: 2 # 2 mean border of the north side (its not working)
   # South border HBM memory
   - name: "hbm_south"
-    soc_type: "memory"
     array: [2, 1]
     addr_range:
       base: 0x0008_0000_0000
@@ -93,7 +90,6 @@ endpoints:
       y: -1 # -1 mean border of the south side
   # West border PCIe interface
   - name: "pcie"
-    soc_type: "serial_link"
     addr_range:
       base: 0x0100_0000_0000
       size: 0x0010_000_0000
@@ -108,7 +104,6 @@ endpoints:
       y: 1 # 0
   # West border CVA6 interface
   - name: "cva6" 
-    soc_type: "processor"
     # No slave port so no endpoint address assign to its, 
     # and there is no rule route to this endpoint from "addr_map_rule_t [35:0] AddrMap"
     mgr_port_protocol:
@@ -118,7 +113,6 @@ endpoints:
       y: 0 # 1
   # East border Peripherals
   - name: "peripherals"
-    soc_type: "peripheral"
     array: [1, 2]
     addr_range:
       base: 0x0000_0000_0000

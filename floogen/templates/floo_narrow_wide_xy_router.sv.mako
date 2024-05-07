@@ -49,7 +49,9 @@ floo_narrow_wide_router #(
   .ChannelFifoDepth (2),
   .OutputFifoDepth (2),
   .RouteAlgo (XYRouting),
-  .id_t(id_t)
+  .id_t(id_t),
+  .border_id_t(border_id_t),
+  .BorderId(BorderId)
 ) ${router.name} (
   .clk_i,
   .rst_ni,

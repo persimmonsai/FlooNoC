@@ -8,38 +8,40 @@
 module floo_narrow_wide_router
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
-  #(
-    parameter int unsigned NumRoutes        = NumDirections,
-    parameter int unsigned NumInputs        = NumRoutes,
-    parameter int unsigned NumOutputs       = NumRoutes,
+#(
+    parameter int unsigned NumRoutes = NumDirections,
+    parameter int unsigned NumInputs = NumRoutes,
+    parameter int unsigned NumOutputs = NumRoutes,
     parameter int unsigned ChannelFifoDepth = 0,
-    parameter int unsigned OutputFifoDepth  = 0,
-    parameter route_algo_e RouteAlgo        = XYRouting,
-    parameter bit          XYRouteOpt       = 1'b1,
+    parameter int unsigned OutputFifoDepth = 0,
+    parameter route_algo_e RouteAlgo = XYRouting,
+    parameter bit XYRouteOpt = 1'b1,
     /// Used for ID-based and XY routing
-    parameter int unsigned IdWidth          = 0,
-    parameter type         id_t             = logic[IdWidth-1:0],
+    parameter int unsigned IdWidth = 0,
+    parameter type id_t = logic [IdWidth-1:0],
+    parameter type border_id_t = logic,
+    parameter border_id_t BorderId = 0,
     /// Used for ID-based routing
     parameter int unsigned NumAddrRules     = 1, // initial to 1 to avoid id_route_map_i start from -1:0
-    parameter type         addr_rule_t      = logic
+    parameter type addr_rule_t = logic
 ) (
-  input  logic   clk_i,
-  input  logic   rst_ni,
-  input  logic   test_enable_i,
+    input logic clk_i,
+    input logic rst_ni,
+    input logic test_enable_i,
 
-  input  id_t id_i,
-  input  addr_rule_t [NumAddrRules-1:0] id_route_map_i,
+    input id_t id_i,
+    input addr_rule_t [NumAddrRules-1:0] id_route_map_i,
 
-  input   floo_req_t [NumInputs-1:0] floo_req_i,
-  input   floo_rsp_t [NumOutputs-1:0] floo_rsp_i,
-  output  floo_req_t [NumOutputs-1:0] floo_req_o,
-  output  floo_rsp_t [NumInputs-1:0] floo_rsp_o,
-  input   floo_wide_t   [NumRoutes-1:0] floo_wide_i,
-  output  floo_wide_t   [NumRoutes-1:0] floo_wide_o
+    input  floo_req_t  [ NumInputs-1:0] floo_req_i,
+    input  floo_rsp_t  [NumOutputs-1:0] floo_rsp_i,
+    output floo_req_t  [NumOutputs-1:0] floo_req_o,
+    output floo_rsp_t  [ NumInputs-1:0] floo_rsp_o,
+    input  floo_wide_t [ NumRoutes-1:0] floo_wide_i,
+    output floo_wide_t [ NumRoutes-1:0] floo_wide_o
 );
 
-  floo_req_chan_t [NumInputs-1:0] req_in;
-  floo_rsp_chan_t [NumInputs-1:0] rsp_out;
+  floo_req_chan_t [ NumInputs-1:0] req_in;
+  floo_rsp_chan_t [ NumInputs-1:0] rsp_out;
   floo_req_chan_t [NumOutputs-1:0] req_out;
   floo_rsp_chan_t [NumOutputs-1:0] rsp_in;
   floo_wide_chan_t [NumRoutes-1:0] wide_in, wide_out;
@@ -78,88 +80,94 @@ module floo_narrow_wide_router
   end
 
   floo_router #(
-    .NumPhysChannels  ( 1                       ),
-    .NumVirtChannels  ( 1                       ),
-    .NumInput         ( NumInputs               ),
-    .NumOutput        ( NumOutputs              ),
-    .flit_t           ( floo_req_generic_flit_t ),
-    .ChannelFifoDepth ( ChannelFifoDepth        ),
-    .OutputFifoDepth  ( OutputFifoDepth         ),
-    .RouteAlgo        ( RouteAlgo               ),
-    .XYRouteOpt       ( XYRouteOpt              ),
-    .IdWidth          ( IdWidth                 ),
-    .id_t             ( id_t                    ),
-    .NumAddrRules     ( NumAddrRules            ),
-    .addr_rule_t      ( addr_rule_t             )
+      .NumPhysChannels (1),
+      .NumVirtChannels (1),
+      .NumInput        (NumInputs),
+      .NumOutput       (NumOutputs),
+      .flit_t          (floo_req_generic_flit_t),
+      .ChannelFifoDepth(ChannelFifoDepth),
+      .OutputFifoDepth (OutputFifoDepth),
+      .RouteAlgo       (RouteAlgo),
+      .XYRouteOpt      (XYRouteOpt),
+      .IdWidth         (IdWidth),
+      .id_t            (id_t),
+      .border_id_t     (border_id_t),
+      .BorderId        (BorderId),
+      .NumAddrRules    (NumAddrRules),
+      .addr_rule_t     (addr_rule_t)
   ) i_req_floo_router (
-    .clk_i,
-    .rst_ni,
-    .test_enable_i,
-    .xy_id_i(id_i),
-    .id_route_map_i,
-    .valid_i        ( req_valid_in  ),
-    .ready_o        ( req_ready_out ),
-    .data_i         ( req_in        ),
-    .valid_o        ( req_valid_out ),
-    .ready_i        ( req_ready_in  ),
-    .data_o         ( req_out       )
+      .clk_i,
+      .rst_ni,
+      .test_enable_i,
+      .xy_id_i(id_i),
+      .id_route_map_i,
+      .valid_i(req_valid_in),
+      .ready_o(req_ready_out),
+      .data_i (req_in),
+      .valid_o(req_valid_out),
+      .ready_i(req_ready_in),
+      .data_o (req_out)
   );
 
 
   floo_router #(
-    .NumPhysChannels  ( 1                       ),
-    .NumVirtChannels  ( 1                       ),
-    .NumInput         ( NumInputs               ),
-    .NumOutput        ( NumOutputs              ),
-    .ChannelFifoDepth ( ChannelFifoDepth        ),
-    .OutputFifoDepth  ( OutputFifoDepth         ),
-    .RouteAlgo        ( RouteAlgo               ),
-    .XYRouteOpt       ( XYRouteOpt              ),
-    .IdWidth          ( IdWidth                 ),
-    .flit_t           ( floo_rsp_generic_flit_t ),
-    .id_t             ( id_t                    ),
-    .NumAddrRules     ( NumAddrRules            ),
-    .addr_rule_t      ( addr_rule_t             )
+      .NumPhysChannels (1),
+      .NumVirtChannels (1),
+      .NumInput        (NumInputs),
+      .NumOutput       (NumOutputs),
+      .ChannelFifoDepth(ChannelFifoDepth),
+      .OutputFifoDepth (OutputFifoDepth),
+      .RouteAlgo       (RouteAlgo),
+      .XYRouteOpt      (XYRouteOpt),
+      .IdWidth         (IdWidth),
+      .flit_t          (floo_rsp_generic_flit_t),
+      .id_t            (id_t),
+      .border_id_t     (border_id_t),
+      .BorderId        (BorderId),
+      .NumAddrRules    (NumAddrRules),
+      .addr_rule_t     (addr_rule_t)
   ) i_rsp_floo_router (
-    .clk_i,
-    .rst_ni,
-    .test_enable_i,
-    .xy_id_i(id_i),
-    .id_route_map_i,
-    .valid_i        ( rsp_valid_in  ),
-    .ready_o        ( rsp_ready_out ),
-    .data_i         ( rsp_in        ),
-    .valid_o        ( rsp_valid_out ),
-    .ready_i        ( rsp_ready_in  ),
-    .data_o         ( rsp_out       )
+      .clk_i,
+      .rst_ni,
+      .test_enable_i,
+      .xy_id_i(id_i),
+      .id_route_map_i,
+      .valid_i(rsp_valid_in),
+      .ready_o(rsp_ready_out),
+      .data_i (rsp_in),
+      .valid_o(rsp_valid_out),
+      .ready_i(rsp_ready_in),
+      .data_o (rsp_out)
   );
 
 
   floo_router #(
-    .NumPhysChannels  ( 1                         ),
-    .NumVirtChannels  ( 1                         ),
-    .NumRoutes        ( NumRoutes                 ),
-    .flit_t           ( floo_wide_generic_flit_t  ),
-    .ChannelFifoDepth ( ChannelFifoDepth          ),
-    .OutputFifoDepth  ( OutputFifoDepth           ),
-    .RouteAlgo        ( RouteAlgo                 ),
-    .XYRouteOpt       ( XYRouteOpt                ),
-    .IdWidth          ( IdWidth                   ),
-    .id_t             ( id_t                      ),
-    .NumAddrRules     ( NumAddrRules              ),
-    .addr_rule_t      ( addr_rule_t               )
+      .NumPhysChannels (1),
+      .NumVirtChannels (1),
+      .NumRoutes       (NumRoutes),
+      .flit_t          (floo_wide_generic_flit_t),
+      .ChannelFifoDepth(ChannelFifoDepth),
+      .OutputFifoDepth (OutputFifoDepth),
+      .RouteAlgo       (RouteAlgo),
+      .XYRouteOpt      (XYRouteOpt),
+      .IdWidth         (IdWidth),
+      .id_t            (id_t),
+      .border_id_t     (border_id_t),
+      .BorderId        (BorderId),
+      .NumAddrRules    (NumAddrRules),
+      .addr_rule_t     (addr_rule_t)
   ) i_wide_req_floo_router (
-    .clk_i,
-    .rst_ni,
-    .test_enable_i,
-    .xy_id_i(id_i),
-    .id_route_map_i,
-    .valid_i        ( wide_valid_in   ),
-    .ready_o        ( wide_ready_out  ),
-    .data_i         ( wide_in         ),
-    .valid_o        ( wide_valid_out  ),
-    .ready_i        ( wide_ready_in   ),
-    .data_o         ( wide_out        )
+      .clk_i,
+      .rst_ni,
+      .test_enable_i,
+      .xy_id_i(id_i),
+      .id_route_map_i,
+      .valid_i(wide_valid_in),
+      .ready_o(wide_ready_out),
+      .data_i (wide_in),
+      .valid_o(wide_valid_out),
+      .ready_i(wide_ready_in),
+      .data_o (wide_out)
   );
 
 endmodule

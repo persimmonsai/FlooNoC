@@ -104,6 +104,6 @@ class NarrowWideXYRouter(XYRouter):
         """Declare the router in the generated code."""
         return self._tpl.render(router=self) + "\n"
 
-    def render_tile(self, id_offset):
+    def render_tile(self, id_offset, xy_array, num_snitch_core):
         """Declare the compute tile in the generated code."""
-        return self._tpl_tile.render(router=self, id_offset=id_offset) + "\n"
+        return self._tpl_tile.render(router=self, id_offset=id_offset, xy_array=xy_array, num_snitch_core=num_snitch_core) + "\n"

@@ -8,6 +8,7 @@
 import math
 import shutil
 import subprocess
+import numpy
 from typing import Union
 
 
@@ -102,3 +103,52 @@ def verible_format(string: str) -> str:
         text=True,
         check=True,
     ).stdout
+
+def port_dict_convert(port_nodes):
+    port_dicts = {}
+    for port in port_nodes:
+        array = 0
+        port_dicts[port.name] = {} # New endpoint
+        if port.addr_range is not None:
+            port_dicts[port.name]["addr_range"] = {}
+            port_dicts[port.name]["addr_range"]["base"] = port.addr_range.base
+            port_dicts[port.name]["addr_range"]["size"] = port.addr_range.size
+            # port_dicts[port.name]["addr_range"]["start"] = port.addr_range.start
+            # port_dicts[port.name]["addr_range"]["end"] = port.addr_range.end
+        for mgr_port in port.mgr_ports:
+            port_dicts[port.name]["mgr_"+mgr_port.name] = {}
+            port_dicts[port.name]["mgr_"+mgr_port.name]["req_name"] = mgr_port.req_name(port=True)
+            port_dicts[port.name]["mgr_"+mgr_port.name]["rsp_name"] = mgr_port.rsp_name(port=True)
+            port_dicts[port.name]["mgr_"+mgr_port.name]["req_type"] = mgr_port.req_type()
+            port_dicts[port.name]["mgr_"+mgr_port.name]["rsp_type"] = mgr_port.rsp_type()
+            port_dicts[port.name]["mgr_"+mgr_port.name]["sv_array"] = mgr_port._array_to_sv_array()
+            port_dicts[port.name]["mgr_"+mgr_port.name]["array"] = mgr_port.array
+            array = mgr_port.array
+            port_dicts[port.name]["mgr_"+mgr_port.name]["addr_width"] = mgr_port.addr_width
+            port_dicts[port.name]["mgr_"+mgr_port.name]["data_width"] = mgr_port.data_width
+            port_dicts[port.name]["mgr_"+mgr_port.name]["id_width"] = mgr_port.id_width
+            port_dicts[port.name]["mgr_"+mgr_port.name]["user_width"] = mgr_port.user_width
+            port_dicts[port.name]["mgr_"+mgr_port.name]["svdirection"] = mgr_port.svdirection
+            port_dicts[port.name]["mgr_"+mgr_port.name]["type"] = mgr_port.type
+        for sbr_port in port.sbr_ports:
+            port_dicts[port.name]["sbr_"+sbr_port.name] = {}
+            port_dicts[port.name]["sbr_"+sbr_port.name]["req_name"] = sbr_port.req_name(port=True)
+            port_dicts[port.name]["sbr_"+sbr_port.name]["rsp_name"] = sbr_port.rsp_name(port=True)
+            port_dicts[port.name]["sbr_"+sbr_port.name]["req_type"] = sbr_port.req_type()
+            port_dicts[port.name]["sbr_"+sbr_port.name]["rsp_type"] = sbr_port.rsp_type()
+            port_dicts[port.name]["sbr_"+sbr_port.name]["sv_array"] = sbr_port._array_to_sv_array()
+            port_dicts[port.name]["sbr_"+sbr_port.name]["array"] = sbr_port.array
+            array = sbr_port.array
+            port_dicts[port.name]["sbr_"+sbr_port.name]["addr_width"] = sbr_port.addr_width
+            port_dicts[port.name]["sbr_"+sbr_port.name]["data_width"] = sbr_port.data_width
+            port_dicts[port.name]["sbr_"+sbr_port.name]["id_width"] = sbr_port.id_width
+            port_dicts[port.name]["sbr_"+sbr_port.name]["user_width"] = sbr_port.user_width
+            port_dicts[port.name]["sbr_"+sbr_port.name]["svdirection"] = sbr_port.svdirection
+            port_dicts[port.name]["sbr_"+sbr_port.name]["type"] = sbr_port.type
+        if array is not None:
+            port_dicts[port.name]["array"] = array
+            port_dicts[port.name]["num"] = numpy.prod(array).tolist()
+        else:
+            port_dicts[port.name]["array"] = 1
+            port_dicts[port.name]["num"] = 1
+    return port_dicts

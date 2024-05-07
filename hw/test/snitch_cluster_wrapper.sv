@@ -1,11 +1,11 @@
 
-`include "snitch_cluster_pkg.svh"
+`include "test_cluster/snitch_cluster_pkg.svh"
 
 // Blank wrapper for synthesis testing
 module snitch_cluster_wrapper (
     input logic clk_i,
     input logic rst_ni,
-    input logic sa_rst_ni,
+    //input logic sa_rst_ni,
     input logic [snitch_cluster_pkg::NrCores-1:0] debug_req_i,
     input logic [snitch_cluster_pkg::NrCores-1:0] meip_i,
     input logic [snitch_cluster_pkg::NrCores-1:0] mtip_i,

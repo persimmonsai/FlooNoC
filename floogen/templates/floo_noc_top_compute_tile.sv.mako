@@ -1,17 +1,15 @@
-<%!
-    import datetime
+<%
+  import datetime
+  NUM_X = noc.routers[0].array[0]
+  NUM_Y = noc.routers[0].array[1]
+  num_core = NUM_X * NUM_Y * noc.num_snitch_core
+  irq_bit_num = num_core + 1 # +1 for CVA6 core
 %>\
 // Copyright ${datetime.datetime.now().year} ETH Zurich and University of Bologna.
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
 // SPDX-License-Identifier: SHL-0.51
 
 // AUTOMATICALLY GENERATED! DO NOT EDIT!
-
-`ifdef QUESTA
-  `define QUESTA_VCS
-`elsif VCS
-  `define QUESTA_VCS
-`endif
 
 module ${noc.name}_floo_noc
   import floo_pkg::*;
@@ -21,6 +19,11 @@ module ${noc.name}_floo_noc
   input logic rst_ni,
   input logic test_enable_i,
 
+  input logic [${irq_bit_num-1}:1] mtip_i, 
+  input logic [${irq_bit_num-1}:1] msip_i, 
+`ifndef TARGET_DMA_TEST
+  input  occamy_pkg::sram_cfgs_t  sram_cfgs_i,
+`endif
   ${noc.render_ports()}
 );
 

@@ -71,10 +71,10 @@ class Link(BaseModel, ABC):
             prots = [
                 p
                 for p in protocols
-                if p.name in axi_chs and p.direction == "manager"
+                if ("metabuff" in p.name) and (p.name.replace("_metabuff","") in axi_chs)
             ]
             # Get only the exact AXI channels that are used by the link
-            used_axi_chs = [axi_chs[p.name] for p in prots]
+            used_axi_chs = [axi_chs[p.name.replace("_metabuff","")] for p in prots]
             # Get the sizes of the AXI channels
             axi_ch_sizes = [p.get_axi_channel_sizes() for p in prots]
             link_message_sizes = []
@@ -91,9 +91,10 @@ class Link(BaseModel, ABC):
         inv_mapping = cls.get_inverted_mapping()
         link_sizes = cls.calc_link_sizes(protocols)
         for p in protocols:
-            if p.direction == "manager":
+            if "metabuff" in p.name:
+                name = p.name.replace("_metabuff","")
                 for axi_ch, size in p.get_axi_channel_sizes().items():
-                    phys_ch = inv_mapping[p.name][axi_ch]
+                    phys_ch = inv_mapping[name][axi_ch]
                     phys_ch_size = link_sizes[phys_ch]
                     rsvd_size = phys_ch_size - size
                     struct_dict = {
@@ -102,7 +103,7 @@ class Link(BaseModel, ABC):
                     }
                     if phys_ch_size - size > 0:
                         struct_dict["rsvd"] = f"logic[{rsvd_size-1}:0]"
-                    string += sv_struct_typedef(f"floo_{p.name}_{axi_ch}_flit_t", struct_dict)
+                    string += sv_struct_typedef(f"floo_{name}_{axi_ch}_flit_t", struct_dict)
 
         for phys_ch, size in link_sizes.items():
             struct_dict = {

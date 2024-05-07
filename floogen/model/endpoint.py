@@ -21,7 +21,7 @@ class EndpointDesc(BaseModel):
 
     name: str
     description: Optional[str] = ""
-    soc_type : Optional[str] = None
+    # soc_type : Optional[str] = None
     array: Optional[Union[Tuple[int], Tuple[int, int]]] = None
     addr_range: Optional[AddrRange] = None
     id_offset: Optional[Id] = None
@@ -57,14 +57,14 @@ class EndpointDesc(BaseModel):
                 raise ValueError("Endpoint is a Subordinate and requires an address range")
         return self
     
-    @model_validator(mode="after")
-    def check_soc_type(self):
-        """Check if soc_type is lie on support type."""
-        if self.soc_type is not None:
-            soc_type_list = ["cluster", "memory", "processor", "peripheral", "serial_link"]
-            if not (self.soc_type in soc_type_list):
-                raise ValueError("soc_type must set to one of " + str(soc_type_list))
-        return self
+    # @model_validator(mode="after")
+    # def check_soc_type(self):
+    #     """Check if soc_type is lie on support type."""
+    #     if self.soc_type is not None:
+    #         soc_type_list = ["cluster", "memory", "processor", "peripheral", "serial_link"]
+    #         if not (self.soc_type in soc_type_list):
+    #             raise ValueError("soc_type must set to one of " + str(soc_type_list))
+    #     return self
 
     def is_sbr(self) -> bool:
         """Return true if the endpoint is a subordinate."""
@@ -90,14 +90,23 @@ class EndpointDesc(BaseModel):
         """Render the ports of the endpoint."""
         
     def render_tb(self) -> str:
-        """Render the testbench of the endpoint."""
+        """Render endpoints of the testbench."""
+        
+    def render_testharness(self) -> str:
+        """Render endpoints of the testharness."""
 
 
 class Endpoint(EndpointDesc):
-    """Endpoint class to describe an endpoint with adress ranges and configuration parameters."""
+    """Endpoint class to describe an endpoint with address ranges and configuration parameters."""
     
     with as_file(files(floogen.templates).joinpath("tb_memory_model.sv.mako")) as _tpl_path:
         _tpl_tb_mem: ClassVar = Template(filename=str(_tpl_path))
+       
+    with as_file(files(floogen.templates).joinpath("tb_virtual_memory.sv.mako")) as _tpl_path:
+        _tpl_virtual_mem: ClassVar = Template(filename=str(_tpl_path)) 
+    
+    with as_file(files(floogen.templates).joinpath("tb_dma_model.sv.mako")) as _tpl_path:
+        _tpl_tb_dma: ClassVar = Template(filename=str(_tpl_path)) 
 
     mgr_ports: List[Protocols] = []
     sbr_ports: List[Protocols] = []
@@ -108,6 +117,13 @@ class Endpoint(EndpointDesc):
                   sbr_ports: List[Protocols]):
         """Create an endpoint from a description."""
         return cls(**desc.model_dump(), mgr_ports=mgr_ports, sbr_ports=sbr_ports)
+    
+    def is_memory_tb(self):
+        """Check if the endpoint is memory type."""
+        if (self.mgr_port_protocol is None) and (self.sbr_port_protocol is not None):
+            return True
+        else:
+            return False
 
     def render_ports(self):
         """Render the ports of the endpoint."""
@@ -122,11 +138,15 @@ class Endpoint(EndpointDesc):
         """Render the testbench ports of the endpoint."""
         ports = []
         # Render as connected port (support simulation model endpoint)
-        if (self.soc_type=="memory"):
-            for port in self.mgr_ports:
-                ports += port.render_tb_connect_port()
+        if (self.is_memory_tb()):
             for port in self.sbr_ports:
-                ports += port.render_tb_connect_port()
+                ports += port.render_tb_mem_connect_port()
+        # Render as connected port (support simulation model endpoint)
+        elif self.sbr_port_protocol == self.mgr_port_protocol:
+            for port in self.mgr_ports:
+                ports += port.render_tb_dma_connect_port()
+            for port in self.sbr_ports:
+                ports += port.render_tb_dma_connect_port()
         # Render as trimmed port (unsupport simulation model endpoint)
         else:
             for port in self.mgr_ports:
@@ -135,7 +155,15 @@ class Endpoint(EndpointDesc):
                 ports += port.render_tb_trim_port()
         return ports
     
-    def render_tb(self) -> str:
-        """Render the testbench of the endpoint."""
+    def render_tb_mem(self) -> str:
+        """Render memory endpoints of the testbench."""
         return self._tpl_tb_mem.render(ep=self)
+    
+    def render_tb_dma(self, endpoint_id) -> str:
+        """Render DMA endpoints of the testbench."""
+        return self._tpl_tb_dma.render(ep=self, endpoint_id=endpoint_id)
+    
+    def render_testharness(self) -> str:
+        """Render endpoints of the testharness."""
+        return self._tpl_virtual_mem.render(ep=self)
     

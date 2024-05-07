@@ -2,6 +2,12 @@
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
 // SPDX-License-Identifier: SHL-0.51
 
+<%
+  import math
+%>\
+<% NUM_X = noc.routers[0].array[0] %>\
+<% NUM_Y = noc.routers[0].array[1] %>\
+<% tile_id_bit_num = int(math.ceil(math.log2(NUM_X*NUM_Y))) %>\
 
 `include "axi/typedef.svh"
 
@@ -20,10 +26,10 @@ module compute_tile
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
     
-    input  logic [8:0]   meip_i,
-    input  logic [8:0]   mtip_i,
-    input  logic [8:0]   msip_i,
-    input  logic [4:0]   tile_id_i,
+    input  logic [${noc.num_snitch_core-1}:0]   meip_i,
+    input  logic [${noc.num_snitch_core-1}:0]   mtip_i,
+    input  logic [${noc.num_snitch_core-1}:0]   msip_i,
+    input  logic [${tile_id_bit_num-1}:0]   tile_id_i,
 
     input  id_t                         id_i, // XY ID for router and cluster NI
     // North, East, South, and West floonoc router interface

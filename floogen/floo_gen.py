@@ -7,11 +7,12 @@
 
 import os
 import argparse
+import hjson
 from pathlib import Path
 
 from floogen.config_parser import parse_config
 from floogen.model.network import Network
-from floogen.utils import verible_format
+from floogen.utils import verible_format, port_dict_convert
 
 
 def parse_args():
@@ -35,11 +36,14 @@ def parse_args():
         help="Path to the output directory of the generated output.",
     )
     parser.add_argument(
+        "--no-testbench", dest="no_testbench", action="store_true", help="Export .hjson FlooNoC system parameter for Chipletgen"
+    )
+    parser.add_argument(
         "--tb-outdir",
         dest="tb_outdir",
         type=Path,
         required=False,
-        help="Path to the output testbech directory of the generated testbench.",
+        help="Path to the output testbench directory of the generated testbench.",
     )
     parser.add_argument(
         "--util-outdir",
@@ -47,6 +51,16 @@ def parse_args():
         type=Path,
         required=False,
         help="Path to the output utils directory of the generated jobs parameter.",
+    )
+    parser.add_argument(
+        "--export-sys", dest="export_sys", action="store_true", help="Export .hjson FlooNoC system parameter for Chipletgen"
+    )
+    parser.add_argument(
+        "--export-outdir",
+        dest="export_outdir",
+        type=Path,
+        required=False,
+        help="Path to the output export system parameter.",
     )
     parser.add_argument(
         "--only-pkg", dest="only_pkg", action="store_true", help="Only generate the package file."
@@ -101,17 +115,24 @@ def main(): # pylint: disable=too-many-branches
 
         # Generate the network description
         rendered_top = network.render_network()
+        rendered_tile = network.render_tile()
         if not args.no_format:
             rendered_top = verible_format(rendered_top)
+            rendered_tile = verible_format(rendered_tile)
         # Write the network description to file or print it to stdout
         if outdir:
             outdir.mkdir(parents=True, exist_ok=True)
             top_file_name = outdir / (network.name + "_floo_noc.sv")
             with open(top_file_name, "w+", encoding="utf-8") as top_file:
                 top_file.write(rendered_top)
-            print("Generating topfile : " + str(top_file_name))
+            print("Generating top_file : " + str(top_file_name))
+            tile_file_name = outdir / "compute_tile.sv"
+            with open(tile_file_name, "w+", encoding="utf-8") as tile_file:
+                tile_file.write(rendered_tile)
+            print("Generating tile_file : " + str(tile_file_name))
         else:
             print(rendered_top)
+            print(rendered_tile)
         
         # Generating support file for compute tile array structure
         if network.compute_tile_gen:
@@ -120,51 +141,69 @@ def main(): # pylint: disable=too-many-branches
             else:
                 # default output directory
                 tb_outdir = Path(os.getcwd(), "hw", "tb")
-                if not tb_outdir.exists():
-                    raise FileNotFoundError(
-                        f"Was not able to find the directory to store the testbech file: {tb_outdir}"
-                    )
             if args.util_outdir:
                 util_outdir = Path(os.getcwd(), args.util_outdir)
             else:
                 # default output directory
                 util_outdir = Path(os.getcwd(), "util")
-                if not util_outdir.exists():
-                    raise FileNotFoundError(
-                        f"Was not able to find the directory to store the util file: {util_outdir}"
-                    )
             # Generate util python file
             rendered_util = network.render_util_job()
             # Generate testbench file
             rendered_tb = network.render_tb()
             rendered_tb_pkg = network.render_tb_pkg()
+            rendered_testharness = network.render_testharness()
             
             # Write python util file for DMA jobs generation
-            if util_outdir:
-                util_outdir.mkdir(parents=True, exist_ok=True)
-                util_file_name = util_outdir / ("soc_config.py")
-                with open(util_file_name, "w+", encoding="utf-8") as util_file:
-                    util_file.write(rendered_util)
-                print("Generating utilfile : " + str(util_file_name))
-            else:
-                print(rendered_util)
+            if not args.no_testbench:
+                if util_outdir:
+                    util_outdir.mkdir(parents=True, exist_ok=True)
+                    util_file_name = util_outdir / ("soc_config.py")
+                    with open(util_file_name, "w+", encoding="utf-8") as util_file:
+                        util_file.write(rendered_util)
+                    print("Generating util_file : " + str(util_file_name))
+                else:
+                    print(rendered_util)
             
             if not args.no_format:
                 rendered_tb = verible_format(rendered_tb)
                 rendered_tb_pkg = verible_format(rendered_tb_pkg)
+                rendered_testharness = verible_format(rendered_testharness)
             # Write toplevel testbench file for compute file array structure
-            if tb_outdir:
-                tb_outdir.mkdir(parents=True, exist_ok=True)
-                tb_file_name = tb_outdir / ("tb_floo_" + network.name + ".sv")
-                tb_pkg_file_name = tb_outdir / (network.name + "_test_pkg.sv")
-                with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
-                    tb_file.write(rendered_tb)
-                print("Generating tbfile : " + str(tb_file_name))
-                with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
-                    tb_file.write(rendered_tb_pkg)
-                print("Generating tbpkgfile : " + str(tb_pkg_file_name))
+            if not args.no_testbench:
+                if tb_outdir:
+                    tb_outdir.mkdir(parents=True, exist_ok=True)
+                    tb_file_name = tb_outdir / ("tb_floo_compute_tile_array.sv")
+                    tb_pkg_file_name = tb_outdir / ("compute_tile_array_test_pkg.sv")
+                    testharness_file_name = tb_outdir / "floo_testharness.sv"
+                    with open(tb_file_name, "w+", encoding="utf-8") as tb_file:
+                        tb_file.write(rendered_tb)
+                    print("Generating tb_file : " + str(tb_file_name))
+                    with open(tb_pkg_file_name, "w+", encoding="utf-8") as tb_file:
+                        tb_file.write(rendered_tb_pkg)
+                    print("Generating tbpkg_file : " + str(tb_pkg_file_name))
+                    with open(testharness_file_name, "w+", encoding="utf-8") as tb_file:
+                        tb_file.write(rendered_testharness)
+                    print("Generating testharness_file : " + str(testharness_file_name))
+                else:
+                    print(rendered_tb)
+            
+        # Export system parameter and port connection information to Chipletgen framework 
+        # for SoC top level wrapper generating
+        if args.export_sys:
+            if args.export_outdir:
+                export_outdir = Path(os.getcwd(), args.export_outdir)
             else:
-                print(rendered_tb)
+                raise ValueError(
+                    "Can't export .hjson system parameter cause --export-outdir is not set"
+                )
+            # Get export parameter as a dictionary structure to be export as .hjson file
+            sys_param = network.get_sys_param()
+            sys_param["ports"] = port_dict_convert(network.get_ports())
+            # Write the export parameter to file or print it to stdout
+            hjson_file_name = export_outdir / "floo_sys_param.hjson"
+            with open(hjson_file_name, "w+", encoding="utf-8") as hjson_file:
+                hjson.dump(sys_param, hjson_file)
+            print("Generating hjson_file : " + str(hjson_file_name))
 
     # Generate package
     axi_type, rendered_pkg = network.render_link_cfg()

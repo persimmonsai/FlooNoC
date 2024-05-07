@@ -14,18 +14,25 @@ MKFILE_DIR  := $(dir $(MKFILE_PATH))
 
 .PHONY: all clean
 all: compile-vsim
-clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources
+clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources clean-vivado clean-bender clean-log clean-dma_test
 
 ############
 # Programs #
 ############
 
 BENDER     	?= bender
-# VSIM		?= questa-2023.4 vsim
 VSIM       	?= vsim
 VCS			?= vcs
 SPYGLASS   	?= sg_shell
 VERIBLE_FMT	?= verible-verilog-format
+
+##################
+# Snitch Cluster #
+##################
+
+# Path to snitch cluster "$ROOT/snitch/hw/system/snitch_cluster"
+SNITCH_PATH := /home/attapon/Persimmons/PULP/snitch/hw/system/snitch_cluster
+SNITCH_SW ?= sw/tests/build/fp32_computation_vector.elf
 
 #####################
 # Compilation Flags #
@@ -33,15 +40,24 @@ VERIBLE_FMT	?= verible-verilog-format
 
 BENDER_FLAGS += -t rtl
 BENDER_FLAGS += -t test
+BENDER_FLAGS += -t dma_test # use for local simulation of FlooNoC system
+#BENDER_FLAGS += -t simulation
+#BENDER_FLAGS += -t cv64a6_imafdc_sv39
 
 TB_DUT ?= tb_floo_compute_tile_array
-SIM_TIME ?= 1500000
+#SIM_TIME ?= 1500000
+SIM_TIME ?= 3000000
 
 # VSIM
 VLOG_ARGS += -suppress vlog-2583
 VLOG_ARGS += -suppress vlog-13314
 VLOG_ARGS += -suppress vlog-13233
 VLOG_ARGS += -timescale \"1 ns / 1 ps\"
+ifdef DMA_TESTNODE
+	VLOG_ARGS += +define+DMA_TESTNODE
+endif
+
+$(warning $(VLOG_ARGS))
 
 VSIM_FLAGS += -64
 VSIM_FLAGS += -t 1ps
@@ -49,15 +65,17 @@ VSIM_FLAGS += -sv_seed 0
 
 # VCS
 VLOGAN_ARGS += -full64
-#VLOGAN_ARGS += -debug_access+all
 VLOGAN_ARGS += -kdb
+VLOGAN_ARGS += -assert svaext
+#VLOGAN_ARGS += -assert disable_cover
 VLOGAN_ARGS += -timescale=1ns/1ns
+ifdef DMA_TESTNODE
+	VLOGAN_ARGS += +define+DMA_TESTNODE
+endif
 
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
-#VCS_FLAGS += -debug_access+r
-#VCS_FLAGS += -debug_access+all
 VCS_FLAGS += -kdb
 SIMV_FLAGS =
 
@@ -66,16 +84,19 @@ SIMV_FLAGS += +vcs+finish+$(SIM_TIME) # maximum simulation time in ns
 
 # Set the job name and directory if specified
 ifdef JOB_NAME
-		VSIM_FLAGS += +JOB_NAME=$(JOB_NAME)
-		SIMV_FLAGS += +JOB_NAME=$(JOB_NAME)
+	VSIM_FLAGS += +JOB_NAME=$(JOB_NAME)
+	SIMV_FLAGS += +JOB_NAME=$(JOB_NAME)
 endif
 ifdef JOB_DIR
-		VSIM_FLAGS += +JOB_DIR=$(JOB_DIR)
-		SIMV_FLAGS += +JOB_DIR=$(JOB_DIR)
+	VSIM_FLAGS += +JOB_DIR=$(JOB_DIR)
+	SIMV_FLAGS += +JOB_DIR=$(JOB_DIR)
+else
+	VSIM_FLAGS += +JOB_DIR=$(MKFILE_DIR)hw/test/jobs
+	SIMV_FLAGS += +JOB_DIR=$(MKFILE_DIR)hw/test/jobs
 endif
 ifdef LOG_FILE
-		VSIM_FLAGS += -l $(LOG_FILE)
-		VSIM_FLAGS += -nostdout
+	VSIM_FLAGS += -l $(LOG_FILE)
+	VSIM_FLAGS += -nostdout
 endif
 
 # Automatically open the waveform if a wave.tcl file is present
@@ -100,7 +121,7 @@ FLOOGEN_PKG_CFG ?= $(shell find $(FLOOGEN_CFG_DIR) -name "*_pkg.yml")
 FLOOGEN_PKG_SRC ?= $(patsubst $(FLOOGEN_CFG_DIR)/%_pkg.yml,$(FLOOGEN_PKG_OUT_DIR)/floo_%_pkg.sv,$(FLOOGEN_PKG_CFG))
 FLOOGEN_TPL ?= $(shell find $(FLOOGEN_TPL_DIR) -name "*.mako")
 
-.PHONY: install-floogen pkg-sources sources clean-sources
+.PHONY: install-floogen pkg-sources sources clean-sources clean-bender clean-log
 
 install-floogen:
 	@which $(FLOOGEN) > /dev/null || (echo "Installing floogen..." && pip install .)
@@ -115,6 +136,14 @@ sources: install-floogen
 clean-sources:
 	rm -rf $(FLOOGEN_OUT_DIR)
 #	rm -f $(FLOOGEN_PKG_SRC)
+
+clean-bender:
+	rm -rf .bender
+	rm -rf Bender.lock
+
+clean-log:
+	rm -rf bin
+	rm -rf logs
 
 ######################
 # Traffic Generation #
@@ -174,31 +203,59 @@ clean-vsim:
 
 .PHONY: compile-vcs compile-vcs-batch run-vcs run-vcs-batch clean-vcs
 
-scripts/compile_vcs.sh: Bender.yml
+work-vcs/compile_vcs.sh: Bender.yml
+	mkdir -p work-vcs
 	mkdir -p scripts
-	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > scripts/compile_vcs.sh
-	$(BENDER) script vcs --vlog-arg="$(VLOGAN_ARGS)" $(BENDER_FLAGS) | grep -v "set ROOT" >> scripts/compile_vcs.sh
-	chmod +x scripts/compile_vcs.sh
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > work-vcs/compile_vcs.sh
+	$(BENDER) script vcs --vlog-arg="$(VLOGAN_ARGS)" $(BENDER_FLAGS) | grep -v "set ROOT" >> work-vcs/compile_vcs.sh
+	chmod +x work-vcs/compile_vcs.sh
+
+compile-vcs-batch: work-vcs/compile_vcs.sh
+	work-vcs/compile_vcs.sh > work-vcs/compile.log
 
 compile-vcs: VLOGAN_ARGS+=-debug_access+all
-compile-vcs: scripts/compile_vcs.sh
-	scripts/compile_vcs.sh
+compile-vcs: compile-vcs-batch
 
-compile-vcs-batch: scripts/compile_vcs.sh
-	scripts/compile_vcs.sh
 
-run-vcs: VCS_FLAGS+=-debug_access+all
-run-vcs: SIMV_FLAGS += -gui=elite
-run-vcs: compile-vcs
-	$(VCS) $(VCS_FLAGS) $(TB_DUT)
-	./simv $(SIMV_FLAGS)
+# run-vcs-common:
+# ifdef DMA_TESTNODE
+# 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
+# 	./simv $(SIMV_FLAGS)
+# else
+# # Generate VCS simulation binary
+# 	mkdir -p bin
+# 	$(VCS) $(VCS_FLAGS) -o bin/snitch_cluster.vcs -cc cc -cpp g++ $(TB_DUT) \
+# 	$(SNITCH_PATH)/../../../hw/ip/test/src/rtl_lib.cc \
+# 	$(SNITCH_PATH)/../../../hw/ip/test/src/common_lib.cc \
+# 	$(SNITCH_PATH)/generated/bootdata.cc \
+#     -CFLAGS "-std=c++14 -I$(SNITCH_PATH)/ \
+# 	-I$(SNITCH_PATH)/test \
+# 	-I$(SNITCH_PATH)/work/include \
+# 	-I$(SNITCH_PATH)/../../../hw/ip/test/src" \
+# 	-LDFLAGS "-L$(SNITCH_PATH)/work/lib" -lfesvr
+# # Run VCS simulation binary
+# 	./bin/snitch_cluster.vcs $(SNITCH_PATH)/$(SNITCH_SW) $(SIMV_FLAGS)
+# endif
 
-run-vcs-batch: compile-vcs-batch
-	$(VCS) $(VCS_FLAGS) $(TB_DUT)
-	./simv $(SIMV_FLAGS)
+bin/floo_noc_gui.vcs: VCS_FLAGS+=-debug_access+all
+bin/floo_noc_gui.vcs: compile-vcs
+	mkdir -p bin
+	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_gui.vcs $(TB_DUT)
 
-clean-vcs:
-	rm -rf scripts/compile_vcs.sh
+bin/floo_noc_batch.vcs: compile-vcs-batch
+	mkdir -p bin
+	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_batch.vcs $(TB_DUT)
+
+run-vcs: SIMV_FLAGS+=-gui=elite
+run-vcs:
+	./bin/floo_noc_gui.vcs $(SIMV_FLAGS)
+
+run-vcs-batch:
+	./bin/floo_noc_batch.vcs $(SIMV_FLAGS)
+
+clean-vcs: clean-dma_test
+	rm -rf work-vcs/compile_vcs.sh
+	rm -rf bin
 	rm -rf work-vcs
 	rm -rf AN.DB
 	rm -rf simv.daidir
@@ -213,6 +270,27 @@ clean-vcs:
 	rm -rf Makefile.Msimdepends.vlib_analyze_DEFAULT.dep
 	rm -rf verdi_config_file
 	rm -rf verdiLog
+	rm -rf simv.vdb
+	rm -rf sysBusyPLog
+
+#######################
+# DMA Test Simulation #
+#######################
+
+.PHONY: dma_test/bin/floo_noc_batch.vcs dma_test-clean
+dma_test-bin/floo_noc_batch.vcs:
+	${MAKE} -C simulation/dma_test bin/floo_noc_batch.vcs TB_DUT=$(TB_DUT)
+dma_test-run-vcs-batch:
+	${MAKE} -C simulation/dma_test run-vcs-batch SIMV_FLAGS="$(SIMV_FLAGS)"
+
+dma_test-bin/floo_noc_gui.vcs:
+	${MAKE} -C simulation/dma_test bin/floo_noc_gui.vcs TB_DUT=$(TB_DUT)
+dma_test-run-vcs: SIMV_FLAGS+=-gui=elite
+dma_test-run-vcs:
+	${MAKE} -C simulation/dma_test run-vcs SIMV_FLAGS="$(SIMV_FLAGS)"
+
+clean-dma_test:
+	${MAKE} -C simulation/dma_test clean
 
 #############################################
 # Random testing for Compute tile structure #
@@ -226,6 +304,37 @@ test-random:
 clean-test-random:
 	rm -rf test/jobs
 	rm -rf test_random.log
+
+####################
+# Vivado Synthesis #
+####################
+
+.PHONY: vivado-synth vivado-synth-batch clean-vivado
+
+scripts/vivado/add_sources.tcl: Bender.yml
+	echo 'set ROOT [file normalize [file dirname [info script]]/../..]' > scripts/vivado/add_sources.tcl
+#	$(BENDER) script vivado $(BENDER_FLAGS) | grep -v "set ROOT" >> scripts/vivado/add_sources.tcl
+	$(BENDER) script vivado -t rtl | grep -v "set ROOT" >> scripts/vivado/add_sources.tcl
+
+vivado-synth: scripts/vivado/add_sources.tcl
+	vivado -source scripts/vivado/run_xsynth.tcl
+
+vivado-synth-batch: scripts/add_sources.tcl
+	vivado -mode batch -source scripts/vivado/run_xsynth.tcl
+
+clean-vivado:
+	rm -rf scripts/vivado/add_sources.tcl
+	rm -rf .bender
+	rm -rf .Xil
+	rm -rf floonoc.cache
+	rm -rf floonoc.hw
+	rm -rf floonoc.ip_user_files
+	rm -rf floonoc.runs
+	rm -rf floonoc.sim
+	rm -rf floonoc.cache
+	rm -rf floonoc.xpr
+	rm -rf vivado.*
+	rm -rf vivado_*
 
 ####################
 # Spyglass Linting #

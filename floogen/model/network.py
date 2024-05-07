@@ -26,6 +26,7 @@ from floogen.model.protocol import AXI4, AXI4Bus
 from floogen.utils import clog2
 import floogen.templates
 
+from copy import deepcopy
 
 class Network(BaseModel):  # pylint: disable=too-many-public-methods
     """
@@ -40,7 +41,10 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     
     # Template for compute_tile_gen=True
     with as_file(files(floogen.templates).joinpath("floo_noc_top_compute_tile.sv.mako")) as _tpl_path:
-        tpl_tile: ClassVar = Template(filename=str(_tpl_path))
+        tpl_top: ClassVar = Template(filename=str(_tpl_path))
+    
+    with as_file(files(floogen.templates).joinpath("compute_tile.sv.mako")) as _tpl_path:
+        tpl_tile: ClassVar = Template(filename=str(_tpl_path))  
 
     with as_file(files(floogen.templates).joinpath("floo_flit_pkg.sv.mako")) as _tpl_path:
         tpl_pkg: ClassVar = Template(filename=str(_tpl_path))
@@ -50,6 +54,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     
     with as_file(files(floogen.templates).joinpath("tb_floo_compute_tile_array.sv.mako")) as _tpl_path:
         tpl_tb: ClassVar = Template(filename=str(_tpl_path))
+        
+    with as_file(files(floogen.templates).joinpath("floo_testharness.sv.mako")) as _tpl_path:
+        tpl_testharness: ClassVar = Template(filename=str(_tpl_path))
     
     with as_file(files(floogen.templates).joinpath("tb_compute_tile_array_test_pkg.sv.mako")) as _tpl_path:
         tpl_tb_pkg: ClassVar = Template(filename=str(_tpl_path)) 
@@ -57,6 +64,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     name: str
     description: Optional[str]
     compute_tile_gen : Optional[bool] = False
+    num_snitch_core : Optional[int] = 9
+    
     protocols: List[AXI4]
     endpoints: List[EndpointDesc]
     routers: List[RouterDesc]
@@ -514,7 +523,11 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 out_idx = rt.outgoing.index(out_link)
                 dest = SimpleId(id=out_idx)
                 addr_range = AddrRange(start=ni.id.id, size=1)
-                routing_table.append(RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name))
+                routing_table.append(RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, \
+                                                  mgr_narrow_port=ni.mgr_narrow_port, \
+                                                  sbr_narrow_port=ni.sbr_narrow_port, \
+                                                  mgr_wide_port=ni.mgr_wide_port, \
+                                                  sbr_wide_port=ni.sbr_wide_port))
 
             # Add routing table to the router
             rt.table = RouteMap(name=rt.name + "_map", rules=routing_table)
@@ -534,6 +547,12 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         xy_routing_info["num_y_bits"] = clog2(max_y - min_y + 1)
         xy_routing_info["addr_offset_bits"] = clog2(max_address)
         xy_routing_info["id_offset"] = Coord(x=min_x, y=min_y)
+        border_id = {}
+        border_id["north"] = max_y - xy_routing_info["id_offset"].y
+        border_id["west"] = min_x - xy_routing_info["id_offset"].x
+        border_id["south"] = min_y - xy_routing_info["id_offset"].y
+        border_id["east"] = max_x - xy_routing_info["id_offset"].x
+        xy_routing_info["border_id"] = border_id
         return xy_routing_info
 
     def gen_routes(self):
@@ -577,13 +596,19 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             if self.routing.id_offset is not None:
                 dest -= self.routing.id_offset
             addr_range = ni.addr_range
-            addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name)
+            # addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, soc_type=ni.endpoint.soc_type, name=ni.endpoint.name, \
+            addr_rule = RouteMapRule(dest=dest, addr_range=addr_range, desc=ni.name, name=ni.endpoint.name, \
+                                                  mgr_narrow_port=ni.mgr_narrow_port, \
+                                                  sbr_narrow_port=ni.sbr_narrow_port, \
+                                                  mgr_wide_port=ni.mgr_wide_port, \
+                                                  sbr_wide_port=ni.sbr_wide_port)
             addr_table.append(addr_rule)
         return RouteMap(name="sam", rules=addr_table)
 
     # render output port of wrapper
     def render_ports(self):
         """Render the ports in the generated code."""
+        # TODO: Replace filtering of ep_nodes that declared as a port by using self.get_ports()
         ports, declared_ports = [], []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
@@ -601,7 +626,62 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             declared_ports.append(ep.name)
         port_string = ",\n  ".join(ports) + "\n"
         return port_string
+    
+    # render output port of wrapper
+    def get_ports(self):
+        """Get ports list of the top level wrapper of FlooNoC system."""
+        declared_ports = []
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_nodes = self.graph.get_ep_eject_nodes()
+            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        port_nodes = []
+        for ep in ep_nodes:
+            # Skip for port that already declared
+            # There is a problem if only some node in the node array connected to eject, 
+            # cause the program will not filter that out and declared full range of array interface
+            if ep.name in declared_ports:
+                continue
+            port_nodes.append(ep)
+            declared_ports.append(ep.name)
+        return port_nodes
+    
+    # Get system parameter for export to Chipletgen
+    def get_sys_param(self):
+        sys_param_dict = {}
+        sys_param_dict["name"] = self.name + "_floo_noc"
+        sys_param_dict["xy_route_opt"] = self.routing.xy_route_opt
+        sys_param_dict["x_num"] = self.routers[0].array[0]
+        sys_param_dict["y_num"] = self.routers[0].array[1]
+        for prot in self.protocols:
+            if (prot.name=="narrow" and prot.svdirection=="input"):
+                sys_param_dict["narrow_in"] = dict()
+                sys_param_dict["narrow_in"]["iw"] = prot.id_width
+                sys_param_dict["narrow_in"]["uw"] = prot.user_width
+                sys_param_dict["narrow_in"]["dw"] = prot.data_width
+                sys_param_dict["narrow_in"]["aw"] = prot.addr_width
+            elif(prot.name=="narrow" and prot.svdirection=="output"):
+                sys_param_dict["narrow_out"] = dict()
+                sys_param_dict["narrow_out"]["iw"] = prot.id_width
+                sys_param_dict["narrow_out"]["uw"] = prot.user_width
+                sys_param_dict["narrow_out"]["dw"] = prot.data_width
+                sys_param_dict["narrow_out"]["aw"] = prot.addr_width
+            elif(prot.name=="wide" and prot.svdirection=="input"):
+                sys_param_dict["wide_in"] = dict()
+                sys_param_dict["wide_in"]["iw"] = prot.id_width
+                sys_param_dict["wide_in"]["uw"] = prot.user_width
+                sys_param_dict["wide_in"]["dw"] = prot.data_width
+                sys_param_dict["wide_in"]["aw"] = prot.addr_width
+            elif(prot.name=="wide" and prot.svdirection=="output"):
+                sys_param_dict["wide_out"] = dict()
+                sys_param_dict["wide_out"]["iw"] = prot.id_width
+                sys_param_dict["wide_out"]["uw"] = prot.user_width
+                sys_param_dict["wide_out"]["dw"] = prot.data_width
+                sys_param_dict["wide_out"]["aw"] = prot.addr_width
+        return sys_param_dict
 
+    # Get port parameter for export to Chipletgen
     def render_prots(self):
         """Render the protocols in the generated code."""
         string = ""
@@ -628,7 +708,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         string = ""
         for rt in self.graph.get_rt_nodes():
             if self.compute_tile_gen:
-                string += rt.render_tile(self.routing.id_offset)
+                string += rt.render_tile(self.routing.id_offset, self.routers[0].array, self.num_snitch_core)
             else:
                 string += rt.render()
         return string
@@ -649,19 +729,72 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def render_network(self):
         """Render the network in the generated code."""
         if self.compute_tile_gen:
-            return self.tpl_tile.render(noc=self)
+            return self.tpl_top.render(noc=self)
         else:
             return self.tpl.render(noc=self)
+        
+    def render_tile(self):
+        """Render the compute tile in the generated code."""
+        return self.tpl_tile.render(noc=self)
 
     def render_link_cfg(self):
         """Render the link configuration file"""
-        prot_names = [prot.name for prot in self.protocols]
+        # Filter for user width = 0
+        noc = deepcopy(self)
+        for prot in noc.protocols:
+            if prot.user_width==0:
+                prot.user_width = 1
+        
+        prot_names = [prot.name for prot in noc.protocols]
         if "wide" in prot_names and "narrow" in prot_names:
             axi_type, link_type = "narrow_wide", NarrowWideLink
         else:
             axi_type, link_type = "axi", NarrowLink
+        # # Add Join data type for HBM Narrow Wide Join
+        # prot_join = [prot for prot in noc.protocols if prot.name=="wide" and prot.direction=="subordinate"]
+        # prot_join = deepcopy(prot_join[0]) # Copy type from wide out interface
+        # prot_join.name = "join" 
+        # # Find maximum value of id_width between narrow out and wide out interface
+        # # Which is input to floo_narrow_wide_join
+        # prot_narrow_out = [prot for prot in noc.protocols if prot.name=="narrow" and prot.direction=="subordinate"]
+        # prot_narrow_out = prot_narrow_out[0]
+        # if prot_join.id_width > prot_narrow_out.id_width:
+        #     max_id_in = prot_narrow_out.id_width
+        # else:
+        #     max_id_in = prot_join.id_width
+        # # ID width of the resulting AXI bus
+        # # To prevent the instantiation of any ID remappers,
+        # # `AxiIdOutWidth` should be chosen, such that:
+        # # max(`AxiNarrowIdWidth` and `AxiWideIdWidth`) == AxidOutWidth - 1
+        # prot_join.id_width = max_id_in + 1
+        # noc.protocols.append(prot_join) # Add new join output protocol to be generate into Package
+        # Add metabuff type that is data type of routing package
+        # Narrow Meta Buffer Interface
+        prot_narrow_metabuff = [prot for prot in noc.protocols if prot.name=="narrow" and prot.direction=="subordinate"]
+        prot_narrow_metabuff = deepcopy(prot_narrow_metabuff[0])
+        prot_narrow_metabuff.name = "narrow_metabuff"
+        prot_narrow_metabuff.svdirection = ""
+        prot_narrow_in = [prot for prot in noc.protocols if prot.name=="narrow" and prot.direction=="manager"]
+        prot_narrow_in = prot_narrow_in[0]
+        if prot_narrow_metabuff.id_width < prot_narrow_in.id_width:
+            prot_narrow_metabuff.id_width = prot_narrow_in.id_width
+        if prot_narrow_metabuff.user_width < prot_narrow_in.user_width:
+            prot_narrow_metabuff.user_width = prot_narrow_in.user_width
+        noc.protocols.append(prot_narrow_metabuff)
+        # Wide Meta Buffer Interface
+        prot_wide_metabuff = [prot for prot in noc.protocols if prot.name=="wide" and prot.direction=="subordinate"]
+        prot_wide_metabuff = deepcopy(prot_wide_metabuff[0])
+        prot_wide_metabuff.name = "wide_metabuff"
+        prot_wide_metabuff.svdirection = ""
+        prot_wide_in = [prot for prot in noc.protocols if prot.name=="wide" and prot.direction=="manager"]
+        prot_wide_in = prot_wide_in[0]
+        if prot_wide_metabuff.id_width < prot_wide_in.id_width:
+            prot_wide_metabuff.id_width = prot_wide_in.id_width
+        if prot_wide_metabuff.user_width < prot_wide_in.user_width:
+            prot_wide_metabuff.user_width = prot_wide_in.user_width
+        noc.protocols.append(prot_wide_metabuff)
         return axi_type, self.tpl_pkg.render(
-            name=axi_type, noc=self, link=link_type
+            name=axi_type, noc=noc, link=link_type
         )
     
     def render_util_job(self):
@@ -673,15 +806,13 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         return self.tpl_util_job.render(noc=self)
     
     def render_tb_endpoint(self):
-        """Render the network interfaces in the generated code."""
+        """Render endpoints testbench in the generated code."""
         endpoints, declared_endpoints = "", []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
             ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
-        # Due to limitation of current version, only memory simulation model is supported
-        ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
 
         for ep in ep_nodes:
             # Skip for port that already declared
@@ -689,7 +820,39 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             # cause the program will not filter that out and declared full range of array interface
             if ep.name in declared_endpoints:
                 continue
-            endpoints += ep.render_tb() + "\n"
+            if ep.is_memory_tb():
+                endpoints += ep.render_tb_mem() + "\n"
+            # DMA test node require each endpoint to have both active in mgr and sbr
+            elif ep.sbr_port_protocol == ep.mgr_port_protocol:
+                if ep.array is not None:
+                    raise ValueError(
+                        "The current version is not support for generating testbench for an array of non-memory endpoint"
+                    )
+                endpoint_id = self.graph.get_node_id(ep.name)
+                endpoint_id = endpoint_id - self.routing.id_offset
+                endpoints += ep.render_tb_dma(endpoint_id) + "\n"
+            declared_endpoints.append(ep.name)
+        return endpoints
+    
+    def render_testharness_endpoint(self):
+        """Render endpoints testharness in the generated code."""
+        endpoints, declared_endpoints = "", []
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        if self.compute_tile_gen:
+            ep_eject_nodes = self.graph.get_ep_eject_nodes()
+            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        # Due to limitation of current version, only memory simulation model is supported
+        #ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
+        ep_nodes = [ep for ep in ep_nodes if ep.is_memory_tb()]
+
+        for ep in ep_nodes:
+            # Skip for port that already declared
+            # There is a problem if only some node in the node array connected to eject, 
+            # cause the program will not filter that out and declared full range of array interface
+            if ep.name in declared_endpoints:
+                continue
+            endpoints += ep.render_testharness() + "\n"
             declared_endpoints.append(ep.name)
         return endpoints
     
@@ -714,12 +877,27 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         return port_string
     
     def render_tb(self):
-        """Render the testbech of the generated network."""
+        """Render the testbench of the generated network."""
         routers = self.graph.get_rt_nodes() # 1 Compute tile have one router
-        return self.tpl_tb.render(noc=self, cp_tiles=routers)
+        
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        # Remove node that connect to Eject from the top level interface port for compute tile array structure
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        # DMA node need to have both master and slave
+        endpoint_dma = [ep for ep in ep_nodes if ep.sbr_port_protocol == ep.mgr_port_protocol]
+        endpoint_dma_num = 0;
+        for ep in endpoint_dma:
+            endpoint_dma_num += len(ep.mgr_port_protocol)
+        return self.tpl_tb.render(noc=self, cp_tiles=routers, \
+            endpoint_dma=endpoint_dma, endpoint_dma_num=endpoint_dma_num)
+    
+    def render_testharness(self):
+        """Render the testbench of the generated network."""
+        return self.tpl_testharness.render(noc=self)
     
     def render_tb_pkg(self):
-        """Render the package testbech of the generated network."""
+        """Render the package testbench of the generated network."""
         return self.tpl_tb_pkg.render(noc=self)
 
     def visualize(self, savefig=True, filename: pathlib.Path = "network.png"):

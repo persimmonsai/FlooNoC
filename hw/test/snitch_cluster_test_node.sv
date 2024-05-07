@@ -1,11 +1,8 @@
 
-`include "snitch_cluster_pkg.svh"
-
 // Simple random simulation to generate 
 module snitch_cluster_test_node
   import compute_tile_array_test_pkg::*; // Simulation setting parameter modified through macro for each difference testbench
-  import floo_narrow_wide_pkg::sam_rule_t;  // Address map to access DMA
-//import snitch_cluster_pkg::*;  // Snitch cluster generated package
+  import floo_narrow_wide_pkg::*;  // Address map to access DMA
 #(
     // Additional simulation input port to control simulation behaviour
     parameter int unsigned id_x = 1,
@@ -14,53 +11,42 @@ module snitch_cluster_test_node
     input logic clk_i,
     input logic rst_ni,
 
-    input logic sa_rst_ni,
-    input logic [snitch_cluster_pkg::NrCores-1:0] debug_req_i,
-    input logic [snitch_cluster_pkg::NrCores-1:0] meip_i,
-    input logic [snitch_cluster_pkg::NrCores-1:0] mtip_i,
-    input logic [snitch_cluster_pkg::NrCores-1:0] msip_i,
-    input snitch_cluster_pkg::narrow_in_req_t narrow_in_req_i,
-    output snitch_cluster_pkg::narrow_in_resp_t narrow_in_resp_o,
-    output snitch_cluster_pkg::narrow_out_req_t narrow_out_req_o,
-    input snitch_cluster_pkg::narrow_out_resp_t narrow_out_resp_i,
-    output snitch_cluster_pkg::wide_out_req_t wide_out_req_o,
-    input snitch_cluster_pkg::wide_out_resp_t wide_out_resp_i,
-    input snitch_cluster_pkg::wide_in_req_t wide_in_req_i,
-    output snitch_cluster_pkg::wide_in_resp_t wide_in_resp_o
+    input axi_narrow_out_req_t narrow_in_req_i,
+    output axi_narrow_out_rsp_t narrow_in_resp_o,
+    output axi_narrow_in_req_t narrow_out_req_o,
+    input axi_narrow_in_rsp_t narrow_out_resp_i,
+    output axi_wide_in_req_t wide_out_req_o,
+    input axi_wide_in_rsp_t wide_out_resp_i,
+    input axi_wide_out_req_t wide_in_req_i,
+    output axi_wide_out_rsp_t wide_in_resp_o
 );
-  // Make its switch able between DMA and normal AXI package
-
-  // Convert between id_i of base 1 to base 0 index
-  localparam int unsigned x = id_x - 1;
-  localparam int unsigned y = id_y - 1;
-
-  localparam string NarrowDmaName = $sformatf("narrow_dma_%0d_%0d", x, y);
-  localparam string WideDmaName = $sformatf("wide_dma_%0d_%0d", x, y);
+  localparam string NarrowDmaName = $sformatf("narrow_dma_%0d_%0d", id_x, id_y);
+  localparam string WideDmaName = $sformatf("wide_dma_%0d_%0d", id_x, id_y);
 
   // Assign unique job ID for each DMA test node
-  localparam int unsigned Index = y * NumX + x + 1;
+  localparam int unsigned Index = id_y * NumX + id_x;
 
   localparam sam_rule_t local_addrmap = find_addrmap_by_xy_id(id_x, id_y);
-  localparam logic [snitch_cluster_pkg::AddrWidth-1:0] DMAMemBaseAddr = local_addrmap.start_addr;  // byte unit
-  localparam logic [snitch_cluster_pkg::AddrWidth-1:0] DMAMemSize = local_addrmap.end_addr - local_addrmap.start_addr; // byte unit
+  localparam logic [AxiNarrowInAddrWidth-1:0] DMAMemBaseAddr = local_addrmap.start_addr;  // byte unit
+  localparam logic [AxiNarrowInAddrWidth-1:0] DMAMemSize = local_addrmap.end_addr - local_addrmap.start_addr; // byte unit
 
   logic [1:0] end_of_sim;
 
   floo_dma_test_node #(
       .TA           (ApplTime),
       .TT           (TestTime),
-      .DataWidth    (snitch_cluster_pkg::NarrowDataWidth),
-      .AddrWidth    (snitch_cluster_pkg::AddrWidth),
-      .UserWidth    (snitch_cluster_pkg::NarrowUserWidth),
-      .AxiIdInWidth (snitch_cluster_pkg::NarrowIdWidthIn),
-      .AxiIdOutWidth(snitch_cluster_pkg::NarrowIdWidthOut),
+      .DataWidth    (AxiNarrowInDataWidth),
+      .AddrWidth    (AxiNarrowInAddrWidth),
+      .UserWidth    (AxiNarrowInUserWidth),
+      .AxiIdInWidth (AxiNarrowOutIdWidth),
+      .AxiIdOutWidth(AxiNarrowInIdWidth),
       .MemBaseAddr  (DMAMemBaseAddr),
       .MemSize      (DMAMemSize),
       .NumAxInFlight(2 * NarrowMaxTxnsPerId),
-      .axi_in_req_t (snitch_cluster_pkg::narrow_in_req_t),
-      .axi_in_rsp_t (snitch_cluster_pkg::narrow_in_resp_t),
-      .axi_out_req_t(snitch_cluster_pkg::narrow_out_req_t),
-      .axi_out_rsp_t(snitch_cluster_pkg::narrow_out_resp_t),
+      .axi_in_req_t (axi_narrow_out_req_t),
+      .axi_in_rsp_t (axi_narrow_out_rsp_t),
+      .axi_out_req_t(axi_narrow_in_req_t),
+      .axi_out_rsp_t(axi_narrow_in_rsp_t),
       .JobId        (1000 + Index)
   ) i_narrow_dma_node (
       .clk_i        (clk_i),
@@ -75,18 +61,18 @@ module snitch_cluster_test_node
   floo_dma_test_node #(
       .TA           (ApplTime),
       .TT           (TestTime),
-      .DataWidth    (snitch_cluster_pkg::WideDataWidth),
-      .AddrWidth    (snitch_cluster_pkg::AddrWidth),
-      .UserWidth    (snitch_cluster_pkg::WideUserWidth),
-      .AxiIdInWidth (snitch_cluster_pkg::WideIdWidthIn),
-      .AxiIdOutWidth(snitch_cluster_pkg::WideIdWidthOut),
+      .DataWidth    (AxiWideInDataWidth),
+      .AddrWidth    (AxiWideInAddrWidth),
+      .UserWidth    (AxiWideInUserWidth),
+      .AxiIdInWidth (AxiWideOutIdWidth),
+      .AxiIdOutWidth(AxiWideInIdWidth),
       .MemBaseAddr  (DMAMemBaseAddr),
       .MemSize      (DMAMemSize),
       .NumAxInFlight(2 * WideMaxTxnsPerId),
-      .axi_in_req_t (snitch_cluster_pkg::wide_in_req_t),
-      .axi_in_rsp_t (snitch_cluster_pkg::wide_in_resp_t),
-      .axi_out_req_t(snitch_cluster_pkg::wide_out_req_t),
-      .axi_out_rsp_t(snitch_cluster_pkg::wide_out_resp_t),
+      .axi_in_req_t (axi_wide_out_req_t),
+      .axi_in_rsp_t (axi_wide_out_rsp_t),
+      .axi_out_req_t(axi_wide_in_req_t),
+      .axi_out_rsp_t(axi_wide_in_rsp_t),
       .JobId        (Index)
   ) i_wide_dma_node (
       .clk_i        (clk_i),
@@ -99,9 +85,9 @@ module snitch_cluster_test_node
   );
 
   axi_bw_monitor #(
-      .req_t     (snitch_cluster_pkg::narrow_out_req_t),
-      .rsp_t     (snitch_cluster_pkg::narrow_out_resp_t),
-      .AxiIdWidth(snitch_cluster_pkg::NarrowIdWidthOut),
+      .req_t     (axi_narrow_in_req_t),
+      .rsp_t     (axi_narrow_in_rsp_t),
+      .AxiIdWidth(AxiNarrowInIdWidth),
       .Name      (NarrowDmaName)
   ) i_axi_narrow_bw_monitor (
       .clk_i         (clk_i),
@@ -115,9 +101,9 @@ module snitch_cluster_test_node
   );
 
   axi_bw_monitor #(
-      .req_t     (snitch_cluster_pkg::wide_out_req_t),
-      .rsp_t     (snitch_cluster_pkg::wide_out_resp_t),
-      .AxiIdWidth(snitch_cluster_pkg::WideIdWidthOut),
+      .req_t     (axi_wide_in_req_t),
+      .rsp_t     (axi_wide_in_rsp_t),
+      .AxiIdWidth(AxiWideInIdWidth),
       .Name      (WideDmaName)
   ) i_axi_wide_bw_monitor (
       .clk_i         (clk_i),

@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator, field_valida
 
 from copy import deepcopy
 
+from floogen.model.protocol import AXI4
 from floogen.utils import (
     cdiv,
     py_param_decl,
@@ -213,9 +214,13 @@ class RouteMapRule(BaseModel):
 
     dest: Id
     addr_range: AddrRange
-    soc_type: Optional[str] = "cluster"
+    # soc_type: Optional[str] = "cluster"
     name: Optional[str] = "none"
     desc: Optional[str] = None
+    mgr_narrow_port: Optional[AXI4] = None
+    sbr_narrow_port: Optional[AXI4] = None
+    mgr_wide_port: Optional[AXI4] = None
+    sbr_wide_port: Optional[AXI4] = None
 
     def __str__(self):
         return f"{self.addr_range} -> {self.dest}"
@@ -236,6 +241,12 @@ class RouteMapRule(BaseModel):
             f"start_addr: {self.addr_range.start}, "
             f"end_addr: {self.addr_range.end}}}"
         )
+        
+    def render_prot_util(self, prot_port):
+        if prot_port is not None:
+            return ("True")
+        else:
+            return ("False")
     
     def render_util(self, aw=None):
         """Render the Python Util routing rule."""
@@ -243,14 +254,16 @@ class RouteMapRule(BaseModel):
             return (
                 f"{{\"idx\": {self.dest.render_util()}, "
                 f"\"name\": \"{self.name}\", "
-                f"\"soc_type\": \"{self.soc_type}\", "
+                # f"\"soc_type\": \"{self.soc_type}\", "
+                f"\"mgr_port\": {{\"narrow\": {self.render_prot_util(self.mgr_narrow_port)}, \"wide\": {self.render_prot_util(self.mgr_wide_port)}}}, "
+                f"\"sbr_port\": {{\"narrow\": {self.render_prot_util(self.sbr_narrow_port)}, \"wide\": {self.render_prot_util(self.sbr_wide_port)}}}, "
                 f"\"start_addr\": int(\"0x{self.addr_range.start:0{cdiv(aw,4)}x}\",16), "
                 f"\"end_addr\": int(\"0x{self.addr_range.end:0{cdiv(aw,4)}x}\",16)}}"
             )
         return (
             f"{{\"idx\": {self.dest.render_util()}, "
             f"\"name\": \"{self.name}\", "
-            f"\"soc_type\": \"{self.soc_type}\", "
+            # f"\"soc_type\": \"{self.soc_type}\", "
             f"\"start_addr\": {self.addr_range.start}, "
             f"\"end_addr\": {self.addr_range.end}}}"
         )
@@ -463,6 +476,7 @@ class Routing(BaseModel):
     table: Optional[RouteMap] = None
     addr_offset_bits: Optional[int] = None
     id_offset: Optional[Id] = None
+    border_id: Optional[dict] = None
     num_endpoints: Optional[int] = None
     num_id_bits: Optional[int] = None
     num_x_bits: Optional[int] = None
@@ -498,6 +512,12 @@ class Routing(BaseModel):
         if self.route_algo == RouteAlgo.XY:
             string += sv_param_decl("XYAddrOffsetX", self.addr_offset_bits)
             string += sv_param_decl("XYAddrOffsetY", self.addr_offset_bits + self.num_x_bits)
+            border_id_render = ""
+            border_id_render += "'{{north: {}, ".format(self.border_id["north"])
+            border_id_render += "west: {}, ".format(self.border_id["west"])
+            border_id_render += "south: {}, ".format(self.border_id["south"])
+            border_id_render += "east: {}}}".format(self.border_id["east"])
+            string += sv_param_decl("BorderId", border_id_render, dtype="border_id_t")
         else:
             string += sv_param_decl("XYAddrOffsetX", 0)
             string += sv_param_decl("XYAddrOffsetY", 0)
@@ -505,6 +525,7 @@ class Routing(BaseModel):
             string += sv_param_decl("IdAddrOffset", self.addr_offset_bits)
         else:
             string += sv_param_decl("IdAddrOffset", 0)
+
         return string
 
     def render_typedefs(self) -> str:
@@ -516,6 +537,7 @@ class Routing(BaseModel):
                 string += sv_typedef("x_bits_t", array_size=self.num_x_bits)
                 string += sv_typedef("y_bits_t", array_size=self.num_y_bits)
                 string += sv_struct_typedef("id_t", {"x": "x_bits_t", "y": "y_bits_t"})
+                string += sv_struct_typedef("border_id_t", {"north": "y_bits_t", "west": "x_bits_t", "south": "y_bits_t", "east": "x_bits_t"})
                 string += sv_typedef("route_t", "logic")
             case RouteAlgo.ID:
                 string += sv_typedef("id_t", array_size=self.num_id_bits)

@@ -13,9 +13,9 @@ dependencies:
   common_verification: { git: "https://github.com/pulp-platform/common_verification.git", version: 0.2 }
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1 }
   axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
-  idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
-  # By default not require snitch cluster
-  #system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster}
+  #idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
+  #system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster} # Temporary remove to be bender package for chiplet gen
+  #system-snitch-cluster : {path: ../PULP/snitch/hw/system/snitch_cluster}
 
 export_include_dirs:
   - hw/include
@@ -25,7 +25,6 @@ sources:
   - hw/floo_pkg.sv
   - hw/floo_axi_pkg.sv # Generated package from floogen
   - hw/floo_narrow_wide_pkg.sv # Generated package from floogen
-  #- hw/cluster/snitch_cluster_pkg.svh
   # Level 1
   - hw/floo_cut.sv
   - hw/floo_fifo.sv
@@ -44,10 +43,6 @@ sources:
   - hw/floo_narrow_wide_chimney.sv
   - hw/floo_router.sv
   - hw/floo_narrow_wide_router.sv
-  # Level 3
-  - hw/cluster/snitch_cluster_wrapper.sv 
-  - hw/compute_tile.sv # Generated wrapper from floogen
-  - hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
 
   - target: test
     include_dirs:
@@ -55,25 +50,23 @@ sources:
     files:
       # Level 0
       - hw/test/floo_test_pkg.sv
-      - hw/tb/compute_tile_array_test_pkg.sv
       # Level 1
       - hw/test/floo_axi_test_node.sv
       - hw/test/floo_axi_rand_slave.sv
-      - hw/test/floo_dma_test_node.sv
+      #- hw/test/floo_dma_test_node.sv
       - hw/test/axi_reorder_compare.sv
       - hw/test/axi_reorder_remap_compare.sv
       - hw/test/axi_bw_monitor.sv
-      - hw/test/floo_hbm_model.sv
-      - hw/test/snitch_cluster_test_node.sv
       # Level 2
+      # - hw/test/floo_hbm_model.sv
+      # Level 3
       - hw/tb/tb_floo_axi_chimney.sv
       - hw/tb/tb_floo_narrow_wide_chimney.sv
       - hw/tb/tb_floo_router.sv
       - hw/tb/tb_floo_rob.sv
-      - hw/tb/tb_floo_dma_chimney.sv
-      - hw/tb/tb_floo_dma_nw_chimney.sv
-      - hw/tb/tb_floo_dma_mesh.sv
-      - hw/tb/tb_floo_compute_tile_array.sv
+      # - hw/tb/tb_floo_dma_chimney.sv
+      # - hw/tb/tb_floo_dma_nw_chimney.sv
+      # - hw/tb/tb_floo_dma_mesh.sv
 
   - target: any(synthesis,spyglass)
     files:

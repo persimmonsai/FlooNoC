@@ -16,6 +16,8 @@
 # This script runs xsim in vivado
 ####################################################################################################
 
+set top_name compute_tile_array_floo_noc
+
 # set script root to location where this script is located
 set SCRIPT_ROOT [file normalize [file dirname [info script]]]
 
@@ -50,7 +52,7 @@ set_property board_part $::env(XILINX_BOARD) [current_project]
 
 source $SCRIPT_ROOT/add_sources.tcl
 
-set_property top compute_tile_array_floo_noc [current_fileset]
+set_property top $top_name [current_fileset]
 #set_property top_lib xil_defaultlib [current_fileset]
 update_compile_order -fileset sources_1
 
