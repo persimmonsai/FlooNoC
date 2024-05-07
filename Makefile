@@ -14,7 +14,7 @@ MKFILE_DIR  := $(dir $(MKFILE_PATH))
 
 .PHONY: all clean
 all: compile-vsim
-clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources clean-vivado clean-bender clean-log
+clean: clean-vsim clean-vcs clean-spyglass clean-jobs clean-sources clean-vivado clean-bender clean-log clean-dma_test
 
 ############
 # Programs #
@@ -90,6 +90,9 @@ endif
 ifdef JOB_DIR
 	VSIM_FLAGS += +JOB_DIR=$(JOB_DIR)
 	SIMV_FLAGS += +JOB_DIR=$(JOB_DIR)
+else
+	VSIM_FLAGS += +JOB_DIR=$(MKFILE_DIR)hw/test/jobs
+	SIMV_FLAGS += +JOB_DIR=$(MKFILE_DIR)hw/test/jobs
 endif
 ifdef LOG_FILE
 	VSIM_FLAGS += -l $(LOG_FILE)
@@ -214,7 +217,6 @@ compile-vcs: VLOGAN_ARGS+=-debug_access+all
 compile-vcs: compile-vcs-batch
 
 
-
 # run-vcs-common:
 # ifdef DMA_TESTNODE
 # 	$(VCS) $(VCS_FLAGS) $(TB_DUT)
@@ -251,7 +253,7 @@ run-vcs:
 run-vcs-batch:
 	./bin/floo_noc_batch.vcs $(SIMV_FLAGS)
 
-clean-vcs:
+clean-vcs: clean-dma_test
 	rm -rf work-vcs/compile_vcs.sh
 	rm -rf bin
 	rm -rf work-vcs
@@ -270,6 +272,25 @@ clean-vcs:
 	rm -rf verdiLog
 	rm -rf simv.vdb
 	rm -rf sysBusyPLog
+
+#######################
+# DMA Test Simulation #
+#######################
+
+.PHONY: dma_test/bin/floo_noc_batch.vcs dma_test-clean
+dma_test-bin/floo_noc_batch.vcs:
+	${MAKE} -C simulation/dma_test bin/floo_noc_batch.vcs TB_DUT=$(TB_DUT)
+dma_test-run-vcs-batch:
+	${MAKE} -C simulation/dma_test run-vcs-batch SIMV_FLAGS="$(SIMV_FLAGS)"
+
+dma_test-bin/floo_noc_gui.vcs:
+	${MAKE} -C simulation/dma_test bin/floo_noc_gui.vcs TB_DUT=$(TB_DUT)
+dma_test-run-vcs: SIMV_FLAGS+=-gui=elite
+dma_test-run-vcs:
+	${MAKE} -C simulation/dma_test run-vcs SIMV_FLAGS="$(SIMV_FLAGS)"
+
+clean-dma_test:
+	${MAKE} -C simulation/dma_test clean
 
 #############################################
 # Random testing for Compute tile structure #

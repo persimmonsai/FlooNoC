@@ -5,8 +5,7 @@
 package:
   name: floo_dma_test
   authors:
-    - "Michael Rogenmoser <michaero@iis.ee.ethz.ch>"
-    - "Tim Fischer <fischeti@iis.ee.ethz.ch>"
+    - "Attapon Bunwong <attapon@persimmons.ai>"
 
 dependencies:
   common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.32.0 }
@@ -17,38 +16,23 @@ dependencies:
   floo_noc: {path: ../../}
 
 sources:
-  # Level 3
-  - ../../hw/compute_tile.sv # Generated wrapper from floogen
-  - ../../hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
-  - ../../hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level
-
-  - target: test
+  - target: dma_test
     include_dirs:
       - ../../hw/test
     files:
-      # Level 0
-      - ../../hw/test/floo_test_pkg.sv
-      - ../../hw/tb/compute_tile_array_test_pkg.sv
-      - ../../hw/tb/chiplet_test_pkg.sv
-      # Level 1
-      - ../../hw/test/floo_axi_test_node.sv
-      - ../../hw/test/floo_axi_rand_slave.sv
       - ../../hw/test/floo_dma_test_node.sv
-      - ../../hw/test/axi_reorder_compare.sv
-      - ../../hw/test/axi_reorder_remap_compare.sv
-      - ../../hw/test/axi_bw_monitor.sv
       - ../../hw/test/floo_hbm_model.sv
-      - ../../hw/test/snitch_cluster_test_node.sv
+      # Level 1
+      - ../../hw/compute_tile.sv # Generated wrapper from floogen
+      - ../../hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
+      - ../../hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level
       # Level 2
-      #- ../../hw/tb/floo_testharness.sv
+      - ../../hw/tb/compute_tile_array_test_pkg.sv
       # Level 3
-      - ../../hw/tb/tb_floo_axi_chimney.sv
-      - ../../hw/tb/tb_floo_narrow_wide_chimney.sv
-      - ../../hw/tb/tb_floo_router.sv
-      - ../../hw/tb/tb_floo_rob.sv
+      - ../../hw/test/snitch_cluster_test_node.sv
+      - ../../hw/test/dma_test_node.sv
+      # Level 4
+      - ../../hw/tb/tb_floo_compute_tile_array.sv
       - ../../hw/tb/tb_floo_dma_chimney.sv
       - ../../hw/tb/tb_floo_dma_nw_chimney.sv
       - ../../hw/tb/tb_floo_dma_mesh.sv
-      - ../../hw/tb/tb_floo_compute_tile_array.sv
-      - ../../hw/tb/tb_floo_chiplet.sv
-      #- ../../hw/tb/tb_floo_bin.sv
