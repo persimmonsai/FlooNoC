@@ -21,7 +21,7 @@ class EndpointDesc(BaseModel):
 
     name: str
     description: Optional[str] = ""
-    # soc_type : Optional[str] = None
+    is_sub_addr : Optional[bool] = False
     array: Optional[Union[Tuple[int], Tuple[int, int]]] = None
     addr_range: Optional[AddrRange] = None
     id_offset: Optional[Id] = None

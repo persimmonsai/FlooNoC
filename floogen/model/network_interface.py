@@ -59,8 +59,9 @@ class NarrowWideAxiNI(NetworkInterface):
     sbr_narrow_port: Optional[AXI4] = None
     mgr_wide_port: Optional[AXI4] = None
     sbr_wide_port: Optional[AXI4] = None
-    mgr_link: NarrowWideLink
-    sbr_link: NarrowWideLink
+    mgr_link: Optional[NarrowWideLink] = None
+    sbr_link: Optional[NarrowWideLink] = None
+    is_sub_addr: Optional[bool] = False
 
     def render(self, **kwargs) -> str:
         """Render the network interface."""

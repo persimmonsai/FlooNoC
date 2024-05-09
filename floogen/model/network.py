@@ -84,7 +84,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Compile the network."""
         self.compile_ids()
         self.compile_links()
-        self.compile_endpoints()
+        self.compile_endpoints() # May need to edit to create temp AXI4Bus object for is_sub_addr endpoint
         self.compile_nis()
         self.compile_routers()
 
@@ -182,6 +182,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                         node_obj=ep_desc,
                         connect=False,
                     )
+                    # if ep_desc.is_sub_addr==False:
                     self.graph.add_nodes_as_array(
                         name=f"{ep_desc.name}_ni",
                         array=(n,),
@@ -206,6 +207,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                         node_obj=ep_desc,
                         connect=False,
                     )
+                    # if ep_desc.is_sub_addr==False:
                     self.graph.add_nodes_as_array(
                         name=f"{ep_desc.name}_ni",
                         array=(m, n),
@@ -387,6 +389,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def compile_endpoints(self):
         """Infer the endpoint type from the network."""
         for ep_name, ep in self.graph.get_ep_nodes(with_name=True):
+            # if ep.is_sub_addr:
+            #     continue
             mgr_ports = []
             sbr_ports = []
             if ep.is_mgr():
@@ -434,6 +438,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 "routing": self.routing,
                 "addr_range": ep_desc.addr_range.model_copy() if ep_desc.addr_range else None,
                 "id": self.graph.get_node_id(ni_name).model_copy(),
+                "is_sub_addr": ep_desc.is_sub_addr,
             }
 
             assert ep_desc
@@ -479,19 +484,22 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                             ni_dict["mgr_narrow_port"] = prot
                         case "wide":
                             ni_dict["mgr_wide_port"] = prot
-
-            ni_dict["mgr_link"] = self.graph.get_edges_from(
-                ni_name, filters=[self.graph.is_link_edge]
-            )[0]
-            ni_dict["sbr_link"] = self.graph.get_edges_to(
-                ni_name, filters=[self.graph.is_link_edge]
-            )[0]
+            
+            if ep_desc.is_sub_addr==False:
+                ni_dict["mgr_link"] = self.graph.get_edges_from(
+                    ni_name, filters=[self.graph.is_link_edge]
+                )[0]
+                ni_dict["sbr_link"] = self.graph.get_edges_to(
+                    ni_name, filters=[self.graph.is_link_edge]
+                )[0]
 
             self.graph.set_node_obj(ni_name, NarrowWideAxiNI(**ni_dict))
 
     def gen_routing_info(self):
         """Wrapper function to generate all the routing info for the network,
         for a specific routing algorithm."""
+        ni_node = self.graph.get_ni_nodes()
+        ni_node = [ni for ni in ni_node if ni.is_sub_addr==False]
         self.routing.num_endpoints = len(self.graph.get_ni_nodes())
         self.routing.num_id_bits = clog2(len(self.graph.get_ni_nodes()))
         match self.routing.route_algo:
@@ -508,7 +516,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 )
         self.routing.sam = self.gen_sam()
         # Provide the routing info to the network interfaces
-        for ni in self.graph.get_ni_nodes():
+        #for ni in self.graph.get_ni_nodes():
+        for ni in ni_node:
             ni.routing = self.routing
 
     def gen_router_tables(self):
@@ -611,6 +620,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         # TODO: Replace filtering of ep_nodes that declared as a port by using self.get_ports()
         ports, declared_ports = [], []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
@@ -632,6 +642,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Get ports list of the top level wrapper of FlooNoC system."""
         declared_ports = []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
@@ -717,6 +728,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render the network interfaces in the generated code."""
         string = ""
         ni_nodes = self.graph.get_ni_nodes()
+        ni_nodes = [ni for ni in ni_nodes if ni.is_sub_addr==False]
         # Remove NI for node that connect with Eject for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
@@ -809,6 +821,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render endpoints testbench in the generated code."""
         endpoints, declared_endpoints = "", []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
@@ -838,6 +851,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render endpoints testharness in the generated code."""
         endpoints, declared_endpoints = "", []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
@@ -860,6 +874,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render the ports in the generated code."""
         ports, declared_ports = [], []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         if self.compute_tile_gen:
             ep_eject_nodes = self.graph.get_ep_eject_nodes()
@@ -881,6 +896,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         routers = self.graph.get_rt_nodes() # 1 Compute tile have one router
         
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
         ep_eject_nodes = self.graph.get_ep_eject_nodes()
         ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
@@ -903,6 +919,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def visualize(self, savefig=True, filename: pathlib.Path = "network.png"):
         """Visualize the network graph."""
         ni_nodes = [name for name, _ in self.graph.get_ni_nodes(with_name=True)]
+        ni_nodes = [ni for ni in ni_nodes if ni.is_sub_addr==False]
         router_nodes = [name for name, _ in self.graph.get_rt_nodes(with_name=True)]
         filtered_graph = self.graph.subgraph(ni_nodes + router_nodes) # Method from networkx
         nx.draw(filtered_graph, with_labels=True)

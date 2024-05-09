@@ -176,7 +176,7 @@ package floo_narrow_wide_pkg;
   //   Address Map   //
   /////////////////////
 
-  localparam int unsigned SamNumRules = 56;
+  localparam int unsigned SamNumRules = 88;
 
   typedef struct packed {
     id_t idx;
@@ -345,6 +345,166 @@ package floo_narrow_wide_pkg;
           start_addr: 48'h0000107c0000,
           end_addr: 48'h000010800000
       },  // cluster_ni_7_3
+      '{
+          idx: '{x: 1, y: 1},
+          start_addr: 48'h00000f000000,
+          end_addr: 48'h00000f010000
+      },  // quadrant_ctrl_ni_0_0
+      '{
+          idx: '{x: 1, y: 2},
+          start_addr: 48'h00000f010000,
+          end_addr: 48'h00000f020000
+      },  // quadrant_ctrl_ni_0_1
+      '{
+          idx: '{x: 1, y: 3},
+          start_addr: 48'h00000f020000,
+          end_addr: 48'h00000f030000
+      },  // quadrant_ctrl_ni_0_2
+      '{
+          idx: '{x: 1, y: 4},
+          start_addr: 48'h00000f030000,
+          end_addr: 48'h00000f040000
+      },  // quadrant_ctrl_ni_0_3
+      '{
+          idx: '{x: 2, y: 1},
+          start_addr: 48'h00000f040000,
+          end_addr: 48'h00000f050000
+      },  // quadrant_ctrl_ni_1_0
+      '{
+          idx: '{x: 2, y: 2},
+          start_addr: 48'h00000f050000,
+          end_addr: 48'h00000f060000
+      },  // quadrant_ctrl_ni_1_1
+      '{
+          idx: '{x: 2, y: 3},
+          start_addr: 48'h00000f060000,
+          end_addr: 48'h00000f070000
+      },  // quadrant_ctrl_ni_1_2
+      '{
+          idx: '{x: 2, y: 4},
+          start_addr: 48'h00000f070000,
+          end_addr: 48'h00000f080000
+      },  // quadrant_ctrl_ni_1_3
+      '{
+          idx: '{x: 3, y: 1},
+          start_addr: 48'h00000f080000,
+          end_addr: 48'h00000f090000
+      },  // quadrant_ctrl_ni_2_0
+      '{
+          idx: '{x: 3, y: 2},
+          start_addr: 48'h00000f090000,
+          end_addr: 48'h00000f0a0000
+      },  // quadrant_ctrl_ni_2_1
+      '{
+          idx: '{x: 3, y: 3},
+          start_addr: 48'h00000f0a0000,
+          end_addr: 48'h00000f0b0000
+      },  // quadrant_ctrl_ni_2_2
+      '{
+          idx: '{x: 3, y: 4},
+          start_addr: 48'h00000f0b0000,
+          end_addr: 48'h00000f0c0000
+      },  // quadrant_ctrl_ni_2_3
+      '{
+          idx: '{x: 4, y: 1},
+          start_addr: 48'h00000f0c0000,
+          end_addr: 48'h00000f0d0000
+      },  // quadrant_ctrl_ni_3_0
+      '{
+          idx: '{x: 4, y: 2},
+          start_addr: 48'h00000f0d0000,
+          end_addr: 48'h00000f0e0000
+      },  // quadrant_ctrl_ni_3_1
+      '{
+          idx: '{x: 4, y: 3},
+          start_addr: 48'h00000f0e0000,
+          end_addr: 48'h00000f0f0000
+      },  // quadrant_ctrl_ni_3_2
+      '{
+          idx: '{x: 4, y: 4},
+          start_addr: 48'h00000f0f0000,
+          end_addr: 48'h00000f100000
+      },  // quadrant_ctrl_ni_3_3
+      '{
+          idx: '{x: 5, y: 1},
+          start_addr: 48'h00000f100000,
+          end_addr: 48'h00000f110000
+      },  // quadrant_ctrl_ni_4_0
+      '{
+          idx: '{x: 5, y: 2},
+          start_addr: 48'h00000f110000,
+          end_addr: 48'h00000f120000
+      },  // quadrant_ctrl_ni_4_1
+      '{
+          idx: '{x: 5, y: 3},
+          start_addr: 48'h00000f120000,
+          end_addr: 48'h00000f130000
+      },  // quadrant_ctrl_ni_4_2
+      '{
+          idx: '{x: 5, y: 4},
+          start_addr: 48'h00000f130000,
+          end_addr: 48'h00000f140000
+      },  // quadrant_ctrl_ni_4_3
+      '{
+          idx: '{x: 6, y: 1},
+          start_addr: 48'h00000f140000,
+          end_addr: 48'h00000f150000
+      },  // quadrant_ctrl_ni_5_0
+      '{
+          idx: '{x: 6, y: 2},
+          start_addr: 48'h00000f150000,
+          end_addr: 48'h00000f160000
+      },  // quadrant_ctrl_ni_5_1
+      '{
+          idx: '{x: 6, y: 3},
+          start_addr: 48'h00000f160000,
+          end_addr: 48'h00000f170000
+      },  // quadrant_ctrl_ni_5_2
+      '{
+          idx: '{x: 6, y: 4},
+          start_addr: 48'h00000f170000,
+          end_addr: 48'h00000f180000
+      },  // quadrant_ctrl_ni_5_3
+      '{
+          idx: '{x: 7, y: 1},
+          start_addr: 48'h00000f180000,
+          end_addr: 48'h00000f190000
+      },  // quadrant_ctrl_ni_6_0
+      '{
+          idx: '{x: 7, y: 2},
+          start_addr: 48'h00000f190000,
+          end_addr: 48'h00000f1a0000
+      },  // quadrant_ctrl_ni_6_1
+      '{
+          idx: '{x: 7, y: 3},
+          start_addr: 48'h00000f1a0000,
+          end_addr: 48'h00000f1b0000
+      },  // quadrant_ctrl_ni_6_2
+      '{
+          idx: '{x: 7, y: 4},
+          start_addr: 48'h00000f1b0000,
+          end_addr: 48'h00000f1c0000
+      },  // quadrant_ctrl_ni_6_3
+      '{
+          idx: '{x: 8, y: 1},
+          start_addr: 48'h00000f1c0000,
+          end_addr: 48'h00000f1d0000
+      },  // quadrant_ctrl_ni_7_0
+      '{
+          idx: '{x: 8, y: 2},
+          start_addr: 48'h00000f1d0000,
+          end_addr: 48'h00000f1e0000
+      },  // quadrant_ctrl_ni_7_1
+      '{
+          idx: '{x: 8, y: 3},
+          start_addr: 48'h00000f1e0000,
+          end_addr: 48'h00000f1f0000
+      },  // quadrant_ctrl_ni_7_2
+      '{
+          idx: '{x: 8, y: 4},
+          start_addr: 48'h00000f1f0000,
+          end_addr: 48'h00000f200000
+      },  // quadrant_ctrl_ni_7_3
       '{
           idx: '{x: 1, y: 5},
           start_addr: 48'h001000000000,
