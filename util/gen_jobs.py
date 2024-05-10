@@ -65,13 +65,21 @@ def filter_sbr_type(node_list, node_type):
 def filter_exclude_idx(node_list, idx):
     # Generate cluster list that self cluster
     node_out = node_list.copy()
-    rm_node = None
     for node in node_list:
         if (node["idx"]["x"]==idx["x"] and node["idx"]["y"]==idx["y"]):
-            rm_node = node
-            break
-    if rm_node is not None:
-        node_out.remove(rm_node)
+            node_out.remove(node)
+    return node_out
+
+def filter_redundant_idx(node_list):
+    node_out = node_list.copy()
+    i = 0
+    while i!=len(node_out):
+        node_i = node_out[i]
+        for j in range(i+1,len(node_out)-1):
+            node_j = node_out[j]
+            if (node_i["idx"]["x"]==node_j["idx"]["x"] and node_i["idx"]["y"]==node_j["idx"]["y"]):
+                node_out.remove(node_j)
+        i += 1
     return node_out
 
 def find_shortest_path(node_list, idx):
@@ -259,6 +267,7 @@ def gen_compute_tile_array_traffic(
     # hbm_list = find_soc_type(soc_config.AddrMap, "memory")
     
     mgr_module_list = find_mgr_module(soc_config.AddrMap)
+    mgr_module_list = filter_redundant_idx(mgr_module_list)
     sbr_module_list = find_sbr_module(soc_config.AddrMap)
     memory_list = find_memory(soc_config.AddrMap)
     # sbr_narrow_list = find_sbr_module(soc_config.AddrMap, "narrow")
