@@ -116,9 +116,11 @@ def main(): # pylint: disable=too-many-branches
         # Generate the network description
         rendered_top = network.render_network()
         rendered_tile = network.render_tile()
+        rendered_noc_pd = network.render_noc_pd()
         if not args.no_format:
             rendered_top = verible_format(rendered_top)
             rendered_tile = verible_format(rendered_tile)
+            rendered_noc_pd = verible_format(rendered_noc_pd)
         # Write the network description to file or print it to stdout
         if outdir:
             outdir.mkdir(parents=True, exist_ok=True)
@@ -130,9 +132,14 @@ def main(): # pylint: disable=too-many-branches
             with open(tile_file_name, "w+", encoding="utf-8") as tile_file:
                 tile_file.write(rendered_tile)
             print("Generating tile_file : " + str(tile_file_name))
+            noc_pd_file_name = outdir / "floo_noc_pd_top.sv"
+            with open(noc_pd_file_name, "w+", encoding="utf-8") as noc_pd_file:
+                noc_pd_file.write(rendered_noc_pd)
+            print("Generating noc_pd_file : " + str(noc_pd_file_name))
         else:
             print(rendered_top)
             print(rendered_tile)
+            print(rendered_noc_pd)
         
         # Generating support file for compute tile array structure
         if network.compute_tile_gen:

@@ -32,36 +32,36 @@ package floo_narrow_wide_pkg;
   localparam int unsigned AxiNarrowInAddrWidth = 48;
   localparam int unsigned AxiNarrowInDataWidth = 64;
   localparam int unsigned AxiNarrowInIdWidth = 4;
-  localparam int unsigned AxiNarrowInUserWidth = 5;
+  localparam int unsigned AxiNarrowInUserWidth = 1;
 
 
   localparam int unsigned AxiNarrowOutAddrWidth = 48;
   localparam int unsigned AxiNarrowOutDataWidth = 64;
-  localparam int unsigned AxiNarrowOutIdWidth = 10;
-  localparam int unsigned AxiNarrowOutUserWidth = 5;
+  localparam int unsigned AxiNarrowOutIdWidth = 5;
+  localparam int unsigned AxiNarrowOutUserWidth = 1;
 
 
   localparam int unsigned AxiWideInAddrWidth = 48;
   localparam int unsigned AxiWideInDataWidth = 512;
-  localparam int unsigned AxiWideInIdWidth = 4;
+  localparam int unsigned AxiWideInIdWidth = 5;
   localparam int unsigned AxiWideInUserWidth = 1;
 
 
   localparam int unsigned AxiWideOutAddrWidth = 48;
   localparam int unsigned AxiWideOutDataWidth = 512;
-  localparam int unsigned AxiWideOutIdWidth = 10;
+  localparam int unsigned AxiWideOutIdWidth = 6;
   localparam int unsigned AxiWideOutUserWidth = 1;
 
 
   localparam int unsigned AxiNarrowMetabuffAddrWidth = 48;
   localparam int unsigned AxiNarrowMetabuffDataWidth = 64;
-  localparam int unsigned AxiNarrowMetabuffIdWidth = 10;
-  localparam int unsigned AxiNarrowMetabuffUserWidth = 5;
+  localparam int unsigned AxiNarrowMetabuffIdWidth = 5;
+  localparam int unsigned AxiNarrowMetabuffUserWidth = 1;
 
 
   localparam int unsigned AxiWideMetabuffAddrWidth = 48;
   localparam int unsigned AxiWideMetabuffDataWidth = 512;
-  localparam int unsigned AxiWideMetabuffIdWidth = 10;
+  localparam int unsigned AxiWideMetabuffIdWidth = 6;
   localparam int unsigned AxiWideMetabuffUserWidth = 1;
 
 
@@ -69,7 +69,7 @@ package floo_narrow_wide_pkg;
   typedef logic [63:0] axi_narrow_in_data_t;
   typedef logic [7:0] axi_narrow_in_strb_t;
   typedef logic [3:0] axi_narrow_in_id_t;
-  typedef logic [4:0] axi_narrow_in_user_t;
+  typedef logic [0:0] axi_narrow_in_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_narrow_in, axi_narrow_in_req_t, axi_narrow_in_rsp_t, axi_narrow_in_addr_t,
                       axi_narrow_in_id_t, axi_narrow_in_data_t, axi_narrow_in_strb_t,
                       axi_narrow_in_user_t)
@@ -78,8 +78,8 @@ package floo_narrow_wide_pkg;
   typedef logic [47:0] axi_narrow_out_addr_t;
   typedef logic [63:0] axi_narrow_out_data_t;
   typedef logic [7:0] axi_narrow_out_strb_t;
-  typedef logic [9:0] axi_narrow_out_id_t;
-  typedef logic [4:0] axi_narrow_out_user_t;
+  typedef logic [4:0] axi_narrow_out_id_t;
+  typedef logic [0:0] axi_narrow_out_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_narrow_out, axi_narrow_out_req_t, axi_narrow_out_rsp_t,
                       axi_narrow_out_addr_t, axi_narrow_out_id_t, axi_narrow_out_data_t,
                       axi_narrow_out_strb_t, axi_narrow_out_user_t)
@@ -88,7 +88,7 @@ package floo_narrow_wide_pkg;
   typedef logic [47:0] axi_wide_in_addr_t;
   typedef logic [511:0] axi_wide_in_data_t;
   typedef logic [63:0] axi_wide_in_strb_t;
-  typedef logic [3:0] axi_wide_in_id_t;
+  typedef logic [4:0] axi_wide_in_id_t;
   typedef logic [0:0] axi_wide_in_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_in, axi_wide_in_req_t, axi_wide_in_rsp_t, axi_wide_in_addr_t,
                       axi_wide_in_id_t, axi_wide_in_data_t, axi_wide_in_strb_t, axi_wide_in_user_t)
@@ -97,7 +97,7 @@ package floo_narrow_wide_pkg;
   typedef logic [47:0] axi_wide_out_addr_t;
   typedef logic [511:0] axi_wide_out_data_t;
   typedef logic [63:0] axi_wide_out_strb_t;
-  typedef logic [9:0] axi_wide_out_id_t;
+  typedef logic [5:0] axi_wide_out_id_t;
   typedef logic [0:0] axi_wide_out_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_out, axi_wide_out_req_t, axi_wide_out_rsp_t, axi_wide_out_addr_t,
                       axi_wide_out_id_t, axi_wide_out_data_t, axi_wide_out_strb_t,
@@ -107,8 +107,8 @@ package floo_narrow_wide_pkg;
   typedef logic [47:0] axi_narrow_metabuff_addr_t;
   typedef logic [63:0] axi_narrow_metabuff_data_t;
   typedef logic [7:0] axi_narrow_metabuff_strb_t;
-  typedef logic [9:0] axi_narrow_metabuff_id_t;
-  typedef logic [4:0] axi_narrow_metabuff_user_t;
+  typedef logic [4:0] axi_narrow_metabuff_id_t;
+  typedef logic [0:0] axi_narrow_metabuff_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_narrow_metabuff, axi_narrow_metabuff_req_t, axi_narrow_metabuff_rsp_t,
                       axi_narrow_metabuff_addr_t, axi_narrow_metabuff_id_t,
                       axi_narrow_metabuff_data_t, axi_narrow_metabuff_strb_t,
@@ -118,7 +118,7 @@ package floo_narrow_wide_pkg;
   typedef logic [47:0] axi_wide_metabuff_addr_t;
   typedef logic [511:0] axi_wide_metabuff_data_t;
   typedef logic [63:0] axi_wide_metabuff_strb_t;
-  typedef logic [9:0] axi_wide_metabuff_id_t;
+  typedef logic [5:0] axi_wide_metabuff_id_t;
   typedef logic [0:0] axi_wide_metabuff_user_t;
   `AXI_TYPEDEF_ALL_CT(axi_wide_metabuff, axi_wide_metabuff_req_t, axi_wide_metabuff_rsp_t,
                       axi_wide_metabuff_addr_t, axi_wide_metabuff_id_t, axi_wide_metabuff_data_t,
@@ -641,7 +641,7 @@ package floo_narrow_wide_pkg;
   typedef struct packed {
     hdr_t hdr;
     axi_narrow_metabuff_w_chan_t w;
-    logic [19:0] rsvd;
+    logic [14:0] rsvd;
   } floo_narrow_w_flit_t;
 
   typedef struct packed {
@@ -664,7 +664,7 @@ package floo_narrow_wide_pkg;
   typedef struct packed {
     hdr_t hdr;
     axi_wide_metabuff_aw_chan_t aw;
-    logic [483:0] rsvd;
+    logic [487:0] rsvd;
   } floo_wide_aw_flit_t;
 
   typedef struct packed {
@@ -675,29 +675,29 @@ package floo_narrow_wide_pkg;
   typedef struct packed {
     hdr_t hdr;
     axi_wide_metabuff_b_chan_t b;
-    logic [68:0] rsvd;
+    logic [63:0] rsvd;
   } floo_wide_b_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
     axi_wide_metabuff_ar_chan_t ar;
-    logic [9:0] rsvd;
+    logic [4:0] rsvd;
   } floo_wide_ar_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
     axi_wide_metabuff_r_chan_t r;
-    logic [51:0] rsvd;
+    logic [55:0] rsvd;
   } floo_wide_r_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
-    logic [97:0] rsvd;
+    logic [88:0] rsvd;
   } floo_req_generic_flit_t;
 
   typedef struct packed {
     hdr_t hdr;
-    logic [81:0] rsvd;
+    logic [72:0] rsvd;
   } floo_rsp_generic_flit_t;
 
   typedef struct packed {

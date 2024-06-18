@@ -27,7 +27,8 @@ protocols:
     data_width: 64
     addr_width: 48
     id_width: 4 # iw_in, equal to iw_out of snitch cluster
-    user_width: 5 # clog2(total number of clusters)
+    #user_width: 5 # clog2(total number of clusters)
+    user_width: 1
   - name: "narrow"
     type: "AXI4"
     direction: "subordinate"
@@ -36,16 +37,18 @@ protocols:
     # iw_out = iw_in + clog2(number of master to this interconnect, which is equal to number of endpoint)
     # iw_out = iw_in + clog2(X_NUM*Y_NUM + 2*X_NUM + 2*Y_NUM)
     # iw_out = 4 + clog2(8*4 + 2*8 + 2*4) = 4 + clog2(56) = 4 + 6 = 10
-    id_width: 10 # iw_out, this ID will be remap before connect with snitch cluster
-    user_width: 5 # clog2(total number of clusters)
+    # iw_out should not more than 5 for synthesis reason, so only 32 outstanding transaction is allow on FlooNoC
+    id_width: 5 # iw_out, this ID will be remap before connect with snitch cluster
+    #user_width: 5 # clog2(total number of clusters)
+    user_width: 1
   - name: "wide"
     type: "AXI4"
     direction: "manager"
     data_width: 512
     #data_width: 64
     addr_width: 48
-    # id_width: 3 # iw_in, equal to iw_out of snitch cluster
-    id_width: 4 # iw_in, equal to iw_out of + ro_cache_cfg (ro_cache_cfg + 1 for id width)
+    # id_width: 4 # iw_in, equal to iw_out of snitch cluster
+    id_width: 5 # iw_in, equal to iw_out of + ro_cache_cfg (ro_cache_cfg + 1 for id width)
     user_width: 0
   - name: "wide"
     type: "AXI4"
@@ -55,9 +58,11 @@ protocols:
     addr_width: 48
     # iw_out = iw_in + clog2(number of master to this interconnect, which is equal to number of endpoint)
     # iw_out = iw_in + clog2(X_NUM*Y_NUM + 2*X_NUM + 2*Y_NUM)
-    # iw_out = 3 + clog2(8*4 + 2*8 + 2*4) = 3 + clog2(56) = 3 + 6 = 9
-    #id_width: 9 # iw_out, this ID will be remap before connect with snitch cluster
-    id_width: 10 # iw_out + ro_cache_cfg (ro_cache_cfg + 1 for id width), this ID will be remap before connect with snitch cluster 
+    # iw_out = 4 + clog2(8*4 + 2*8 + 2*4) = 4 + clog2(56) = 4 + 6 = 10
+    #id_width: 10 # iw_out, this ID will be remap before connect with snitch cluster
+    #id_width: 11 # iw_out + ro_cache_cfg (ro_cache_cfg + 1 for id width), this ID will be remap before connect with snitch cluster 
+    # iw_out should not more than 6 for synthesis reason, so only 64 outstanding transaction is allow on FlooNoC
+    id_width: 6 # iw_out, this ID will be remap before connect with snitch cluster
     user_width: 0
 
 # Define endpoint and slave address mapped

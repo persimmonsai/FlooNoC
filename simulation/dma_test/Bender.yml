@@ -23,6 +23,7 @@ sources:
       - ../../hw/test/floo_dma_test_node.sv
       - ../../hw/test/floo_hbm_model.sv
       # Level 1
+      - ../../hw/floo_noc_pd_top.sv # Generated wrapper from floogen
       - ../../hw/compute_tile.sv # Generated wrapper from floogen
       - ../../hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
       - ../../hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level

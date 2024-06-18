@@ -45,6 +45,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     
     with as_file(files(floogen.templates).joinpath("compute_tile.sv.mako")) as _tpl_path:
         tpl_tile: ClassVar = Template(filename=str(_tpl_path))  
+    
+    with as_file(files(floogen.templates).joinpath("floo_noc_pd_top.sv.mako")) as _tpl_path:
+        tpl_noc_pd: ClassVar = Template(filename=str(_tpl_path))  
 
     with as_file(files(floogen.templates).joinpath("floo_flit_pkg.sv.mako")) as _tpl_path:
         tpl_pkg: ClassVar = Template(filename=str(_tpl_path))
@@ -748,6 +751,10 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def render_tile(self):
         """Render the compute tile in the generated code."""
         return self.tpl_tile.render(noc=self)
+    
+    def render_noc_pd(self):
+        """Render the FlooNoC PD wrapper in the generated code."""
+        return self.tpl_noc_pd.render(noc=self)
 
     def render_link_cfg(self):
         """Render the link configuration file"""
