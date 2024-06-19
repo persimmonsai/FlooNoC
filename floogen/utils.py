@@ -88,6 +88,16 @@ def sv_struct_typedef(name: str, fields: dict, union=False) -> str:
     typedef += f"}} {name};\n\n"
     return typedef
 
+def idx_to_sv_idx(arr_idx, array):
+    """Convert the array to a SystemVerilog array."""
+    if (arr_idx is not None) and (array is not None):
+        string = ""
+        for idx, val in zip(arr_idx, array):
+            if val != 1:
+                string += f"[{idx}]"
+        return string
+    return ""
+
 def verible_format(string: str) -> str:
     """Format the string using verible-verilog-format."""
     if shutil.which("verible-verilog-format") is None:

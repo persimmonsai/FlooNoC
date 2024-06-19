@@ -158,7 +158,13 @@ class NarrowWideLink(Link):
     req_type: ClassVar[str] = "floo_req_t"
     rsp_type: ClassVar[str] = "floo_rsp_t"
     wide_type: ClassVar[str] = "floo_wide_t"
-
+    
+    export_ni: Optional[bool] = False
+    dest_name: Optional[str]
+    source_name: Optional[str]
+    dest_idx: Optional[str] = ""
+    source_idx: Optional[str] = ""
+    
     def req_name(self):
         """Return the narrow request name."""
         return f"{self.source}_to_{self.dest}_req"
@@ -172,7 +178,7 @@ class NarrowWideLink(Link):
         if is_reversed:
             return f"{self.dest}_to_{self.source}_wide"
         return f"{self.source}_to_{self.dest}_wide"
-
+    
     @classmethod
     def get_axi_chs(cls):
         """Return all the AXI channels."""

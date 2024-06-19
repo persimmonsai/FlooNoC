@@ -22,6 +22,7 @@ class EndpointDesc(BaseModel):
     name: str
     description: Optional[str] = ""
     is_sub_addr : Optional[bool] = False
+    export_ni : Optional[bool] = False
     array: Optional[Union[Tuple[int], Tuple[int, int]]] = None
     addr_range: Optional[AddrRange] = None
     id_offset: Optional[Id] = None
@@ -134,6 +135,25 @@ class Endpoint(EndpointDesc):
             ports += port.render_port()
         return ports
     
+    def render_export_ni_ports(self):
+        """Render the FlooNoC router ports of the endpoint."""
+        ports = []
+        svdirections = ["input","output"]
+        port_types = ["req", "rsp", "wide"]
+        for dir in svdirections:
+            for type in port_types: 
+                ports.append(
+                    f"{dir} floo_{type}_t \
+                      {self._array_to_sv_array()} {self.name}_floo_{type}_{dir[0]}"
+                )
+        return ports
+    
+    def _array_to_sv_array(self):
+        """Convert the array to a SystemVerilog array."""
+        if self.array is not None:
+            return "".join([f"[{i-1}:0]" if i != 1 else "" for i in self.array])
+        return ""
+        
     def render_tb_ports(self):
         """Render the testbench ports of the endpoint."""
         ports = []

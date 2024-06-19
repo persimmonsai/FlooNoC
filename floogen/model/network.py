@@ -23,7 +23,7 @@ from floogen.model.connection import ConnectionDesc
 from floogen.model.link import NarrowWideLink, XYLinks, NarrowLink
 from floogen.model.network_interface import NarrowWideAxiNI
 from floogen.model.protocol import AXI4, AXI4Bus
-from floogen.utils import clog2
+from floogen.utils import clog2, idx_to_sv_idx
 import floogen.templates
 
 from copy import deepcopy
@@ -334,7 +334,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
 
     def compile_links(self):
         """Infer the link type from the network."""
-        for edge, _ in self.graph.get_link_edges(with_name=True):
+        edges = self.graph.get_link_edges(with_name=True)
+        for edge, _ in edges:
             # Check if link is bidirectional
             is_bidirectional = self.graph.has_edge(edge[1], edge[0])
             if not is_bidirectional:
@@ -342,12 +343,34 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                     "Only bidirectional links are \
                     supported yet inside the network"
                 )
+            # Get edge parameter
+            source_type = self.graph.nodes[edge[0]]["type"]
+            dest_type = self.graph.nodes[edge[1]]["type"]
+            source_obj = self.graph.nodes[edge[0]]["obj"]
+            dest_obj = self.graph.nodes[edge[1]]["obj"]
+            source_idx = ""
+            dest_idx = ""
+            if source_obj.array is not None:
+                source_idx = idx_to_sv_idx(self.graph.nodes[edge[0]]["arr_idx"], source_obj.array)
+            if dest_obj.array is not None:
+                dest_idx = idx_to_sv_idx(self.graph.nodes[edge[1]]["arr_idx"], dest_obj.array)
+            # set Export NI flag to not instantiate NI on FlooNoC network
+            export_ni = False
+            if source_type=="network_interface":
+                export_ni = source_obj.export_ni
+            if dest_type=="network_interface":
+                export_ni = dest_obj.export_ni or export_ni
             link = {
                 "source": edge[0],
                 "dest": edge[1],
-                "source_type": self.graph.nodes[edge[0]]["type"],
-                "dest_type": self.graph.nodes[edge[1]]["type"],
+                "source_type": source_type,
+                "dest_type": dest_type,
+                "source_name": source_obj.name,
+                "dest_name": dest_obj.name,
+                "source_idx": source_idx,
+                "dest_idx": dest_idx,
                 "is_bidirectional": is_bidirectional,
+                "export_ni": export_ni,
             }
             self.graph.set_edge_obj(edge, NarrowWideLink(**link))
 
@@ -635,7 +658,10 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             # cause the program will not filter that out and declared full range of array interface
             if ep.name in declared_ports:
                 continue
-            ports += ep.render_ports()
+            if ep.export_ni:
+                ports += ep.render_export_ni_ports()
+            else:
+                ports += ep.render_ports()
             declared_ports.append(ep.name)
         port_string = ",\n  ".join(ports) + "\n"
         return port_string
@@ -694,6 +720,19 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 sys_param_dict["wide_out"]["dw"] = prot.data_width
                 sys_param_dict["wide_out"]["aw"] = prot.addr_width
         return sys_param_dict
+    
+    def get_export_ni_name(self):
+        ep_nodes = self.graph.get_ep_nodes() # All endpoint node
+        ep_export_ni = [ep for ep in ep_nodes if ep.export_ni]
+        ep_export_ni_name = []
+        for ep in ep_export_ni:
+            for port in ep.mgr_ports:
+                if port.dest not in ep_export_ni_name:
+                    ep_export_ni_name.append(port.dest)
+            for port in ep.sbr_ports:
+                if port.source not in ep_export_ni_name:
+                    ep_export_ni_name.append(port.source)
+        return ep_export_ni_name
 
     # Get port parameter for export to Chipletgen
     def render_prots(self):
@@ -708,11 +747,13 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render the links in the generated code."""
         string = ""
         links = self.graph.get_link_edges()
-        # Remove router link to Eject endpoint link for compute tile array structure
         if self.compute_tile_gen:
+            # Remove router link to Eject endpoint link for compute tile array structure
             ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
             links = [li for li in links if (li.source not in ep_eject_ni) and (li.dest not in ep_eject_ni)]
-        
+            # Exclude export NI endpoint
+            ep_export_ni = self.get_export_ni_name()
+            links = [li for li in links if (li.source not in ep_export_ni) and (li.dest not in ep_export_ni)]
         for link in links:
             string += link.declare()
         return string
@@ -732,11 +773,13 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         string = ""
         ni_nodes = self.graph.get_ni_nodes()
         ni_nodes = [ni for ni in ni_nodes if ni.is_sub_addr==False]
-        # Remove NI for node that connect with Eject for compute tile array structure
         if self.compute_tile_gen:
+            # Remove NI for node that connect with Eject for compute tile array structure
             ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
             ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_eject_ni]
-        
+            # Exclude export NI endpoint
+            ep_export_ni = self.get_export_ni_name()
+            ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_export_ni]
         for ni in ni_nodes:
             string += ni.render(noc=self)
         return string

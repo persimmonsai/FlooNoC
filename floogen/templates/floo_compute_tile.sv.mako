@@ -25,37 +25,61 @@ ${wide_type} [West:North] ${router.name}_wide_out;
 
 % for dir, link in router.incoming._asdict().items():
   % if dir != 'EJECT':
+    % if link.export_ni:
+  assign ${router.name}_req_in[${camelcase(dir)}] = ${"'0" if link is None else "{}_floo_req_i{}".format(link.source_name,link.source_idx)};
+    % else:
   assign ${router.name}_req_in[${camelcase(dir)}] = ${"'0" if link is None else link.req_name()};
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.incoming._asdict().items():
   % if (link is not None) and (dir != 'EJECT'):
+    % if link.export_ni:
+  assign ${"{}_floo_rsp_o{}".format(link.source_name,link.source_idx)} = ${router.name}_rsp_out[${camelcase(dir)}];
+    % else:
   assign ${link.rsp_name()} = ${router.name}_rsp_out[${camelcase(dir)}];
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.outgoing._asdict().items():
   % if (link is not None) and (dir != 'EJECT'):
+    % if link.export_ni:
+  assign ${"{}_floo_req_o{}".format(link.dest_name,link.dest_idx)} = ${router.name}_req_out[${camelcase(dir)}];
+    % else:
   assign ${link.req_name()} = ${router.name}_req_out[${camelcase(dir)}];
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.outgoing._asdict().items():
   % if dir != 'EJECT':
+    % if link.export_ni:
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"'0" if link is None else "{}_floo_rsp_i{}".format(link.dest_name,link.dest_idx)};
+    % else:
   assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"'0" if link is None else link.rsp_name()};
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.incoming._asdict().items():
   % if dir != 'EJECT':
+    % if link.export_ni:
+  assign ${router.name}_wide_in[${camelcase(dir)}] = ${"'0" if link is None else "{}_floo_wide_i{}".format(link.source_name,link.source_idx)};
+    % else:
   assign ${router.name}_wide_in[${camelcase(dir)}] = ${"'0" if link is None else link.wide_name()};
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.outgoing._asdict().items():
   % if (link is not None) and (dir != 'EJECT'):
+    % if link.export_ni:
+  assign ${"{}_floo_wide_o{}".format(link.dest_name,link.dest_idx)} = ${router.name}_wide_out[${camelcase(dir)}];
+    % else:
   assign ${link.wide_name()} = ${router.name}_wide_out[${camelcase(dir)}];
+    % endif
   % endif
 % endfor
 
