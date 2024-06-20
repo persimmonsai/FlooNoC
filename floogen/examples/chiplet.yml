@@ -98,7 +98,7 @@ endpoints:
   # HBM memory
   # Split to allocate within 32-bit address for snitch cluster that is 32-bit processor
   - name: "hbm_south_dram" 
-    #export_ni: true # Set to not declare NI on FlooNoC network
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [2, 1]
     addr_range:
       base: 0x0000_8000_0000
@@ -111,7 +111,7 @@ endpoints:
       y: -1 # -1 mean border of the south side
   # HBM memory
   - name: "hbm_south"
-    #export_ni: true # Set to not declare NI on FlooNoC network
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [6, 1]
     addr_range:
       base: 0x0010_0000_0000
@@ -136,7 +136,7 @@ endpoints:
   ##### North border
   # HBM memory
   - name: "hbm_north"
-    #export_ni: true # Set to not declare NI on FlooNoC network
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [*X_NUM, 1]
     addr_range:
       base: 0x0011_8000_0000 # Continue from hbm_south end address
@@ -201,7 +201,7 @@ endpoints:
       y: 1
   # CVA6
   - name: "cva6" 
-    export_ni: true # Set to not declare NI on FlooNoC network
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     # No slave port so no endpoint address assign to its
     mgr_port_protocol:
       - "narrow"

@@ -726,19 +726,25 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         ep_export_ni = self.get_export_ni_name()
         ni_nodes = [ni for ni in ni_nodes if ni.name in ep_export_ni]
         export_ni_dict = {}
+        name_list = []
         for ni in ni_nodes:
             ni_name = ni.endpoint.name
+            if ni_name not in name_list:
+                export_ni_dict[ni_name] = []
+                name_list.append(ni_name)
             actual_ni_id = ni.id - ni.routing.id_offset if ni.routing.id_offset is not None else ni.id # Convert to actual ID
-            export_ni_dict[ni_name] = {}
-            export_ni_dict[ni_name]["array"] = ni.endpoint.array
-            export_ni_dict[ni_name]["arr_idx"] = ni.arr_idx
-            export_ni_dict[ni_name]["sv_arr_idx"] = idx_to_sv_idx(ni.arr_idx, ni.endpoint.array) # Convert to SV array string
-            export_ni_dict[ni_name]["id"] = {}
-            export_ni_dict[ni_name]["id"]["x"] = actual_ni_id.x
-            export_ni_dict[ni_name]["id"]["y"] = actual_ni_id.y
-            export_ni_dict[ni_name]["id"]["name"] = ni.name + "_id"
-            export_ni_dict[ni_name]["id"]["type"] = "id_t"
-            export_ni_dict[ni_name]["id"]["render"] = actual_ni_id.render()
+            arr_idx = [ni.arr_idx.x, ni.arr_idx.y] if ni.arr_idx is not None else ni.arr_idx
+            tmp_dict = {}
+            tmp_dict["array"] = ni.endpoint.array
+            tmp_dict["arr_idx"] = arr_idx
+            tmp_dict["sv_arr_idx"] = idx_to_sv_idx(arr_idx, ni.endpoint.array) # Convert to SV array string
+            tmp_dict["id"] = {}
+            tmp_dict["id"]["x"] = actual_ni_id.x
+            tmp_dict["id"]["y"] = actual_ni_id.y
+            tmp_dict["id"]["name"] = ni.name + "_id"
+            tmp_dict["id"]["type"] = "id_t"
+            tmp_dict["id"]["render"] = actual_ni_id.render()
+            export_ni_dict[ni_name].append(tmp_dict)
         return export_ni_dict
     
     def get_export_ni_name(self):
