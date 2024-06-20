@@ -721,6 +721,26 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 sys_param_dict["wide_out"]["aw"] = prot.addr_width
         return sys_param_dict
     
+    def get_export_ni_param(self):
+        ni_nodes = self.graph.get_ni_nodes()
+        ep_export_ni = self.get_export_ni_name()
+        ni_nodes = [ni for ni in ni_nodes if ni.name in ep_export_ni]
+        export_ni_dict = {}
+        for ni in ni_nodes:
+            ni_name = ni.endpoint.name
+            actual_ni_id = ni.id - ni.routing.id_offset if ni.routing.id_offset is not None else ni.id # Convert to actual ID
+            export_ni_dict[ni_name] = {}
+            export_ni_dict[ni_name]["array"] = ni.endpoint.array
+            export_ni_dict[ni_name]["arr_idx"] = ni.arr_idx
+            export_ni_dict[ni_name]["sv_arr_idx"] = idx_to_sv_idx(ni.arr_idx, ni.endpoint.array) # Convert to SV array string
+            export_ni_dict[ni_name]["id"] = {}
+            export_ni_dict[ni_name]["id"]["x"] = actual_ni_id.x
+            export_ni_dict[ni_name]["id"]["y"] = actual_ni_id.y
+            export_ni_dict[ni_name]["id"]["name"] = ni.name + "_id"
+            export_ni_dict[ni_name]["id"]["type"] = "id_t"
+            export_ni_dict[ni_name]["id"]["render"] = actual_ni_id.render()
+        return export_ni_dict
+    
     def get_export_ni_name(self):
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_export_ni = [ep for ep in ep_nodes if ep.export_ni]

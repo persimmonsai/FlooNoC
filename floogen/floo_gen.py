@@ -206,6 +206,7 @@ def main(): # pylint: disable=too-many-branches
             # Get export parameter as a dictionary structure to be export as .hjson file
             sys_param = network.get_sys_param()
             sys_param["ports"] = port_dict_convert(network.get_ports())
+            sys_param["export_ni"] = network.get_export_ni_param()
             # Write the export parameter to file or print it to stdout
             hjson_file_name = export_outdir / "floo_sys_param.hjson"
             with open(hjson_file_name, "w+", encoding="utf-8") as hjson_file:
