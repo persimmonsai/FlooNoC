@@ -730,7 +730,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         for ni in ni_nodes:
             ni_name = ni.endpoint.name
             if ni_name not in name_list:
-                export_ni_dict[ni_name] = []
+                export_ni_dict[ni_name] = {}
                 name_list.append(ni_name)
             actual_ni_id = ni.id - ni.routing.id_offset if ni.routing.id_offset is not None else ni.id # Convert to actual ID
             arr_idx = [ni.arr_idx.x, ni.arr_idx.y] if ni.arr_idx is not None else ni.arr_idx
@@ -744,7 +744,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             tmp_dict["id"]["name"] = ni.name + "_id"
             tmp_dict["id"]["type"] = "id_t"
             tmp_dict["id"]["render"] = actual_ni_id.render()
-            export_ni_dict[ni_name].append(tmp_dict)
+            export_ni_dict[ni_name][tmp_dict["sv_arr_idx"]] = tmp_dict
         return export_ni_dict
     
     def get_export_ni_name(self):
