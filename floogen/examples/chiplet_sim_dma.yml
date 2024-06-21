@@ -82,19 +82,20 @@ endpoints:
     id_offset:
       x: 0 # 0 to X_NUM-1
       y: 0 # 0 to Y_NUM-1
-  - name: "quadrant_ctrl"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [*X_NUM, *Y_NUM]
-    addr_range:
-        base: 0x0000_0f00_0000
-        size: 0x0000_0001_0000 # size per single quadrant control per compute tile
-    mgr_port_protocol:
-      - "narrow"
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 0 # 0 to X_NUM-1
-      y: 0 # 0 to Y_NUM-1
+  # **** Warning: sub address simulation is not support for the current version
+  # - name: "quadrant_ctrl" 
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [*X_NUM, *Y_NUM]
+  #   addr_range:
+  #       base: 0x0000_0f00_0000
+  #       size: 0x0000_0001_0000 # size per single quadrant control per compute tile
+  #   mgr_port_protocol:
+  #     - "narrow"
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 0 # 0 to X_NUM-1
+  #     y: 0 # 0 to Y_NUM-1
 # Define endpoint for each border side (North, East, South, and West)
   ##### North border
   # HBM memory
