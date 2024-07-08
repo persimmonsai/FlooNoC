@@ -21,9 +21,7 @@ module ${noc.name}_floo_noc
 
   input logic [${irq_bit_num-1}:1] mtip_i, 
   input logic [${irq_bit_num-1}:1] msip_i, 
-`ifndef TARGET_DMA_TEST
-  input  occamy_pkg::sram_cfgs_t  sram_cfgs_i,
-`endif
+
   ${noc.render_ports()}
 );
 

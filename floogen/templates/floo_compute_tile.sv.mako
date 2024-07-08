@@ -106,7 +106,4 @@ localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   .floo_rsp_i (${router.name}_rsp_in),
   .floo_wide_i (${router.name}_wide_in),
   .floo_wide_o (${router.name}_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
