@@ -12,25 +12,29 @@ module chiplet_floo_noc
   input logic rst_ni,
   input logic test_enable_i,
 
-  input logic [288:1] mtip_i, 
-  input logic [288:1] msip_i, 
-`ifndef TARGET_DMA_TEST
-  input  occamy_pkg::sram_cfgs_t  sram_cfgs_i,
-`endif
+  input logic [64:1] mtip_i, 
+  input logic [64:1] msip_i, 
+
+  output axi_narrow_out_req_t             [1:0] hbm_south_dram_narrow_req_o,
+  input axi_narrow_out_rsp_t             [1:0] hbm_south_dram_narrow_rsp_i,
+  output axi_wide_out_req_t             [1:0] hbm_south_dram_wide_req_o,
+  input axi_wide_out_rsp_t             [1:0] hbm_south_dram_wide_rsp_i,
+  output axi_narrow_out_req_t             [5:0] hbm_south_narrow_req_o,
+  input axi_narrow_out_rsp_t             [5:0] hbm_south_narrow_rsp_i,
+  output axi_wide_out_req_t             [5:0] hbm_south_wide_req_o,
+  input axi_wide_out_rsp_t             [5:0] hbm_south_wide_rsp_i,
   output axi_narrow_out_req_t             [7:0] hbm_north_narrow_req_o,
   input axi_narrow_out_rsp_t             [7:0] hbm_north_narrow_rsp_i,
   output axi_wide_out_req_t             [7:0] hbm_north_wide_req_o,
   input axi_wide_out_rsp_t             [7:0] hbm_north_wide_rsp_i,
-  output axi_narrow_out_req_t             [7:0] hbm_south_narrow_req_o,
-  input axi_narrow_out_rsp_t             [7:0] hbm_south_narrow_rsp_i,
-  output axi_wide_out_req_t             [7:0] hbm_south_wide_req_o,
-  input axi_wide_out_rsp_t             [7:0] hbm_south_wide_rsp_i,
   input axi_narrow_in_req_t              pcie_narrow_req_i,
   output axi_narrow_in_rsp_t              pcie_narrow_rsp_o,
   output axi_narrow_out_req_t              pcie_narrow_req_o,
   input axi_narrow_out_rsp_t              pcie_narrow_rsp_i,
   output axi_narrow_out_req_t              peripherals_narrow_req_o,
   input axi_narrow_out_rsp_t              peripherals_narrow_rsp_i,
+  output axi_wide_out_req_t              peripherals_wide_req_o,
+  input axi_wide_out_rsp_t              peripherals_wide_rsp_i,
   input axi_narrow_in_req_t              jtag_narrow_req_i,
   output axi_narrow_in_rsp_t              jtag_narrow_rsp_o,
   output axi_narrow_out_req_t              jtag_narrow_req_o,
@@ -64,9 +68,9 @@ floo_req_t router_0_0_to_router_1_0_req;
 floo_rsp_t router_1_0_to_router_0_0_rsp;
 floo_wide_t router_0_0_to_router_1_0_wide;
 
-floo_req_t router_0_0_to_hbm_south_ni_0_0_req;
-floo_rsp_t hbm_south_ni_0_0_to_router_0_0_rsp;
-floo_wide_t router_0_0_to_hbm_south_ni_0_0_wide;
+floo_req_t router_0_0_to_hbm_south_dram_ni_0_0_req;
+floo_rsp_t hbm_south_dram_ni_0_0_to_router_0_0_rsp;
+floo_wide_t router_0_0_to_hbm_south_dram_ni_0_0_wide;
 
 floo_req_t router_0_0_to_cva6_ni_req;
 floo_rsp_t cva6_ni_to_router_0_0_rsp;
@@ -132,9 +136,9 @@ floo_req_t router_1_0_to_router_2_0_req;
 floo_rsp_t router_2_0_to_router_1_0_rsp;
 floo_wide_t router_1_0_to_router_2_0_wide;
 
-floo_req_t router_1_0_to_hbm_south_ni_1_0_req;
-floo_rsp_t hbm_south_ni_1_0_to_router_1_0_rsp;
-floo_wide_t router_1_0_to_hbm_south_ni_1_0_wide;
+floo_req_t router_1_0_to_hbm_south_dram_ni_1_0_req;
+floo_rsp_t hbm_south_dram_ni_1_0_to_router_1_0_rsp;
+floo_wide_t router_1_0_to_hbm_south_dram_ni_1_0_wide;
 
 floo_req_t router_1_1_to_router_0_1_req;
 floo_rsp_t router_0_1_to_router_1_1_rsp;
@@ -196,9 +200,9 @@ floo_req_t router_2_0_to_router_3_0_req;
 floo_rsp_t router_3_0_to_router_2_0_rsp;
 floo_wide_t router_2_0_to_router_3_0_wide;
 
-floo_req_t router_2_0_to_hbm_south_ni_2_0_req;
-floo_rsp_t hbm_south_ni_2_0_to_router_2_0_rsp;
-floo_wide_t router_2_0_to_hbm_south_ni_2_0_wide;
+floo_req_t router_2_0_to_hbm_south_ni_0_0_req;
+floo_rsp_t hbm_south_ni_0_0_to_router_2_0_rsp;
+floo_wide_t router_2_0_to_hbm_south_ni_0_0_wide;
 
 floo_req_t router_2_1_to_router_1_1_req;
 floo_rsp_t router_1_1_to_router_2_1_rsp;
@@ -260,9 +264,9 @@ floo_req_t router_3_0_to_router_4_0_req;
 floo_rsp_t router_4_0_to_router_3_0_rsp;
 floo_wide_t router_3_0_to_router_4_0_wide;
 
-floo_req_t router_3_0_to_hbm_south_ni_3_0_req;
-floo_rsp_t hbm_south_ni_3_0_to_router_3_0_rsp;
-floo_wide_t router_3_0_to_hbm_south_ni_3_0_wide;
+floo_req_t router_3_0_to_hbm_south_ni_1_0_req;
+floo_rsp_t hbm_south_ni_1_0_to_router_3_0_rsp;
+floo_wide_t router_3_0_to_hbm_south_ni_1_0_wide;
 
 floo_req_t router_3_1_to_router_2_1_req;
 floo_rsp_t router_2_1_to_router_3_1_rsp;
@@ -324,9 +328,9 @@ floo_req_t router_4_0_to_router_5_0_req;
 floo_rsp_t router_5_0_to_router_4_0_rsp;
 floo_wide_t router_4_0_to_router_5_0_wide;
 
-floo_req_t router_4_0_to_hbm_south_ni_4_0_req;
-floo_rsp_t hbm_south_ni_4_0_to_router_4_0_rsp;
-floo_wide_t router_4_0_to_hbm_south_ni_4_0_wide;
+floo_req_t router_4_0_to_hbm_south_ni_2_0_req;
+floo_rsp_t hbm_south_ni_2_0_to_router_4_0_rsp;
+floo_wide_t router_4_0_to_hbm_south_ni_2_0_wide;
 
 floo_req_t router_4_1_to_router_3_1_req;
 floo_rsp_t router_3_1_to_router_4_1_rsp;
@@ -388,9 +392,9 @@ floo_req_t router_5_0_to_router_6_0_req;
 floo_rsp_t router_6_0_to_router_5_0_rsp;
 floo_wide_t router_5_0_to_router_6_0_wide;
 
-floo_req_t router_5_0_to_hbm_south_ni_5_0_req;
-floo_rsp_t hbm_south_ni_5_0_to_router_5_0_rsp;
-floo_wide_t router_5_0_to_hbm_south_ni_5_0_wide;
+floo_req_t router_5_0_to_hbm_south_ni_3_0_req;
+floo_rsp_t hbm_south_ni_3_0_to_router_5_0_rsp;
+floo_wide_t router_5_0_to_hbm_south_ni_3_0_wide;
 
 floo_req_t router_5_1_to_router_4_1_req;
 floo_rsp_t router_4_1_to_router_5_1_rsp;
@@ -452,9 +456,9 @@ floo_req_t router_6_0_to_router_7_0_req;
 floo_rsp_t router_7_0_to_router_6_0_rsp;
 floo_wide_t router_6_0_to_router_7_0_wide;
 
-floo_req_t router_6_0_to_hbm_south_ni_6_0_req;
-floo_rsp_t hbm_south_ni_6_0_to_router_6_0_rsp;
-floo_wide_t router_6_0_to_hbm_south_ni_6_0_wide;
+floo_req_t router_6_0_to_hbm_south_ni_4_0_req;
+floo_rsp_t hbm_south_ni_4_0_to_router_6_0_rsp;
+floo_wide_t router_6_0_to_hbm_south_ni_4_0_wide;
 
 floo_req_t router_6_1_to_router_5_1_req;
 floo_rsp_t router_5_1_to_router_6_1_rsp;
@@ -512,9 +516,9 @@ floo_req_t router_7_0_to_router_7_1_req;
 floo_rsp_t router_7_1_to_router_7_0_rsp;
 floo_wide_t router_7_0_to_router_7_1_wide;
 
-floo_req_t router_7_0_to_hbm_south_ni_7_0_req;
-floo_rsp_t hbm_south_ni_7_0_to_router_7_0_rsp;
-floo_wide_t router_7_0_to_hbm_south_ni_7_0_wide;
+floo_req_t router_7_0_to_hbm_south_ni_5_0_req;
+floo_rsp_t hbm_south_ni_5_0_to_router_7_0_rsp;
+floo_wide_t router_7_0_to_hbm_south_ni_5_0_wide;
 
 floo_req_t router_7_0_to_zero_mem_ni_req;
 floo_rsp_t zero_mem_ni_to_router_7_0_rsp;
@@ -568,6 +572,38 @@ floo_req_t router_7_3_to_spm_wide_ni_req;
 floo_rsp_t spm_wide_ni_to_router_7_3_rsp;
 floo_wide_t router_7_3_to_spm_wide_ni_wide;
 
+floo_req_t hbm_south_dram_ni_0_0_to_router_0_0_req;
+floo_rsp_t router_0_0_to_hbm_south_dram_ni_0_0_rsp;
+floo_wide_t hbm_south_dram_ni_0_0_to_router_0_0_wide;
+
+floo_req_t hbm_south_dram_ni_1_0_to_router_1_0_req;
+floo_rsp_t router_1_0_to_hbm_south_dram_ni_1_0_rsp;
+floo_wide_t hbm_south_dram_ni_1_0_to_router_1_0_wide;
+
+floo_req_t hbm_south_ni_0_0_to_router_2_0_req;
+floo_rsp_t router_2_0_to_hbm_south_ni_0_0_rsp;
+floo_wide_t hbm_south_ni_0_0_to_router_2_0_wide;
+
+floo_req_t hbm_south_ni_1_0_to_router_3_0_req;
+floo_rsp_t router_3_0_to_hbm_south_ni_1_0_rsp;
+floo_wide_t hbm_south_ni_1_0_to_router_3_0_wide;
+
+floo_req_t hbm_south_ni_2_0_to_router_4_0_req;
+floo_rsp_t router_4_0_to_hbm_south_ni_2_0_rsp;
+floo_wide_t hbm_south_ni_2_0_to_router_4_0_wide;
+
+floo_req_t hbm_south_ni_3_0_to_router_5_0_req;
+floo_rsp_t router_5_0_to_hbm_south_ni_3_0_rsp;
+floo_wide_t hbm_south_ni_3_0_to_router_5_0_wide;
+
+floo_req_t hbm_south_ni_4_0_to_router_6_0_req;
+floo_rsp_t router_6_0_to_hbm_south_ni_4_0_rsp;
+floo_wide_t hbm_south_ni_4_0_to_router_6_0_wide;
+
+floo_req_t hbm_south_ni_5_0_to_router_7_0_req;
+floo_rsp_t router_7_0_to_hbm_south_ni_5_0_rsp;
+floo_wide_t hbm_south_ni_5_0_to_router_7_0_wide;
+
 floo_req_t hbm_north_ni_0_0_to_router_0_3_req;
 floo_rsp_t router_0_3_to_hbm_north_ni_0_0_rsp;
 floo_wide_t hbm_north_ni_0_0_to_router_0_3_wide;
@@ -599,38 +635,6 @@ floo_wide_t hbm_north_ni_6_0_to_router_6_3_wide;
 floo_req_t hbm_north_ni_7_0_to_router_7_3_req;
 floo_rsp_t router_7_3_to_hbm_north_ni_7_0_rsp;
 floo_wide_t hbm_north_ni_7_0_to_router_7_3_wide;
-
-floo_req_t hbm_south_ni_0_0_to_router_0_0_req;
-floo_rsp_t router_0_0_to_hbm_south_ni_0_0_rsp;
-floo_wide_t hbm_south_ni_0_0_to_router_0_0_wide;
-
-floo_req_t hbm_south_ni_1_0_to_router_1_0_req;
-floo_rsp_t router_1_0_to_hbm_south_ni_1_0_rsp;
-floo_wide_t hbm_south_ni_1_0_to_router_1_0_wide;
-
-floo_req_t hbm_south_ni_2_0_to_router_2_0_req;
-floo_rsp_t router_2_0_to_hbm_south_ni_2_0_rsp;
-floo_wide_t hbm_south_ni_2_0_to_router_2_0_wide;
-
-floo_req_t hbm_south_ni_3_0_to_router_3_0_req;
-floo_rsp_t router_3_0_to_hbm_south_ni_3_0_rsp;
-floo_wide_t hbm_south_ni_3_0_to_router_3_0_wide;
-
-floo_req_t hbm_south_ni_4_0_to_router_4_0_req;
-floo_rsp_t router_4_0_to_hbm_south_ni_4_0_rsp;
-floo_wide_t hbm_south_ni_4_0_to_router_4_0_wide;
-
-floo_req_t hbm_south_ni_5_0_to_router_5_0_req;
-floo_rsp_t router_5_0_to_hbm_south_ni_5_0_rsp;
-floo_wide_t hbm_south_ni_5_0_to_router_5_0_wide;
-
-floo_req_t hbm_south_ni_6_0_to_router_6_0_req;
-floo_rsp_t router_6_0_to_hbm_south_ni_6_0_rsp;
-floo_wide_t hbm_south_ni_6_0_to_router_6_0_wide;
-
-floo_req_t hbm_south_ni_7_0_to_router_7_0_req;
-floo_rsp_t router_7_0_to_hbm_south_ni_7_0_rsp;
-floo_wide_t hbm_south_ni_7_0_to_router_7_0_wide;
 
 floo_req_t pcie_ni_to_router_0_3_req;
 floo_rsp_t router_0_3_to_pcie_ni_rsp;
@@ -665,6 +669,254 @@ floo_rsp_t router_7_0_to_zero_mem_ni_rsp;
 floo_wide_t zero_mem_ni_to_router_7_0_wide;
 
 
+
+localparam id_t hbm_south_dram_ni_0_0_id = '{x: 1, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_dram_ni_0_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_dram_narrow_req_o[0] ),
+  .axi_narrow_out_rsp_i ( hbm_south_dram_narrow_rsp_i[0] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_dram_wide_req_o[0] ),
+  .axi_wide_out_rsp_i ( hbm_south_dram_wide_rsp_i[0] ),
+  .id_i             ( hbm_south_dram_ni_0_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_dram_ni_0_0_to_router_0_0_req   ),
+  .floo_rsp_i       ( router_0_0_to_hbm_south_dram_ni_0_0_rsp   ),
+  .floo_wide_o      ( hbm_south_dram_ni_0_0_to_router_0_0_wide  ),
+  .floo_req_i       ( router_0_0_to_hbm_south_dram_ni_0_0_req   ),
+  .floo_rsp_o       ( hbm_south_dram_ni_0_0_to_router_0_0_rsp   ),
+  .floo_wide_i      ( router_0_0_to_hbm_south_dram_ni_0_0_wide  )
+);
+
+localparam id_t hbm_south_dram_ni_1_0_id = '{x: 2, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_dram_ni_1_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_dram_narrow_req_o[1] ),
+  .axi_narrow_out_rsp_i ( hbm_south_dram_narrow_rsp_i[1] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_dram_wide_req_o[1] ),
+  .axi_wide_out_rsp_i ( hbm_south_dram_wide_rsp_i[1] ),
+  .id_i             ( hbm_south_dram_ni_1_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_dram_ni_1_0_to_router_1_0_req   ),
+  .floo_rsp_i       ( router_1_0_to_hbm_south_dram_ni_1_0_rsp   ),
+  .floo_wide_o      ( hbm_south_dram_ni_1_0_to_router_1_0_wide  ),
+  .floo_req_i       ( router_1_0_to_hbm_south_dram_ni_1_0_req   ),
+  .floo_rsp_o       ( hbm_south_dram_ni_1_0_to_router_1_0_rsp   ),
+  .floo_wide_i      ( router_1_0_to_hbm_south_dram_ni_1_0_wide  )
+);
+
+localparam id_t hbm_south_ni_0_0_id = '{x: 3, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_ni_0_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[0] ),
+  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[0] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_wide_req_o[0] ),
+  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[0] ),
+  .id_i             ( hbm_south_ni_0_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_ni_0_0_to_router_2_0_req   ),
+  .floo_rsp_i       ( router_2_0_to_hbm_south_ni_0_0_rsp   ),
+  .floo_wide_o      ( hbm_south_ni_0_0_to_router_2_0_wide  ),
+  .floo_req_i       ( router_2_0_to_hbm_south_ni_0_0_req   ),
+  .floo_rsp_o       ( hbm_south_ni_0_0_to_router_2_0_rsp   ),
+  .floo_wide_i      ( router_2_0_to_hbm_south_ni_0_0_wide  )
+);
+
+localparam id_t hbm_south_ni_1_0_id = '{x: 4, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_ni_1_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[1] ),
+  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[1] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_wide_req_o[1] ),
+  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[1] ),
+  .id_i             ( hbm_south_ni_1_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_ni_1_0_to_router_3_0_req   ),
+  .floo_rsp_i       ( router_3_0_to_hbm_south_ni_1_0_rsp   ),
+  .floo_wide_o      ( hbm_south_ni_1_0_to_router_3_0_wide  ),
+  .floo_req_i       ( router_3_0_to_hbm_south_ni_1_0_req   ),
+  .floo_rsp_o       ( hbm_south_ni_1_0_to_router_3_0_rsp   ),
+  .floo_wide_i      ( router_3_0_to_hbm_south_ni_1_0_wide  )
+);
+
+localparam id_t hbm_south_ni_2_0_id = '{x: 5, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_ni_2_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[2] ),
+  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[2] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_wide_req_o[2] ),
+  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[2] ),
+  .id_i             ( hbm_south_ni_2_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_ni_2_0_to_router_4_0_req   ),
+  .floo_rsp_i       ( router_4_0_to_hbm_south_ni_2_0_rsp   ),
+  .floo_wide_o      ( hbm_south_ni_2_0_to_router_4_0_wide  ),
+  .floo_req_i       ( router_4_0_to_hbm_south_ni_2_0_req   ),
+  .floo_rsp_o       ( hbm_south_ni_2_0_to_router_4_0_rsp   ),
+  .floo_wide_i      ( router_4_0_to_hbm_south_ni_2_0_wide  )
+);
+
+localparam id_t hbm_south_ni_3_0_id = '{x: 6, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_ni_3_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[3] ),
+  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[3] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_wide_req_o[3] ),
+  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[3] ),
+  .id_i             ( hbm_south_ni_3_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_ni_3_0_to_router_5_0_req   ),
+  .floo_rsp_i       ( router_5_0_to_hbm_south_ni_3_0_rsp   ),
+  .floo_wide_o      ( hbm_south_ni_3_0_to_router_5_0_wide  ),
+  .floo_req_i       ( router_5_0_to_hbm_south_ni_3_0_req   ),
+  .floo_rsp_o       ( hbm_south_ni_3_0_to_router_5_0_rsp   ),
+  .floo_wide_i      ( router_5_0_to_hbm_south_ni_3_0_wide  )
+);
+
+localparam id_t hbm_south_ni_4_0_id = '{x: 7, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_ni_4_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[4] ),
+  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[4] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_wide_req_o[4] ),
+  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[4] ),
+  .id_i             ( hbm_south_ni_4_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_ni_4_0_to_router_6_0_req   ),
+  .floo_rsp_i       ( router_6_0_to_hbm_south_ni_4_0_rsp   ),
+  .floo_wide_o      ( hbm_south_ni_4_0_to_router_6_0_wide  ),
+  .floo_req_i       ( router_6_0_to_hbm_south_ni_4_0_req   ),
+  .floo_rsp_o       ( hbm_south_ni_4_0_to_router_6_0_rsp   ),
+  .floo_wide_i      ( router_6_0_to_hbm_south_ni_4_0_wide  )
+);
+
+localparam id_t hbm_south_ni_5_0_id = '{x: 8, y: 0};
+
+
+floo_narrow_wide_chimney  #(
+  .EnNarrowSbrPort(1'b1),
+  .EnNarrowMgrPort(1'b0),
+  .EnWideSbrPort(1'b1),
+  .EnWideMgrPort(1'b0)
+) hbm_south_ni_5_0 (
+  .clk_i,
+  .rst_ni,
+  .test_enable_i,
+  .sram_cfg_i ( '0 ),
+  .axi_narrow_in_req_i  ( '0 ),
+  .axi_narrow_in_rsp_o  (    ),
+  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[5] ),
+  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[5] ),
+  .axi_wide_in_req_i  ( '0 ),
+  .axi_wide_in_rsp_o  (    ),
+  .axi_wide_out_req_o ( hbm_south_wide_req_o[5] ),
+  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[5] ),
+  .id_i             ( hbm_south_ni_5_0_id    ),
+  .route_table_i    ( '0                          ),
+  .floo_req_o       ( hbm_south_ni_5_0_to_router_7_0_req   ),
+  .floo_rsp_i       ( router_7_0_to_hbm_south_ni_5_0_rsp   ),
+  .floo_wide_o      ( hbm_south_ni_5_0_to_router_7_0_wide  ),
+  .floo_req_i       ( router_7_0_to_hbm_south_ni_5_0_req   ),
+  .floo_rsp_o       ( hbm_south_ni_5_0_to_router_7_0_rsp   ),
+  .floo_wide_i      ( router_7_0_to_hbm_south_ni_5_0_wide  )
+);
 
 localparam id_t hbm_north_ni_0_0_id = '{x: 1, y: 5};
 
@@ -914,254 +1166,6 @@ floo_narrow_wide_chimney  #(
   .floo_wide_i      ( router_7_3_to_hbm_north_ni_7_0_wide  )
 );
 
-localparam id_t hbm_south_ni_0_0_id = '{x: 1, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_0_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[0] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[0] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[0] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[0] ),
-  .id_i             ( hbm_south_ni_0_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_0_0_to_router_0_0_req   ),
-  .floo_rsp_i       ( router_0_0_to_hbm_south_ni_0_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_0_0_to_router_0_0_wide  ),
-  .floo_req_i       ( router_0_0_to_hbm_south_ni_0_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_0_0_to_router_0_0_rsp   ),
-  .floo_wide_i      ( router_0_0_to_hbm_south_ni_0_0_wide  )
-);
-
-localparam id_t hbm_south_ni_1_0_id = '{x: 2, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_1_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[1] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[1] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[1] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[1] ),
-  .id_i             ( hbm_south_ni_1_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_1_0_to_router_1_0_req   ),
-  .floo_rsp_i       ( router_1_0_to_hbm_south_ni_1_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_1_0_to_router_1_0_wide  ),
-  .floo_req_i       ( router_1_0_to_hbm_south_ni_1_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_1_0_to_router_1_0_rsp   ),
-  .floo_wide_i      ( router_1_0_to_hbm_south_ni_1_0_wide  )
-);
-
-localparam id_t hbm_south_ni_2_0_id = '{x: 3, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_2_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[2] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[2] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[2] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[2] ),
-  .id_i             ( hbm_south_ni_2_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_2_0_to_router_2_0_req   ),
-  .floo_rsp_i       ( router_2_0_to_hbm_south_ni_2_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_2_0_to_router_2_0_wide  ),
-  .floo_req_i       ( router_2_0_to_hbm_south_ni_2_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_2_0_to_router_2_0_rsp   ),
-  .floo_wide_i      ( router_2_0_to_hbm_south_ni_2_0_wide  )
-);
-
-localparam id_t hbm_south_ni_3_0_id = '{x: 4, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_3_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[3] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[3] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[3] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[3] ),
-  .id_i             ( hbm_south_ni_3_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_3_0_to_router_3_0_req   ),
-  .floo_rsp_i       ( router_3_0_to_hbm_south_ni_3_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_3_0_to_router_3_0_wide  ),
-  .floo_req_i       ( router_3_0_to_hbm_south_ni_3_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_3_0_to_router_3_0_rsp   ),
-  .floo_wide_i      ( router_3_0_to_hbm_south_ni_3_0_wide  )
-);
-
-localparam id_t hbm_south_ni_4_0_id = '{x: 5, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_4_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[4] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[4] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[4] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[4] ),
-  .id_i             ( hbm_south_ni_4_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_4_0_to_router_4_0_req   ),
-  .floo_rsp_i       ( router_4_0_to_hbm_south_ni_4_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_4_0_to_router_4_0_wide  ),
-  .floo_req_i       ( router_4_0_to_hbm_south_ni_4_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_4_0_to_router_4_0_rsp   ),
-  .floo_wide_i      ( router_4_0_to_hbm_south_ni_4_0_wide  )
-);
-
-localparam id_t hbm_south_ni_5_0_id = '{x: 6, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_5_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[5] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[5] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[5] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[5] ),
-  .id_i             ( hbm_south_ni_5_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_5_0_to_router_5_0_req   ),
-  .floo_rsp_i       ( router_5_0_to_hbm_south_ni_5_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_5_0_to_router_5_0_wide  ),
-  .floo_req_i       ( router_5_0_to_hbm_south_ni_5_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_5_0_to_router_5_0_rsp   ),
-  .floo_wide_i      ( router_5_0_to_hbm_south_ni_5_0_wide  )
-);
-
-localparam id_t hbm_south_ni_6_0_id = '{x: 7, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_6_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[6] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[6] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[6] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[6] ),
-  .id_i             ( hbm_south_ni_6_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_6_0_to_router_6_0_req   ),
-  .floo_rsp_i       ( router_6_0_to_hbm_south_ni_6_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_6_0_to_router_6_0_wide  ),
-  .floo_req_i       ( router_6_0_to_hbm_south_ni_6_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_6_0_to_router_6_0_rsp   ),
-  .floo_wide_i      ( router_6_0_to_hbm_south_ni_6_0_wide  )
-);
-
-localparam id_t hbm_south_ni_7_0_id = '{x: 8, y: 0};
-
-
-floo_narrow_wide_chimney  #(
-  .EnNarrowSbrPort(1'b1),
-  .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b1),
-  .EnWideMgrPort(1'b0)
-) hbm_south_ni_7_0 (
-  .clk_i,
-  .rst_ni,
-  .test_enable_i,
-  .sram_cfg_i ( '0 ),
-  .axi_narrow_in_req_i  ( '0 ),
-  .axi_narrow_in_rsp_o  (    ),
-  .axi_narrow_out_req_o ( hbm_south_narrow_req_o[7] ),
-  .axi_narrow_out_rsp_i ( hbm_south_narrow_rsp_i[7] ),
-  .axi_wide_in_req_i  ( '0 ),
-  .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o ( hbm_south_wide_req_o[7] ),
-  .axi_wide_out_rsp_i ( hbm_south_wide_rsp_i[7] ),
-  .id_i             ( hbm_south_ni_7_0_id    ),
-  .route_table_i    ( '0                          ),
-  .floo_req_o       ( hbm_south_ni_7_0_to_router_7_0_req   ),
-  .floo_rsp_i       ( router_7_0_to_hbm_south_ni_7_0_rsp   ),
-  .floo_wide_o      ( hbm_south_ni_7_0_to_router_7_0_wide  ),
-  .floo_req_i       ( router_7_0_to_hbm_south_ni_7_0_req   ),
-  .floo_rsp_o       ( hbm_south_ni_7_0_to_router_7_0_rsp   ),
-  .floo_wide_i      ( router_7_0_to_hbm_south_ni_7_0_wide  )
-);
-
 localparam id_t pcie_ni_id = '{x: 0, y: 4};
 
 
@@ -1199,7 +1203,7 @@ localparam id_t peripherals_ni_id = '{x: 0, y: 3};
 floo_narrow_wide_chimney  #(
   .EnNarrowSbrPort(1'b1),
   .EnNarrowMgrPort(1'b0),
-  .EnWideSbrPort(1'b0),
+  .EnWideSbrPort(1'b1),
   .EnWideMgrPort(1'b0)
 ) peripherals_ni (
   .clk_i,
@@ -1212,8 +1216,8 @@ floo_narrow_wide_chimney  #(
   .axi_narrow_out_rsp_i ( peripherals_narrow_rsp_i ),
   .axi_wide_in_req_i  ( '0 ),
   .axi_wide_in_rsp_o  (    ),
-  .axi_wide_out_req_o (    ),
-  .axi_wide_out_rsp_i ( '0 ),
+  .axi_wide_out_req_o ( peripherals_wide_req_o ),
+  .axi_wide_out_rsp_i ( peripherals_wide_rsp_i ),
   .id_i             ( peripherals_ni_id    ),
   .route_table_i    ( '0                          ),
   .floo_req_o       ( peripherals_ni_to_router_0_2_req   ),
@@ -1420,32 +1424,32 @@ floo_wide_t [West:North] router_0_0_wide_out;
 
   assign router_0_0_req_in[East] = router_1_0_to_router_0_0_req;
   assign router_0_0_req_in[North] = router_0_1_to_router_0_0_req;
-  assign router_0_0_req_in[South] = hbm_south_ni_0_0_to_router_0_0_req;
+  assign router_0_0_req_in[South] = hbm_south_dram_ni_0_0_to_router_0_0_req;
   assign router_0_0_req_in[West] = cva6_ni_to_router_0_0_req;
 
   assign router_0_0_to_router_1_0_rsp = router_0_0_rsp_out[East];
   assign router_0_0_to_router_0_1_rsp = router_0_0_rsp_out[North];
-  assign router_0_0_to_hbm_south_ni_0_0_rsp = router_0_0_rsp_out[South];
+  assign router_0_0_to_hbm_south_dram_ni_0_0_rsp = router_0_0_rsp_out[South];
   assign router_0_0_to_cva6_ni_rsp = router_0_0_rsp_out[West];
 
   assign router_0_0_to_router_1_0_req = router_0_0_req_out[East];
   assign router_0_0_to_router_0_1_req = router_0_0_req_out[North];
-  assign router_0_0_to_hbm_south_ni_0_0_req = router_0_0_req_out[South];
+  assign router_0_0_to_hbm_south_dram_ni_0_0_req = router_0_0_req_out[South];
   assign router_0_0_to_cva6_ni_req = router_0_0_req_out[West];
 
   assign router_0_0_rsp_in[East] = router_1_0_to_router_0_0_rsp;
   assign router_0_0_rsp_in[North] = router_0_1_to_router_0_0_rsp;
-  assign router_0_0_rsp_in[South] = hbm_south_ni_0_0_to_router_0_0_rsp;
+  assign router_0_0_rsp_in[South] = hbm_south_dram_ni_0_0_to_router_0_0_rsp;
   assign router_0_0_rsp_in[West] = cva6_ni_to_router_0_0_rsp;
 
   assign router_0_0_wide_in[East] = router_1_0_to_router_0_0_wide;
   assign router_0_0_wide_in[North] = router_0_1_to_router_0_0_wide;
-  assign router_0_0_wide_in[South] = hbm_south_ni_0_0_to_router_0_0_wide;
+  assign router_0_0_wide_in[South] = hbm_south_dram_ni_0_0_to_router_0_0_wide;
   assign router_0_0_wide_in[West] = cva6_ni_to_router_0_0_wide;
 
   assign router_0_0_to_router_1_0_wide = router_0_0_wide_out[East];
   assign router_0_0_to_router_0_1_wide = router_0_0_wide_out[North];
-  assign router_0_0_to_hbm_south_ni_0_0_wide = router_0_0_wide_out[South];
+  assign router_0_0_to_hbm_south_dram_ni_0_0_wide = router_0_0_wide_out[South];
   assign router_0_0_to_cva6_ni_wide = router_0_0_wide_out[West];
 
 localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
@@ -1461,9 +1465,9 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd0),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[9:1]),
-  .msip_i (msip_i[9:1]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[2:1]),
+  .msip_i (msip_i[2:1]),
   .id_i (compute_tile_0_0_id),
   .floo_req_i (router_0_0_req_in),
   .floo_rsp_o (router_0_0_rsp_out),
@@ -1471,9 +1475,6 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   .floo_rsp_i (router_0_0_rsp_in),
   .floo_wide_i (router_0_0_wide_in),
   .floo_wide_o (router_0_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1527,9 +1528,9 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd1),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[18:10]),
-  .msip_i (msip_i[18:10]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[4:3]),
+  .msip_i (msip_i[4:3]),
   .id_i (compute_tile_0_1_id),
   .floo_req_i (router_0_1_req_in),
   .floo_rsp_o (router_0_1_rsp_out),
@@ -1537,9 +1538,6 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   .floo_rsp_i (router_0_1_rsp_in),
   .floo_wide_i (router_0_1_wide_in),
   .floo_wide_o (router_0_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1593,9 +1591,9 @@ localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd2),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[27:19]),
-  .msip_i (msip_i[27:19]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[6:5]),
+  .msip_i (msip_i[6:5]),
   .id_i (compute_tile_0_2_id),
   .floo_req_i (router_0_2_req_in),
   .floo_rsp_o (router_0_2_rsp_out),
@@ -1603,9 +1601,6 @@ localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
   .floo_rsp_i (router_0_2_rsp_in),
   .floo_wide_i (router_0_2_wide_in),
   .floo_wide_o (router_0_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1659,9 +1654,9 @@ localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd3),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[36:28]),
-  .msip_i (msip_i[36:28]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[8:7]),
+  .msip_i (msip_i[8:7]),
   .id_i (compute_tile_0_3_id),
   .floo_req_i (router_0_3_req_in),
   .floo_rsp_o (router_0_3_rsp_out),
@@ -1669,9 +1664,6 @@ localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
   .floo_rsp_i (router_0_3_rsp_in),
   .floo_wide_i (router_0_3_wide_in),
   .floo_wide_o (router_0_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1684,32 +1676,32 @@ floo_wide_t [West:North] router_1_0_wide_out;
 
   assign router_1_0_req_in[East] = router_2_0_to_router_1_0_req;
   assign router_1_0_req_in[North] = router_1_1_to_router_1_0_req;
-  assign router_1_0_req_in[South] = hbm_south_ni_1_0_to_router_1_0_req;
+  assign router_1_0_req_in[South] = hbm_south_dram_ni_1_0_to_router_1_0_req;
   assign router_1_0_req_in[West] = router_0_0_to_router_1_0_req;
 
   assign router_1_0_to_router_2_0_rsp = router_1_0_rsp_out[East];
   assign router_1_0_to_router_1_1_rsp = router_1_0_rsp_out[North];
-  assign router_1_0_to_hbm_south_ni_1_0_rsp = router_1_0_rsp_out[South];
+  assign router_1_0_to_hbm_south_dram_ni_1_0_rsp = router_1_0_rsp_out[South];
   assign router_1_0_to_router_0_0_rsp = router_1_0_rsp_out[West];
 
   assign router_1_0_to_router_2_0_req = router_1_0_req_out[East];
   assign router_1_0_to_router_1_1_req = router_1_0_req_out[North];
-  assign router_1_0_to_hbm_south_ni_1_0_req = router_1_0_req_out[South];
+  assign router_1_0_to_hbm_south_dram_ni_1_0_req = router_1_0_req_out[South];
   assign router_1_0_to_router_0_0_req = router_1_0_req_out[West];
 
   assign router_1_0_rsp_in[East] = router_2_0_to_router_1_0_rsp;
   assign router_1_0_rsp_in[North] = router_1_1_to_router_1_0_rsp;
-  assign router_1_0_rsp_in[South] = hbm_south_ni_1_0_to_router_1_0_rsp;
+  assign router_1_0_rsp_in[South] = hbm_south_dram_ni_1_0_to_router_1_0_rsp;
   assign router_1_0_rsp_in[West] = router_0_0_to_router_1_0_rsp;
 
   assign router_1_0_wide_in[East] = router_2_0_to_router_1_0_wide;
   assign router_1_0_wide_in[North] = router_1_1_to_router_1_0_wide;
-  assign router_1_0_wide_in[South] = hbm_south_ni_1_0_to_router_1_0_wide;
+  assign router_1_0_wide_in[South] = hbm_south_dram_ni_1_0_to_router_1_0_wide;
   assign router_1_0_wide_in[West] = router_0_0_to_router_1_0_wide;
 
   assign router_1_0_to_router_2_0_wide = router_1_0_wide_out[East];
   assign router_1_0_to_router_1_1_wide = router_1_0_wide_out[North];
-  assign router_1_0_to_hbm_south_ni_1_0_wide = router_1_0_wide_out[South];
+  assign router_1_0_to_hbm_south_dram_ni_1_0_wide = router_1_0_wide_out[South];
   assign router_1_0_to_router_0_0_wide = router_1_0_wide_out[West];
 
 localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
@@ -1725,9 +1717,9 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd4),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[45:37]),
-  .msip_i (msip_i[45:37]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[10:9]),
+  .msip_i (msip_i[10:9]),
   .id_i (compute_tile_1_0_id),
   .floo_req_i (router_1_0_req_in),
   .floo_rsp_o (router_1_0_rsp_out),
@@ -1735,9 +1727,6 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   .floo_rsp_i (router_1_0_rsp_in),
   .floo_wide_i (router_1_0_wide_in),
   .floo_wide_o (router_1_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1791,9 +1780,9 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd5),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[54:46]),
-  .msip_i (msip_i[54:46]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[12:11]),
+  .msip_i (msip_i[12:11]),
   .id_i (compute_tile_1_1_id),
   .floo_req_i (router_1_1_req_in),
   .floo_rsp_o (router_1_1_rsp_out),
@@ -1801,9 +1790,6 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   .floo_rsp_i (router_1_1_rsp_in),
   .floo_wide_i (router_1_1_wide_in),
   .floo_wide_o (router_1_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1857,9 +1843,9 @@ localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd6),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[63:55]),
-  .msip_i (msip_i[63:55]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[14:13]),
+  .msip_i (msip_i[14:13]),
   .id_i (compute_tile_1_2_id),
   .floo_req_i (router_1_2_req_in),
   .floo_rsp_o (router_1_2_rsp_out),
@@ -1867,9 +1853,6 @@ localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
   .floo_rsp_i (router_1_2_rsp_in),
   .floo_wide_i (router_1_2_wide_in),
   .floo_wide_o (router_1_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1923,9 +1906,9 @@ localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd7),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[72:64]),
-  .msip_i (msip_i[72:64]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[16:15]),
+  .msip_i (msip_i[16:15]),
   .id_i (compute_tile_1_3_id),
   .floo_req_i (router_1_3_req_in),
   .floo_rsp_o (router_1_3_rsp_out),
@@ -1933,9 +1916,6 @@ localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
   .floo_rsp_i (router_1_3_rsp_in),
   .floo_wide_i (router_1_3_wide_in),
   .floo_wide_o (router_1_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -1948,32 +1928,32 @@ floo_wide_t [West:North] router_2_0_wide_out;
 
   assign router_2_0_req_in[East] = router_3_0_to_router_2_0_req;
   assign router_2_0_req_in[North] = router_2_1_to_router_2_0_req;
-  assign router_2_0_req_in[South] = hbm_south_ni_2_0_to_router_2_0_req;
+  assign router_2_0_req_in[South] = hbm_south_ni_0_0_to_router_2_0_req;
   assign router_2_0_req_in[West] = router_1_0_to_router_2_0_req;
 
   assign router_2_0_to_router_3_0_rsp = router_2_0_rsp_out[East];
   assign router_2_0_to_router_2_1_rsp = router_2_0_rsp_out[North];
-  assign router_2_0_to_hbm_south_ni_2_0_rsp = router_2_0_rsp_out[South];
+  assign router_2_0_to_hbm_south_ni_0_0_rsp = router_2_0_rsp_out[South];
   assign router_2_0_to_router_1_0_rsp = router_2_0_rsp_out[West];
 
   assign router_2_0_to_router_3_0_req = router_2_0_req_out[East];
   assign router_2_0_to_router_2_1_req = router_2_0_req_out[North];
-  assign router_2_0_to_hbm_south_ni_2_0_req = router_2_0_req_out[South];
+  assign router_2_0_to_hbm_south_ni_0_0_req = router_2_0_req_out[South];
   assign router_2_0_to_router_1_0_req = router_2_0_req_out[West];
 
   assign router_2_0_rsp_in[East] = router_3_0_to_router_2_0_rsp;
   assign router_2_0_rsp_in[North] = router_2_1_to_router_2_0_rsp;
-  assign router_2_0_rsp_in[South] = hbm_south_ni_2_0_to_router_2_0_rsp;
+  assign router_2_0_rsp_in[South] = hbm_south_ni_0_0_to_router_2_0_rsp;
   assign router_2_0_rsp_in[West] = router_1_0_to_router_2_0_rsp;
 
   assign router_2_0_wide_in[East] = router_3_0_to_router_2_0_wide;
   assign router_2_0_wide_in[North] = router_2_1_to_router_2_0_wide;
-  assign router_2_0_wide_in[South] = hbm_south_ni_2_0_to_router_2_0_wide;
+  assign router_2_0_wide_in[South] = hbm_south_ni_0_0_to_router_2_0_wide;
   assign router_2_0_wide_in[West] = router_1_0_to_router_2_0_wide;
 
   assign router_2_0_to_router_3_0_wide = router_2_0_wide_out[East];
   assign router_2_0_to_router_2_1_wide = router_2_0_wide_out[North];
-  assign router_2_0_to_hbm_south_ni_2_0_wide = router_2_0_wide_out[South];
+  assign router_2_0_to_hbm_south_ni_0_0_wide = router_2_0_wide_out[South];
   assign router_2_0_to_router_1_0_wide = router_2_0_wide_out[West];
 
 localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
@@ -1989,9 +1969,9 @@ localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd8),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[81:73]),
-  .msip_i (msip_i[81:73]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[18:17]),
+  .msip_i (msip_i[18:17]),
   .id_i (compute_tile_2_0_id),
   .floo_req_i (router_2_0_req_in),
   .floo_rsp_o (router_2_0_rsp_out),
@@ -1999,9 +1979,6 @@ localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
   .floo_rsp_i (router_2_0_rsp_in),
   .floo_wide_i (router_2_0_wide_in),
   .floo_wide_o (router_2_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2055,9 +2032,9 @@ localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd9),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[90:82]),
-  .msip_i (msip_i[90:82]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[20:19]),
+  .msip_i (msip_i[20:19]),
   .id_i (compute_tile_2_1_id),
   .floo_req_i (router_2_1_req_in),
   .floo_rsp_o (router_2_1_rsp_out),
@@ -2065,9 +2042,6 @@ localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
   .floo_rsp_i (router_2_1_rsp_in),
   .floo_wide_i (router_2_1_wide_in),
   .floo_wide_o (router_2_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2121,9 +2095,9 @@ localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd10),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[99:91]),
-  .msip_i (msip_i[99:91]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[22:21]),
+  .msip_i (msip_i[22:21]),
   .id_i (compute_tile_2_2_id),
   .floo_req_i (router_2_2_req_in),
   .floo_rsp_o (router_2_2_rsp_out),
@@ -2131,9 +2105,6 @@ localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
   .floo_rsp_i (router_2_2_rsp_in),
   .floo_wide_i (router_2_2_wide_in),
   .floo_wide_o (router_2_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2187,9 +2158,9 @@ localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd11),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[108:100]),
-  .msip_i (msip_i[108:100]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[24:23]),
+  .msip_i (msip_i[24:23]),
   .id_i (compute_tile_2_3_id),
   .floo_req_i (router_2_3_req_in),
   .floo_rsp_o (router_2_3_rsp_out),
@@ -2197,9 +2168,6 @@ localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
   .floo_rsp_i (router_2_3_rsp_in),
   .floo_wide_i (router_2_3_wide_in),
   .floo_wide_o (router_2_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2212,32 +2180,32 @@ floo_wide_t [West:North] router_3_0_wide_out;
 
   assign router_3_0_req_in[East] = router_4_0_to_router_3_0_req;
   assign router_3_0_req_in[North] = router_3_1_to_router_3_0_req;
-  assign router_3_0_req_in[South] = hbm_south_ni_3_0_to_router_3_0_req;
+  assign router_3_0_req_in[South] = hbm_south_ni_1_0_to_router_3_0_req;
   assign router_3_0_req_in[West] = router_2_0_to_router_3_0_req;
 
   assign router_3_0_to_router_4_0_rsp = router_3_0_rsp_out[East];
   assign router_3_0_to_router_3_1_rsp = router_3_0_rsp_out[North];
-  assign router_3_0_to_hbm_south_ni_3_0_rsp = router_3_0_rsp_out[South];
+  assign router_3_0_to_hbm_south_ni_1_0_rsp = router_3_0_rsp_out[South];
   assign router_3_0_to_router_2_0_rsp = router_3_0_rsp_out[West];
 
   assign router_3_0_to_router_4_0_req = router_3_0_req_out[East];
   assign router_3_0_to_router_3_1_req = router_3_0_req_out[North];
-  assign router_3_0_to_hbm_south_ni_3_0_req = router_3_0_req_out[South];
+  assign router_3_0_to_hbm_south_ni_1_0_req = router_3_0_req_out[South];
   assign router_3_0_to_router_2_0_req = router_3_0_req_out[West];
 
   assign router_3_0_rsp_in[East] = router_4_0_to_router_3_0_rsp;
   assign router_3_0_rsp_in[North] = router_3_1_to_router_3_0_rsp;
-  assign router_3_0_rsp_in[South] = hbm_south_ni_3_0_to_router_3_0_rsp;
+  assign router_3_0_rsp_in[South] = hbm_south_ni_1_0_to_router_3_0_rsp;
   assign router_3_0_rsp_in[West] = router_2_0_to_router_3_0_rsp;
 
   assign router_3_0_wide_in[East] = router_4_0_to_router_3_0_wide;
   assign router_3_0_wide_in[North] = router_3_1_to_router_3_0_wide;
-  assign router_3_0_wide_in[South] = hbm_south_ni_3_0_to_router_3_0_wide;
+  assign router_3_0_wide_in[South] = hbm_south_ni_1_0_to_router_3_0_wide;
   assign router_3_0_wide_in[West] = router_2_0_to_router_3_0_wide;
 
   assign router_3_0_to_router_4_0_wide = router_3_0_wide_out[East];
   assign router_3_0_to_router_3_1_wide = router_3_0_wide_out[North];
-  assign router_3_0_to_hbm_south_ni_3_0_wide = router_3_0_wide_out[South];
+  assign router_3_0_to_hbm_south_ni_1_0_wide = router_3_0_wide_out[South];
   assign router_3_0_to_router_2_0_wide = router_3_0_wide_out[West];
 
 localparam id_t compute_tile_3_0_id = '{x: 4, y: 1};
@@ -2253,9 +2221,9 @@ localparam id_t compute_tile_3_0_id = '{x: 4, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd12),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[117:109]),
-  .msip_i (msip_i[117:109]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[26:25]),
+  .msip_i (msip_i[26:25]),
   .id_i (compute_tile_3_0_id),
   .floo_req_i (router_3_0_req_in),
   .floo_rsp_o (router_3_0_rsp_out),
@@ -2263,9 +2231,6 @@ localparam id_t compute_tile_3_0_id = '{x: 4, y: 1};
   .floo_rsp_i (router_3_0_rsp_in),
   .floo_wide_i (router_3_0_wide_in),
   .floo_wide_o (router_3_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2319,9 +2284,9 @@ localparam id_t compute_tile_3_1_id = '{x: 4, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd13),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[126:118]),
-  .msip_i (msip_i[126:118]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[28:27]),
+  .msip_i (msip_i[28:27]),
   .id_i (compute_tile_3_1_id),
   .floo_req_i (router_3_1_req_in),
   .floo_rsp_o (router_3_1_rsp_out),
@@ -2329,9 +2294,6 @@ localparam id_t compute_tile_3_1_id = '{x: 4, y: 2};
   .floo_rsp_i (router_3_1_rsp_in),
   .floo_wide_i (router_3_1_wide_in),
   .floo_wide_o (router_3_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2385,9 +2347,9 @@ localparam id_t compute_tile_3_2_id = '{x: 4, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd14),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[135:127]),
-  .msip_i (msip_i[135:127]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[30:29]),
+  .msip_i (msip_i[30:29]),
   .id_i (compute_tile_3_2_id),
   .floo_req_i (router_3_2_req_in),
   .floo_rsp_o (router_3_2_rsp_out),
@@ -2395,9 +2357,6 @@ localparam id_t compute_tile_3_2_id = '{x: 4, y: 3};
   .floo_rsp_i (router_3_2_rsp_in),
   .floo_wide_i (router_3_2_wide_in),
   .floo_wide_o (router_3_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2451,9 +2410,9 @@ localparam id_t compute_tile_3_3_id = '{x: 4, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd15),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[144:136]),
-  .msip_i (msip_i[144:136]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[32:31]),
+  .msip_i (msip_i[32:31]),
   .id_i (compute_tile_3_3_id),
   .floo_req_i (router_3_3_req_in),
   .floo_rsp_o (router_3_3_rsp_out),
@@ -2461,9 +2420,6 @@ localparam id_t compute_tile_3_3_id = '{x: 4, y: 4};
   .floo_rsp_i (router_3_3_rsp_in),
   .floo_wide_i (router_3_3_wide_in),
   .floo_wide_o (router_3_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2476,32 +2432,32 @@ floo_wide_t [West:North] router_4_0_wide_out;
 
   assign router_4_0_req_in[East] = router_5_0_to_router_4_0_req;
   assign router_4_0_req_in[North] = router_4_1_to_router_4_0_req;
-  assign router_4_0_req_in[South] = hbm_south_ni_4_0_to_router_4_0_req;
+  assign router_4_0_req_in[South] = hbm_south_ni_2_0_to_router_4_0_req;
   assign router_4_0_req_in[West] = router_3_0_to_router_4_0_req;
 
   assign router_4_0_to_router_5_0_rsp = router_4_0_rsp_out[East];
   assign router_4_0_to_router_4_1_rsp = router_4_0_rsp_out[North];
-  assign router_4_0_to_hbm_south_ni_4_0_rsp = router_4_0_rsp_out[South];
+  assign router_4_0_to_hbm_south_ni_2_0_rsp = router_4_0_rsp_out[South];
   assign router_4_0_to_router_3_0_rsp = router_4_0_rsp_out[West];
 
   assign router_4_0_to_router_5_0_req = router_4_0_req_out[East];
   assign router_4_0_to_router_4_1_req = router_4_0_req_out[North];
-  assign router_4_0_to_hbm_south_ni_4_0_req = router_4_0_req_out[South];
+  assign router_4_0_to_hbm_south_ni_2_0_req = router_4_0_req_out[South];
   assign router_4_0_to_router_3_0_req = router_4_0_req_out[West];
 
   assign router_4_0_rsp_in[East] = router_5_0_to_router_4_0_rsp;
   assign router_4_0_rsp_in[North] = router_4_1_to_router_4_0_rsp;
-  assign router_4_0_rsp_in[South] = hbm_south_ni_4_0_to_router_4_0_rsp;
+  assign router_4_0_rsp_in[South] = hbm_south_ni_2_0_to_router_4_0_rsp;
   assign router_4_0_rsp_in[West] = router_3_0_to_router_4_0_rsp;
 
   assign router_4_0_wide_in[East] = router_5_0_to_router_4_0_wide;
   assign router_4_0_wide_in[North] = router_4_1_to_router_4_0_wide;
-  assign router_4_0_wide_in[South] = hbm_south_ni_4_0_to_router_4_0_wide;
+  assign router_4_0_wide_in[South] = hbm_south_ni_2_0_to_router_4_0_wide;
   assign router_4_0_wide_in[West] = router_3_0_to_router_4_0_wide;
 
   assign router_4_0_to_router_5_0_wide = router_4_0_wide_out[East];
   assign router_4_0_to_router_4_1_wide = router_4_0_wide_out[North];
-  assign router_4_0_to_hbm_south_ni_4_0_wide = router_4_0_wide_out[South];
+  assign router_4_0_to_hbm_south_ni_2_0_wide = router_4_0_wide_out[South];
   assign router_4_0_to_router_3_0_wide = router_4_0_wide_out[West];
 
 localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
@@ -2517,9 +2473,9 @@ localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd16),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[153:145]),
-  .msip_i (msip_i[153:145]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[34:33]),
+  .msip_i (msip_i[34:33]),
   .id_i (compute_tile_4_0_id),
   .floo_req_i (router_4_0_req_in),
   .floo_rsp_o (router_4_0_rsp_out),
@@ -2527,9 +2483,6 @@ localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
   .floo_rsp_i (router_4_0_rsp_in),
   .floo_wide_i (router_4_0_wide_in),
   .floo_wide_o (router_4_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2583,9 +2536,9 @@ localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd17),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[162:154]),
-  .msip_i (msip_i[162:154]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[36:35]),
+  .msip_i (msip_i[36:35]),
   .id_i (compute_tile_4_1_id),
   .floo_req_i (router_4_1_req_in),
   .floo_rsp_o (router_4_1_rsp_out),
@@ -2593,9 +2546,6 @@ localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
   .floo_rsp_i (router_4_1_rsp_in),
   .floo_wide_i (router_4_1_wide_in),
   .floo_wide_o (router_4_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2649,9 +2599,9 @@ localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd18),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[171:163]),
-  .msip_i (msip_i[171:163]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[38:37]),
+  .msip_i (msip_i[38:37]),
   .id_i (compute_tile_4_2_id),
   .floo_req_i (router_4_2_req_in),
   .floo_rsp_o (router_4_2_rsp_out),
@@ -2659,9 +2609,6 @@ localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
   .floo_rsp_i (router_4_2_rsp_in),
   .floo_wide_i (router_4_2_wide_in),
   .floo_wide_o (router_4_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2715,9 +2662,9 @@ localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd19),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[180:172]),
-  .msip_i (msip_i[180:172]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[40:39]),
+  .msip_i (msip_i[40:39]),
   .id_i (compute_tile_4_3_id),
   .floo_req_i (router_4_3_req_in),
   .floo_rsp_o (router_4_3_rsp_out),
@@ -2725,9 +2672,6 @@ localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
   .floo_rsp_i (router_4_3_rsp_in),
   .floo_wide_i (router_4_3_wide_in),
   .floo_wide_o (router_4_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2740,32 +2684,32 @@ floo_wide_t [West:North] router_5_0_wide_out;
 
   assign router_5_0_req_in[East] = router_6_0_to_router_5_0_req;
   assign router_5_0_req_in[North] = router_5_1_to_router_5_0_req;
-  assign router_5_0_req_in[South] = hbm_south_ni_5_0_to_router_5_0_req;
+  assign router_5_0_req_in[South] = hbm_south_ni_3_0_to_router_5_0_req;
   assign router_5_0_req_in[West] = router_4_0_to_router_5_0_req;
 
   assign router_5_0_to_router_6_0_rsp = router_5_0_rsp_out[East];
   assign router_5_0_to_router_5_1_rsp = router_5_0_rsp_out[North];
-  assign router_5_0_to_hbm_south_ni_5_0_rsp = router_5_0_rsp_out[South];
+  assign router_5_0_to_hbm_south_ni_3_0_rsp = router_5_0_rsp_out[South];
   assign router_5_0_to_router_4_0_rsp = router_5_0_rsp_out[West];
 
   assign router_5_0_to_router_6_0_req = router_5_0_req_out[East];
   assign router_5_0_to_router_5_1_req = router_5_0_req_out[North];
-  assign router_5_0_to_hbm_south_ni_5_0_req = router_5_0_req_out[South];
+  assign router_5_0_to_hbm_south_ni_3_0_req = router_5_0_req_out[South];
   assign router_5_0_to_router_4_0_req = router_5_0_req_out[West];
 
   assign router_5_0_rsp_in[East] = router_6_0_to_router_5_0_rsp;
   assign router_5_0_rsp_in[North] = router_5_1_to_router_5_0_rsp;
-  assign router_5_0_rsp_in[South] = hbm_south_ni_5_0_to_router_5_0_rsp;
+  assign router_5_0_rsp_in[South] = hbm_south_ni_3_0_to_router_5_0_rsp;
   assign router_5_0_rsp_in[West] = router_4_0_to_router_5_0_rsp;
 
   assign router_5_0_wide_in[East] = router_6_0_to_router_5_0_wide;
   assign router_5_0_wide_in[North] = router_5_1_to_router_5_0_wide;
-  assign router_5_0_wide_in[South] = hbm_south_ni_5_0_to_router_5_0_wide;
+  assign router_5_0_wide_in[South] = hbm_south_ni_3_0_to_router_5_0_wide;
   assign router_5_0_wide_in[West] = router_4_0_to_router_5_0_wide;
 
   assign router_5_0_to_router_6_0_wide = router_5_0_wide_out[East];
   assign router_5_0_to_router_5_1_wide = router_5_0_wide_out[North];
-  assign router_5_0_to_hbm_south_ni_5_0_wide = router_5_0_wide_out[South];
+  assign router_5_0_to_hbm_south_ni_3_0_wide = router_5_0_wide_out[South];
   assign router_5_0_to_router_4_0_wide = router_5_0_wide_out[West];
 
 localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
@@ -2781,9 +2725,9 @@ localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd20),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[189:181]),
-  .msip_i (msip_i[189:181]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[42:41]),
+  .msip_i (msip_i[42:41]),
   .id_i (compute_tile_5_0_id),
   .floo_req_i (router_5_0_req_in),
   .floo_rsp_o (router_5_0_rsp_out),
@@ -2791,9 +2735,6 @@ localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
   .floo_rsp_i (router_5_0_rsp_in),
   .floo_wide_i (router_5_0_wide_in),
   .floo_wide_o (router_5_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2847,9 +2788,9 @@ localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd21),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[198:190]),
-  .msip_i (msip_i[198:190]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[44:43]),
+  .msip_i (msip_i[44:43]),
   .id_i (compute_tile_5_1_id),
   .floo_req_i (router_5_1_req_in),
   .floo_rsp_o (router_5_1_rsp_out),
@@ -2857,9 +2798,6 @@ localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
   .floo_rsp_i (router_5_1_rsp_in),
   .floo_wide_i (router_5_1_wide_in),
   .floo_wide_o (router_5_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2913,9 +2851,9 @@ localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd22),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[207:199]),
-  .msip_i (msip_i[207:199]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[46:45]),
+  .msip_i (msip_i[46:45]),
   .id_i (compute_tile_5_2_id),
   .floo_req_i (router_5_2_req_in),
   .floo_rsp_o (router_5_2_rsp_out),
@@ -2923,9 +2861,6 @@ localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
   .floo_rsp_i (router_5_2_rsp_in),
   .floo_wide_i (router_5_2_wide_in),
   .floo_wide_o (router_5_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -2979,9 +2914,9 @@ localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd23),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[216:208]),
-  .msip_i (msip_i[216:208]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[48:47]),
+  .msip_i (msip_i[48:47]),
   .id_i (compute_tile_5_3_id),
   .floo_req_i (router_5_3_req_in),
   .floo_rsp_o (router_5_3_rsp_out),
@@ -2989,9 +2924,6 @@ localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
   .floo_rsp_i (router_5_3_rsp_in),
   .floo_wide_i (router_5_3_wide_in),
   .floo_wide_o (router_5_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3004,32 +2936,32 @@ floo_wide_t [West:North] router_6_0_wide_out;
 
   assign router_6_0_req_in[East] = router_7_0_to_router_6_0_req;
   assign router_6_0_req_in[North] = router_6_1_to_router_6_0_req;
-  assign router_6_0_req_in[South] = hbm_south_ni_6_0_to_router_6_0_req;
+  assign router_6_0_req_in[South] = hbm_south_ni_4_0_to_router_6_0_req;
   assign router_6_0_req_in[West] = router_5_0_to_router_6_0_req;
 
   assign router_6_0_to_router_7_0_rsp = router_6_0_rsp_out[East];
   assign router_6_0_to_router_6_1_rsp = router_6_0_rsp_out[North];
-  assign router_6_0_to_hbm_south_ni_6_0_rsp = router_6_0_rsp_out[South];
+  assign router_6_0_to_hbm_south_ni_4_0_rsp = router_6_0_rsp_out[South];
   assign router_6_0_to_router_5_0_rsp = router_6_0_rsp_out[West];
 
   assign router_6_0_to_router_7_0_req = router_6_0_req_out[East];
   assign router_6_0_to_router_6_1_req = router_6_0_req_out[North];
-  assign router_6_0_to_hbm_south_ni_6_0_req = router_6_0_req_out[South];
+  assign router_6_0_to_hbm_south_ni_4_0_req = router_6_0_req_out[South];
   assign router_6_0_to_router_5_0_req = router_6_0_req_out[West];
 
   assign router_6_0_rsp_in[East] = router_7_0_to_router_6_0_rsp;
   assign router_6_0_rsp_in[North] = router_6_1_to_router_6_0_rsp;
-  assign router_6_0_rsp_in[South] = hbm_south_ni_6_0_to_router_6_0_rsp;
+  assign router_6_0_rsp_in[South] = hbm_south_ni_4_0_to_router_6_0_rsp;
   assign router_6_0_rsp_in[West] = router_5_0_to_router_6_0_rsp;
 
   assign router_6_0_wide_in[East] = router_7_0_to_router_6_0_wide;
   assign router_6_0_wide_in[North] = router_6_1_to_router_6_0_wide;
-  assign router_6_0_wide_in[South] = hbm_south_ni_6_0_to_router_6_0_wide;
+  assign router_6_0_wide_in[South] = hbm_south_ni_4_0_to_router_6_0_wide;
   assign router_6_0_wide_in[West] = router_5_0_to_router_6_0_wide;
 
   assign router_6_0_to_router_7_0_wide = router_6_0_wide_out[East];
   assign router_6_0_to_router_6_1_wide = router_6_0_wide_out[North];
-  assign router_6_0_to_hbm_south_ni_6_0_wide = router_6_0_wide_out[South];
+  assign router_6_0_to_hbm_south_ni_4_0_wide = router_6_0_wide_out[South];
   assign router_6_0_to_router_5_0_wide = router_6_0_wide_out[West];
 
 localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
@@ -3045,9 +2977,9 @@ localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd24),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[225:217]),
-  .msip_i (msip_i[225:217]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[50:49]),
+  .msip_i (msip_i[50:49]),
   .id_i (compute_tile_6_0_id),
   .floo_req_i (router_6_0_req_in),
   .floo_rsp_o (router_6_0_rsp_out),
@@ -3055,9 +2987,6 @@ localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
   .floo_rsp_i (router_6_0_rsp_in),
   .floo_wide_i (router_6_0_wide_in),
   .floo_wide_o (router_6_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3111,9 +3040,9 @@ localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd25),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[234:226]),
-  .msip_i (msip_i[234:226]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[52:51]),
+  .msip_i (msip_i[52:51]),
   .id_i (compute_tile_6_1_id),
   .floo_req_i (router_6_1_req_in),
   .floo_rsp_o (router_6_1_rsp_out),
@@ -3121,9 +3050,6 @@ localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
   .floo_rsp_i (router_6_1_rsp_in),
   .floo_wide_i (router_6_1_wide_in),
   .floo_wide_o (router_6_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3177,9 +3103,9 @@ localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd26),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[243:235]),
-  .msip_i (msip_i[243:235]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[54:53]),
+  .msip_i (msip_i[54:53]),
   .id_i (compute_tile_6_2_id),
   .floo_req_i (router_6_2_req_in),
   .floo_rsp_o (router_6_2_rsp_out),
@@ -3187,9 +3113,6 @@ localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
   .floo_rsp_i (router_6_2_rsp_in),
   .floo_wide_i (router_6_2_wide_in),
   .floo_wide_o (router_6_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3243,9 +3166,9 @@ localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd27),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[252:244]),
-  .msip_i (msip_i[252:244]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[56:55]),
+  .msip_i (msip_i[56:55]),
   .id_i (compute_tile_6_3_id),
   .floo_req_i (router_6_3_req_in),
   .floo_rsp_o (router_6_3_rsp_out),
@@ -3253,9 +3176,6 @@ localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
   .floo_rsp_i (router_6_3_rsp_in),
   .floo_wide_i (router_6_3_wide_in),
   .floo_wide_o (router_6_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3268,32 +3188,32 @@ floo_wide_t [West:North] router_7_0_wide_out;
 
   assign router_7_0_req_in[East] = zero_mem_ni_to_router_7_0_req;
   assign router_7_0_req_in[North] = router_7_1_to_router_7_0_req;
-  assign router_7_0_req_in[South] = hbm_south_ni_7_0_to_router_7_0_req;
+  assign router_7_0_req_in[South] = hbm_south_ni_5_0_to_router_7_0_req;
   assign router_7_0_req_in[West] = router_6_0_to_router_7_0_req;
 
   assign router_7_0_to_zero_mem_ni_rsp = router_7_0_rsp_out[East];
   assign router_7_0_to_router_7_1_rsp = router_7_0_rsp_out[North];
-  assign router_7_0_to_hbm_south_ni_7_0_rsp = router_7_0_rsp_out[South];
+  assign router_7_0_to_hbm_south_ni_5_0_rsp = router_7_0_rsp_out[South];
   assign router_7_0_to_router_6_0_rsp = router_7_0_rsp_out[West];
 
   assign router_7_0_to_zero_mem_ni_req = router_7_0_req_out[East];
   assign router_7_0_to_router_7_1_req = router_7_0_req_out[North];
-  assign router_7_0_to_hbm_south_ni_7_0_req = router_7_0_req_out[South];
+  assign router_7_0_to_hbm_south_ni_5_0_req = router_7_0_req_out[South];
   assign router_7_0_to_router_6_0_req = router_7_0_req_out[West];
 
   assign router_7_0_rsp_in[East] = zero_mem_ni_to_router_7_0_rsp;
   assign router_7_0_rsp_in[North] = router_7_1_to_router_7_0_rsp;
-  assign router_7_0_rsp_in[South] = hbm_south_ni_7_0_to_router_7_0_rsp;
+  assign router_7_0_rsp_in[South] = hbm_south_ni_5_0_to_router_7_0_rsp;
   assign router_7_0_rsp_in[West] = router_6_0_to_router_7_0_rsp;
 
   assign router_7_0_wide_in[East] = zero_mem_ni_to_router_7_0_wide;
   assign router_7_0_wide_in[North] = router_7_1_to_router_7_0_wide;
-  assign router_7_0_wide_in[South] = hbm_south_ni_7_0_to_router_7_0_wide;
+  assign router_7_0_wide_in[South] = hbm_south_ni_5_0_to_router_7_0_wide;
   assign router_7_0_wide_in[West] = router_6_0_to_router_7_0_wide;
 
   assign router_7_0_to_zero_mem_ni_wide = router_7_0_wide_out[East];
   assign router_7_0_to_router_7_1_wide = router_7_0_wide_out[North];
-  assign router_7_0_to_hbm_south_ni_7_0_wide = router_7_0_wide_out[South];
+  assign router_7_0_to_hbm_south_ni_5_0_wide = router_7_0_wide_out[South];
   assign router_7_0_to_router_6_0_wide = router_7_0_wide_out[West];
 
 localparam id_t compute_tile_7_0_id = '{x: 8, y: 1};
@@ -3309,9 +3229,9 @@ localparam id_t compute_tile_7_0_id = '{x: 8, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd28),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[261:253]),
-  .msip_i (msip_i[261:253]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[58:57]),
+  .msip_i (msip_i[58:57]),
   .id_i (compute_tile_7_0_id),
   .floo_req_i (router_7_0_req_in),
   .floo_rsp_o (router_7_0_rsp_out),
@@ -3319,9 +3239,6 @@ localparam id_t compute_tile_7_0_id = '{x: 8, y: 1};
   .floo_rsp_i (router_7_0_rsp_in),
   .floo_wide_i (router_7_0_wide_in),
   .floo_wide_o (router_7_0_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3375,9 +3292,9 @@ localparam id_t compute_tile_7_1_id = '{x: 8, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd29),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[270:262]),
-  .msip_i (msip_i[270:262]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[60:59]),
+  .msip_i (msip_i[60:59]),
   .id_i (compute_tile_7_1_id),
   .floo_req_i (router_7_1_req_in),
   .floo_rsp_o (router_7_1_rsp_out),
@@ -3385,9 +3302,6 @@ localparam id_t compute_tile_7_1_id = '{x: 8, y: 2};
   .floo_rsp_i (router_7_1_rsp_in),
   .floo_wide_i (router_7_1_wide_in),
   .floo_wide_o (router_7_1_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3441,9 +3355,9 @@ localparam id_t compute_tile_7_2_id = '{x: 8, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd30),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[279:271]),
-  .msip_i (msip_i[279:271]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[62:61]),
+  .msip_i (msip_i[62:61]),
   .id_i (compute_tile_7_2_id),
   .floo_req_i (router_7_2_req_in),
   .floo_rsp_o (router_7_2_rsp_out),
@@ -3451,9 +3365,6 @@ localparam id_t compute_tile_7_2_id = '{x: 8, y: 3};
   .floo_rsp_i (router_7_2_rsp_in),
   .floo_wide_i (router_7_2_wide_in),
   .floo_wide_o (router_7_2_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 
@@ -3507,9 +3418,9 @@ localparam id_t compute_tile_7_3_id = '{x: 8, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd31),
-  .meip_i (9'b0),
-  .mtip_i (mtip_i[288:280]),
-  .msip_i (msip_i[288:280]),
+  .meip_i (2'b0),
+  .mtip_i (mtip_i[64:63]),
+  .msip_i (msip_i[64:63]),
   .id_i (compute_tile_7_3_id),
   .floo_req_i (router_7_3_req_in),
   .floo_rsp_o (router_7_3_rsp_out),
@@ -3517,9 +3428,6 @@ localparam id_t compute_tile_7_3_id = '{x: 8, y: 4};
   .floo_rsp_i (router_7_3_rsp_in),
   .floo_wide_i (router_7_3_wide_in),
   .floo_wide_o (router_7_3_wide_out)
-`ifndef TARGET_DMA_TEST
-  ,.sram_cfgs_i (sram_cfgs_i)
-`endif
 );
 
 

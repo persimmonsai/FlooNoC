@@ -27,6 +27,106 @@ module tb_floo_compute_tile_array;
   //   Endpoint Simulation Model  //
   //////////////////////////////////
 
+  axi_narrow_out_req_t [1:0] hbm_south_dram_narrow_req;
+  axi_narrow_out_rsp_t [1:0] hbm_south_dram_narrow_rsp;
+  axi_wide_out_req_t   [1:0] hbm_south_dram_wide_req;
+  axi_wide_out_rsp_t   [1:0] hbm_south_dram_wide_rsp;
+
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiWideOutAddrWidth),
+      .DataWidth  (AxiWideOutDataWidth),
+      .UserWidth  (AxiWideOutUserWidth),
+      .IdWidth    (AxiWideOutIdWidth),
+      .axi_req_t  (axi_wide_out_req_t),
+      .axi_rsp_t  (axi_wide_out_rsp_t),
+      .aw_chan_t  (axi_wide_out_aw_chan_t),
+      .w_chan_t   (axi_wide_out_w_chan_t),
+      .b_chan_t   (axi_wide_out_b_chan_t),
+      .ar_chan_t  (axi_wide_out_ar_chan_t),
+      .r_chan_t   (axi_wide_out_r_chan_t)
+  ) i_floo_wide_hbm_south_dram_model[1:0] (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(hbm_south_dram_wide_req),
+      .hbm_rsp_o(hbm_south_dram_wide_rsp)
+  );
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiNarrowOutAddrWidth),
+      .DataWidth  (AxiNarrowOutDataWidth),
+      .UserWidth  (AxiNarrowOutUserWidth),
+      .IdWidth    (AxiNarrowOutIdWidth),
+      .axi_req_t  (axi_narrow_out_req_t),
+      .axi_rsp_t  (axi_narrow_out_rsp_t),
+      .aw_chan_t  (axi_narrow_out_aw_chan_t),
+      .w_chan_t   (axi_narrow_out_w_chan_t),
+      .b_chan_t   (axi_narrow_out_b_chan_t),
+      .ar_chan_t  (axi_narrow_out_ar_chan_t),
+      .r_chan_t   (axi_narrow_out_r_chan_t)
+  ) i_floo_narrow_hbm_south_dram_model[1:0] (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(hbm_south_dram_narrow_req),
+      .hbm_rsp_o(hbm_south_dram_narrow_rsp)
+  );
+
+  axi_narrow_out_req_t [5:0] hbm_south_narrow_req;
+  axi_narrow_out_rsp_t [5:0] hbm_south_narrow_rsp;
+  axi_wide_out_req_t   [5:0] hbm_south_wide_req;
+  axi_wide_out_rsp_t   [5:0] hbm_south_wide_rsp;
+
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiWideOutAddrWidth),
+      .DataWidth  (AxiWideOutDataWidth),
+      .UserWidth  (AxiWideOutUserWidth),
+      .IdWidth    (AxiWideOutIdWidth),
+      .axi_req_t  (axi_wide_out_req_t),
+      .axi_rsp_t  (axi_wide_out_rsp_t),
+      .aw_chan_t  (axi_wide_out_aw_chan_t),
+      .w_chan_t   (axi_wide_out_w_chan_t),
+      .b_chan_t   (axi_wide_out_b_chan_t),
+      .ar_chan_t  (axi_wide_out_ar_chan_t),
+      .r_chan_t   (axi_wide_out_r_chan_t)
+  ) i_floo_wide_hbm_south_model[5:0] (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(hbm_south_wide_req),
+      .hbm_rsp_o(hbm_south_wide_rsp)
+  );
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiNarrowOutAddrWidth),
+      .DataWidth  (AxiNarrowOutDataWidth),
+      .UserWidth  (AxiNarrowOutUserWidth),
+      .IdWidth    (AxiNarrowOutIdWidth),
+      .axi_req_t  (axi_narrow_out_req_t),
+      .axi_rsp_t  (axi_narrow_out_rsp_t),
+      .aw_chan_t  (axi_narrow_out_aw_chan_t),
+      .w_chan_t   (axi_narrow_out_w_chan_t),
+      .b_chan_t   (axi_narrow_out_b_chan_t),
+      .ar_chan_t  (axi_narrow_out_ar_chan_t),
+      .r_chan_t   (axi_narrow_out_r_chan_t)
+  ) i_floo_narrow_hbm_south_model[5:0] (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(hbm_south_narrow_req),
+      .hbm_rsp_o(hbm_south_narrow_rsp)
+  );
+
   axi_narrow_out_req_t [7:0] hbm_north_narrow_req;
   axi_narrow_out_rsp_t [7:0] hbm_north_narrow_rsp;
   axi_wide_out_req_t   [7:0] hbm_north_wide_req;
@@ -77,56 +177,6 @@ module tb_floo_compute_tile_array;
       .hbm_rsp_o(hbm_north_narrow_rsp)
   );
 
-  axi_narrow_out_req_t [7:0] hbm_south_narrow_req;
-  axi_narrow_out_rsp_t [7:0] hbm_south_narrow_rsp;
-  axi_wide_out_req_t   [7:0] hbm_south_wide_req;
-  axi_wide_out_rsp_t   [7:0] hbm_south_wide_rsp;
-
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiWideOutAddrWidth),
-      .DataWidth  (AxiWideOutDataWidth),
-      .UserWidth  (AxiWideOutUserWidth),
-      .IdWidth    (AxiWideOutIdWidth),
-      .axi_req_t  (axi_wide_out_req_t),
-      .axi_rsp_t  (axi_wide_out_rsp_t),
-      .aw_chan_t  (axi_wide_out_aw_chan_t),
-      .w_chan_t   (axi_wide_out_w_chan_t),
-      .b_chan_t   (axi_wide_out_b_chan_t),
-      .ar_chan_t  (axi_wide_out_ar_chan_t),
-      .r_chan_t   (axi_wide_out_r_chan_t)
-  ) i_floo_wide_hbm_south_model[7:0] (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(hbm_south_wide_req),
-      .hbm_rsp_o(hbm_south_wide_rsp)
-  );
-  floo_hbm_model #(
-      .TA         (ApplTime),
-      .TT         (TestTime),
-      .Latency    (HBMLatency),
-      .NumChannels(1),
-      .AddrWidth  (AxiNarrowOutAddrWidth),
-      .DataWidth  (AxiNarrowOutDataWidth),
-      .UserWidth  (AxiNarrowOutUserWidth),
-      .IdWidth    (AxiNarrowOutIdWidth),
-      .axi_req_t  (axi_narrow_out_req_t),
-      .axi_rsp_t  (axi_narrow_out_rsp_t),
-      .aw_chan_t  (axi_narrow_out_aw_chan_t),
-      .w_chan_t   (axi_narrow_out_w_chan_t),
-      .b_chan_t   (axi_narrow_out_b_chan_t),
-      .ar_chan_t  (axi_narrow_out_ar_chan_t),
-      .r_chan_t   (axi_narrow_out_r_chan_t)
-  ) i_floo_narrow_hbm_south_model[7:0] (
-      .clk_i    (clk),
-      .rst_ni   (rst_n),
-      .hbm_req_i(hbm_south_narrow_req),
-      .hbm_rsp_o(hbm_south_narrow_rsp)
-  );
-
   axi_narrow_out_req_t pcie_narrow_out_req;
   axi_narrow_out_rsp_t pcie_narrow_out_rsp;
   axi_narrow_in_req_t  pcie_narrow_in_req;
@@ -157,7 +207,31 @@ module tb_floo_compute_tile_array;
 
   axi_narrow_out_req_t peripherals_narrow_req;
   axi_narrow_out_rsp_t peripherals_narrow_rsp;
+  axi_wide_out_req_t   peripherals_wide_req;
+  axi_wide_out_rsp_t   peripherals_wide_rsp;
 
+  floo_hbm_model #(
+      .TA         (ApplTime),
+      .TT         (TestTime),
+      .Latency    (HBMLatency),
+      .NumChannels(1),
+      .AddrWidth  (AxiWideOutAddrWidth),
+      .DataWidth  (AxiWideOutDataWidth),
+      .UserWidth  (AxiWideOutUserWidth),
+      .IdWidth    (AxiWideOutIdWidth),
+      .axi_req_t  (axi_wide_out_req_t),
+      .axi_rsp_t  (axi_wide_out_rsp_t),
+      .aw_chan_t  (axi_wide_out_aw_chan_t),
+      .w_chan_t   (axi_wide_out_w_chan_t),
+      .b_chan_t   (axi_wide_out_b_chan_t),
+      .ar_chan_t  (axi_wide_out_ar_chan_t),
+      .r_chan_t   (axi_wide_out_r_chan_t)
+  ) i_floo_wide_peripherals_model (
+      .clk_i    (clk),
+      .rst_ni   (rst_n),
+      .hbm_req_i(peripherals_wide_req),
+      .hbm_rsp_o(peripherals_wide_rsp)
+  );
   floo_hbm_model #(
       .TA         (ApplTime),
       .TT         (TestTime),
@@ -374,8 +448,8 @@ module tb_floo_compute_tile_array;
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
-  logic [288:1] mtip_i;
-  logic [288:1] msip_i;
+  logic [64:1] mtip_i;
+  logic [64:1] msip_i;
   assign mtip_i = 'b0;
   assign msip_i = 'b0;
 
@@ -391,20 +465,26 @@ module tb_floo_compute_tile_array;
       .msip_i(msip_i),
       // .sram_cfgs_i(sram_cfgs_i),
 
-      .hbm_north_narrow_req_o(hbm_north_narrow_req),
-      .hbm_north_narrow_rsp_i(hbm_north_narrow_rsp),
-      .hbm_north_wide_req_o(hbm_north_wide_req),
-      .hbm_north_wide_rsp_i(hbm_north_wide_rsp),
+      .hbm_south_dram_narrow_req_o(hbm_south_dram_narrow_req),
+      .hbm_south_dram_narrow_rsp_i(hbm_south_dram_narrow_rsp),
+      .hbm_south_dram_wide_req_o(hbm_south_dram_wide_req),
+      .hbm_south_dram_wide_rsp_i(hbm_south_dram_wide_rsp),
       .hbm_south_narrow_req_o(hbm_south_narrow_req),
       .hbm_south_narrow_rsp_i(hbm_south_narrow_rsp),
       .hbm_south_wide_req_o(hbm_south_wide_req),
       .hbm_south_wide_rsp_i(hbm_south_wide_rsp),
+      .hbm_north_narrow_req_o(hbm_north_narrow_req),
+      .hbm_north_narrow_rsp_i(hbm_north_narrow_rsp),
+      .hbm_north_wide_req_o(hbm_north_wide_req),
+      .hbm_north_wide_rsp_i(hbm_north_wide_rsp),
       .pcie_narrow_req_i(pcie_narrow_in_req),
       .pcie_narrow_rsp_o(pcie_narrow_in_rsp),
       .pcie_narrow_req_o(pcie_narrow_out_req),
       .pcie_narrow_rsp_i(pcie_narrow_out_rsp),
       .peripherals_narrow_req_o(peripherals_narrow_req),
       .peripherals_narrow_rsp_i(peripherals_narrow_rsp),
+      .peripherals_wide_req_o(peripherals_wide_req),
+      .peripherals_wide_rsp_i(peripherals_wide_rsp),
       .jtag_narrow_req_i(jtag_narrow_in_req),
       .jtag_narrow_rsp_o(jtag_narrow_in_rsp),
       .jtag_narrow_req_o(jtag_narrow_out_req),

@@ -12,7 +12,7 @@ Y_NUM_DEC: &Y_NUM_DEC 3 # Y_NUM minus by 1
 name: chiplet
 description: "Top Level Chiplet"
 compute_tile_gen: true
-num_snitch_core: 9 # snitch core 8, dma core 1
+num_snitch_core: 2 # snitch core 1, dma core 1
 
 routing:
   route_algo: "XY"
@@ -83,24 +83,39 @@ endpoints:
       x: 0 # 0 to X_NUM-1
       y: 0 # 0 to Y_NUM-1
   # **** Warning: sub address simulation is not support for the current version
-  # - name: "quadrant_ctrl" 
+  # - name: "quadrant_ctrl"
   #   is_sub_addr : true # must not use this endpoint on "connections" section
   #   array: [*X_NUM, *Y_NUM]
   #   addr_range:
-  #       base: 0x0000_0f00_0000
-  #       size: 0x0000_0001_0000 # size per single quadrant control per compute tile
-  #   mgr_port_protocol:
-  #     - "narrow"
+  #     base: 0x0000_0F00_0000
+  #     size: 0x0000_0001_0000 # size per single quadrant control per compute tile
   #   sbr_port_protocol:
   #     - "narrow"
   #   id_offset:
   #     x: 0 # 0 to X_NUM-1
   #     y: 0 # 0 to Y_NUM-1
 # Define endpoint for each border side (North, East, South, and West)
-  ##### North border
+  ##### South border
   # HBM memory
-  - name: "hbm_north"
-    array: [*X_NUM, 1]
+  # Split to allocate within 32-bit address for snitch cluster that is 32-bit processor
+  - name: "hbm_south_dram" 
+    # export_ni is not supported for FlooNoC DMA simulation
+    #export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    array: [2, 1]
+    addr_range:
+      base: 0x0000_8000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to 1
+      y: -1 # -1 mean border of the south side
+  # HBM memory
+  - name: "hbm_south"
+    # export_ni is not supported for FlooNoC DMA simulation
+    #export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    array: [6, 1]
     addr_range:
       base: 0x0010_0000_0000
       size: 0x0000_4000_0000 # 1 GiB
@@ -108,21 +123,45 @@ endpoints:
       - "narrow"
       - "wide"
     id_offset:
-      x: 0 # 0 to X_NUM-1
-      y: *Y_NUM # Y_NUM mean border of the north side
-  ##### South border
+      x: 2 # 2 to X_NUM-1
+      y: -1 # -1 mean border of the south side
+  # - name: "hbm_south_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [*X_NUM, 1]
+  #   addr_range:
+  #     base: 0x0000_0C00_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 0 # 0 to X_NUM-1
+  #     y: -1
+  ##### North border
   # HBM memory
-  - name: "hbm_south"
+  - name: "hbm_north"
+    # export_ni is not supported for FlooNoC DMA simulation
+    #export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [*X_NUM, 1]
     addr_range:
-      base: 0x0002_0000_0000
+      base: 0x0011_8000_0000 # Continue from hbm_south end address
       size: 0x0000_4000_0000 # 1 GiB
     sbr_port_protocol:
       - "narrow"
       - "wide"
     id_offset:
       x: 0 # 0 to X_NUM-1
-      y: -1 # -1 mean border of the south side
+      y: *Y_NUM # Y_NUM mean border of the north side
+  # - name: "hbm_north_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [*X_NUM, 1]
+  #   addr_range:
+  #       base: 0x0000_0D00_0000
+  #       size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 0 # 0 to X_NUM-1
+  #     y: *Y_NUM # Y_NUM mean border of the north side
   ##### West border
   # PCIe interface
   # address_io: 536870912, // 0x2000_0000
@@ -145,9 +184,10 @@ endpoints:
   - name: "peripherals"
     addr_range:
       base: 0x0000_0100_0000
-      size: 0x0000_0E00_0000
+      size: 0x0000_0B00_0000
     sbr_port_protocol:
       - "narrow"
+      - "wide" # For snitch cluster to access bootrom via wide interface
     id_offset:
       x: -1 # -1 mean border of the west side
       y: 2
@@ -191,7 +231,8 @@ endpoints:
   - name: "spm_narrow"
     addr_range:
       base: 0x0000_7000_0000
-      size: 0x0000_0008_0000 # 512 kiB
+      # size: 0x0000_0008_0000 # 512 kiB
+      size: 0x0000_0002_0000 # 128 kiB (reduce size to be easier implementation with sram compiler)
     sbr_port_protocol:
       - "narrow"
     id_offset:
@@ -214,7 +255,7 @@ endpoints:
   # AXI Zero-Memory
   - name: "zero_mem"
     addr_range:
-      base: 0x0080_0000_0000
+      base: 0x0001_0000_0000
       size: 0x0002_0000_0000 # 8 GiB
     sbr_port_protocol:
       - "wide"
@@ -251,13 +292,23 @@ connections:
     bidirectional: true
   ##### South border
   # HBM memory
+  - src: "hbm_south_dram"
+    dst: "router"
+    src_range:
+    - [0, 1]
+    - [0, 0]
+    dst_range: # router index for south border
+    - [0, 1]
+    - [0, 0]
+    bidirectional: true
+  # HBM memory
   - src: "hbm_south"
     dst: "router"
     src_range:
-    - [0, *X_NUM_DEC]
+    - [0, 5]
     - [0, 0]
     dst_range: # router index for south border
-    - [0, *X_NUM_DEC]
+    - [2, *X_NUM_DEC]
     - [0, 0]
     bidirectional: true
   ##### West border

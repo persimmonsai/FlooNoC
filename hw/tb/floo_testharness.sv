@@ -19,6 +19,70 @@ module floo_testharness
   //   Endpoint Simulation Model  //
   //////////////////////////////////
 
+  axi_narrow_out_req_t [1:0] hbm_south_dram_narrow_req;
+  axi_narrow_out_rsp_t [1:0] hbm_south_dram_narrow_rsp;
+  axi_wide_out_req_t   [1:0] hbm_south_dram_wide_req;
+  axi_wide_out_rsp_t   [1:0] hbm_south_dram_wide_rsp;
+
+  tb_memory_axi #(
+      .AxiAddrWidth(AxiWideOutAddrWidth),
+      .AxiDataWidth(AxiWideOutDataWidth),
+      .AxiUserWidth(AxiWideOutUserWidth),
+      .AxiIdWidth  (AxiWideOutIdWidth),
+      .req_t       (axi_wide_out_req_t),
+      .rsp_t       (axi_wide_out_rsp_t)
+  ) i_wide_hbm_south_dram_memory[1:0] (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+      .req_i (hbm_south_dram_wide_req),
+      .rsp_o (hbm_south_dram_wide_rsp)
+  );
+  tb_memory_axi #(
+      .AxiAddrWidth(AxiNarrowOutAddrWidth),
+      .AxiDataWidth(AxiNarrowOutDataWidth),
+      .AxiUserWidth(AxiNarrowOutUserWidth),
+      .AxiIdWidth  (AxiNarrowOutIdWidth),
+      .req_t       (axi_narrow_out_req_t),
+      .rsp_t       (axi_narrow_out_rsp_t)
+  ) i_narrow_hbm_south_dram_memory[1:0] (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+      .req_i (hbm_south_dram_narrow_req),
+      .rsp_o (hbm_south_dram_narrow_rsp)
+  );
+
+  axi_narrow_out_req_t [5:0] hbm_south_narrow_req;
+  axi_narrow_out_rsp_t [5:0] hbm_south_narrow_rsp;
+  axi_wide_out_req_t   [5:0] hbm_south_wide_req;
+  axi_wide_out_rsp_t   [5:0] hbm_south_wide_rsp;
+
+  tb_memory_axi #(
+      .AxiAddrWidth(AxiWideOutAddrWidth),
+      .AxiDataWidth(AxiWideOutDataWidth),
+      .AxiUserWidth(AxiWideOutUserWidth),
+      .AxiIdWidth  (AxiWideOutIdWidth),
+      .req_t       (axi_wide_out_req_t),
+      .rsp_t       (axi_wide_out_rsp_t)
+  ) i_wide_hbm_south_memory[5:0] (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+      .req_i (hbm_south_wide_req),
+      .rsp_o (hbm_south_wide_rsp)
+  );
+  tb_memory_axi #(
+      .AxiAddrWidth(AxiNarrowOutAddrWidth),
+      .AxiDataWidth(AxiNarrowOutDataWidth),
+      .AxiUserWidth(AxiNarrowOutUserWidth),
+      .AxiIdWidth  (AxiNarrowOutIdWidth),
+      .req_t       (axi_narrow_out_req_t),
+      .rsp_t       (axi_narrow_out_rsp_t)
+  ) i_narrow_hbm_south_memory[5:0] (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+      .req_i (hbm_south_narrow_req),
+      .rsp_o (hbm_south_narrow_rsp)
+  );
+
   axi_narrow_out_req_t [7:0] hbm_north_narrow_req;
   axi_narrow_out_rsp_t [7:0] hbm_north_narrow_rsp;
   axi_wide_out_req_t   [7:0] hbm_north_wide_req;
@@ -51,10 +115,10 @@ module floo_testharness
       .rsp_o (hbm_north_narrow_rsp)
   );
 
-  axi_narrow_out_req_t [7:0] hbm_south_narrow_req;
-  axi_narrow_out_rsp_t [7:0] hbm_south_narrow_rsp;
-  axi_wide_out_req_t   [7:0] hbm_south_wide_req;
-  axi_wide_out_rsp_t   [7:0] hbm_south_wide_rsp;
+  axi_narrow_out_req_t peripherals_narrow_req;
+  axi_narrow_out_rsp_t peripherals_narrow_rsp;
+  axi_wide_out_req_t   peripherals_wide_req;
+  axi_wide_out_rsp_t   peripherals_wide_rsp;
 
   tb_memory_axi #(
       .AxiAddrWidth(AxiWideOutAddrWidth),
@@ -63,29 +127,12 @@ module floo_testharness
       .AxiIdWidth  (AxiWideOutIdWidth),
       .req_t       (axi_wide_out_req_t),
       .rsp_t       (axi_wide_out_rsp_t)
-  ) i_wide_hbm_south_memory[7:0] (
+  ) i_wide_peripherals_memory (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
-      .req_i (hbm_south_wide_req),
-      .rsp_o (hbm_south_wide_rsp)
+      .req_i (peripherals_wide_req),
+      .rsp_o (peripherals_wide_rsp)
   );
-  tb_memory_axi #(
-      .AxiAddrWidth(AxiNarrowOutAddrWidth),
-      .AxiDataWidth(AxiNarrowOutDataWidth),
-      .AxiUserWidth(AxiNarrowOutUserWidth),
-      .AxiIdWidth  (AxiNarrowOutIdWidth),
-      .req_t       (axi_narrow_out_req_t),
-      .rsp_t       (axi_narrow_out_rsp_t)
-  ) i_narrow_hbm_south_memory[7:0] (
-      .clk_i (clk_i),
-      .rst_ni(rst_ni),
-      .req_i (hbm_south_narrow_req),
-      .rsp_o (hbm_south_narrow_rsp)
-  );
-
-  axi_narrow_out_req_t peripherals_narrow_req;
-  axi_narrow_out_rsp_t peripherals_narrow_rsp;
-
   tb_memory_axi #(
       .AxiAddrWidth(AxiNarrowOutAddrWidth),
       .AxiDataWidth(AxiNarrowOutDataWidth),
@@ -179,20 +226,26 @@ module floo_testharness
 
       .msip_i(msip_i),
 
-      .hbm_north_narrow_req_o(hbm_north_narrow_req),
-      .hbm_north_narrow_rsp_i(hbm_north_narrow_rsp),
-      .hbm_north_wide_req_o(hbm_north_wide_req),
-      .hbm_north_wide_rsp_i(hbm_north_wide_rsp),
+      .hbm_south_dram_narrow_req_o(hbm_south_dram_narrow_req),
+      .hbm_south_dram_narrow_rsp_i(hbm_south_dram_narrow_rsp),
+      .hbm_south_dram_wide_req_o(hbm_south_dram_wide_req),
+      .hbm_south_dram_wide_rsp_i(hbm_south_dram_wide_rsp),
       .hbm_south_narrow_req_o(hbm_south_narrow_req),
       .hbm_south_narrow_rsp_i(hbm_south_narrow_rsp),
       .hbm_south_wide_req_o(hbm_south_wide_req),
       .hbm_south_wide_rsp_i(hbm_south_wide_rsp),
+      .hbm_north_narrow_req_o(hbm_north_narrow_req),
+      .hbm_north_narrow_rsp_i(hbm_north_narrow_rsp),
+      .hbm_north_wide_req_o(hbm_north_wide_req),
+      .hbm_north_wide_rsp_i(hbm_north_wide_rsp),
       .pcie_narrow_req_i(pcie_narrow_in_req),
       .pcie_narrow_rsp_o(pcie_narrow_in_rsp),
       .pcie_narrow_req_o(pcie_narrow_out_req),
       .pcie_narrow_rsp_i(pcie_narrow_out_rsp),
       .peripherals_narrow_req_o(peripherals_narrow_req),
       .peripherals_narrow_rsp_i(peripherals_narrow_rsp),
+      .peripherals_wide_req_o(peripherals_wide_req),
+      .peripherals_wide_rsp_i(peripherals_wide_rsp),
       .jtag_narrow_req_i(jtag_narrow_in_req),
       .jtag_narrow_rsp_o(jtag_narrow_in_rsp),
       .jtag_narrow_req_o(jtag_narrow_out_req),
