@@ -7,13 +7,14 @@
 module chiplet_floo_noc
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
+  import hbm_pd_pkg::*;
 (
   input logic clk_i,
   input logic rst_ni,
   input logic test_enable_i,
 
-  input logic [64:1] mtip_i, 
-  input logic [64:1] msip_i, 
+  input logic [64:1] mtip_i,
+  input logic [64:1] msip_i,
 
   output axi_narrow_out_req_t             [1:0] hbm_south_dram_narrow_req_o,
   input axi_narrow_out_rsp_t             [1:0] hbm_south_dram_narrow_rsp_i,

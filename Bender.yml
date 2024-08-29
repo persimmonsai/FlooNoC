@@ -13,6 +13,7 @@ dependencies:
   common_verification: { git: "https://github.com/pulp-platform/common_verification.git", version: 0.2 }
   axi: { git: "git@github.com:persimmonsai/axi", version: 0.39.1 }
   axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
+  #axi-hbm: { git: "git@github.com:persimmonsai/axi-hbm.git", rev: main}
   #idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
   #system-snitch-cluster : {path: ../snitch/hw/system/snitch_cluster} # Temporary remove to be bender package for chiplet gen
   #system-snitch-cluster : {path: ../PULP/snitch/hw/system/snitch_cluster}

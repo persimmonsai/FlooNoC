@@ -11,7 +11,6 @@ Y_NUM_DEC: &Y_NUM_DEC 3 # Y_NUM minus by 1
 
 name: chiplet
 description: "Top Level Chiplet"
-compute_tile_gen: true
 num_snitch_core: 2 # snitch core 1, dma core 1
 
 routing:
@@ -69,6 +68,7 @@ protocols:
 endpoints:
 # Define compute tile array (snitch cluster) in XY mesh
   - name: "cluster"
+    is_compute_tile: true # Replace this endpoint with compute tile structure
     array: [*X_NUM, *Y_NUM]
     addr_range:
       base: 0x0000_1000_0000

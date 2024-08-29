@@ -23,6 +23,8 @@ class EndpointDesc(BaseModel):
     description: Optional[str] = ""
     is_sub_addr : Optional[bool] = False
     export_ni : Optional[bool] = False
+    is_compute_tile : Optional[bool] = False
+    is_hbm_tile : Optional[bool] = False
     array: Optional[Union[Tuple[int], Tuple[int, int]]] = None
     addr_range: Optional[AddrRange] = None
     id_offset: Optional[Id] = None
@@ -135,6 +137,53 @@ class Endpoint(EndpointDesc):
             ports += port.render_port()
         return ports
     
+    def render_compute_tile_ports(self, noc, port_1st_render):
+        """Render the compute tile port specific of the endpoint."""
+        ports = []
+        # Ports that instantiate for only one time if there is any compute tile inside noc network
+        if port_1st_render:
+            ep_eject_nodes = noc.graph.get_ep_eject_nodes()
+            ep_cp_tile_nodes = [ep for ep in ep_eject_nodes if ep.is_compute_tile]
+            num_core = len(ep_cp_tile_nodes) * noc.num_snitch_core
+            irq_bit_num = num_core + 1 # +1 for CVA6 core
+            ports.append(f"input logic [{str(irq_bit_num-1)}:1] mtip_i")
+            ports.append(f"input logic [{str(irq_bit_num-1)}:1] msip_i")
+        return ports
+        
+    def render_hbm_tile_ports(self, noc, port_1st_render):
+        """Render the hbm tile port specific of the endpoint."""
+        ports = []
+        # Ports that instantiate for only one time if there is any hbm tile inside noc network
+        if port_1st_render:
+            ports.append(f"input logic clk_hbmcfg_i")
+            ports.append(f"input logic rst_hbmcfg_ni")
+        endpoint_id = noc.graph.get_node_id(self.name)
+        # endpoint_id = endpoint_id - noc.routing.id_offset
+        hbm_name_xy = self.name + str(endpoint_id.x) + "_" + str(endpoint_id.y)
+        ports.append(f"input logic {hbm_name_xy}_clk_hbmphy_i")
+        ports.append(f"input logic {hbm_name_xy}_pll_lock_hbmphy_i")
+        ports.append(f"input xbar_rule_t [XbarRuleNum-1:0] {hbm_name_xy}_XbarAddrMap")
+        ports.append(f"inout {hbm_name_xy}_Xdram_CK")
+        ports.append(f"inout {hbm_name_xy}_Xdram_CKB")
+        ports.append(f"inout {hbm_name_xy}_Xdram_APAR")
+        ports.append(f"inout {hbm_name_xy}_Xdram_ARFU")
+        ports.append(f"inout {hbm_name_xy}_Xdram_AERR")
+        ports.append(f"inout [9:0] {hbm_name_xy}_Xdram_RA")
+        ports.append(f"inout [7:0] {hbm_name_xy}_Xdram_CA")
+        ports.append(f"inout {hbm_name_xy}_Xdram_RRC")
+        ports.append(f"inout [63:0] {hbm_name_xy}_Xdram_DQ")
+        ports.append(f"inout [3:0] {hbm_name_xy}_Xdram_ECC")
+        ports.append(f"inout [3:0] {hbm_name_xy}_Xdram_SEV")
+        ports.append(f"inout [7:0] {hbm_name_xy}_Xdram_DBI")
+        ports.append(f"inout [1:0] {hbm_name_xy}_Xdram_DPAR")
+        ports.append(f"inout [1:0] {hbm_name_xy}_Xdram_DERR")
+        ports.append(f"inout [1:0] {hbm_name_xy}_Xdram_RDQSP")
+        ports.append(f"inout [1:0] {hbm_name_xy}_Xdram_RDQSN")
+        ports.append(f"inout [1:0] {hbm_name_xy}_Xdram_WDQSP")
+        ports.append(f"inout [1:0] {hbm_name_xy}_Xdram_WDQSN")
+        ports.append(f"inout [3:0] {hbm_name_xy}_Xdram_RD")
+        return ports
+    
     def render_export_ni_ports(self):
         """Render the FlooNoC router ports of the endpoint."""
         ports = []
@@ -153,6 +202,49 @@ class Endpoint(EndpointDesc):
         if self.array is not None:
             return "".join([f"[{i-1}:0]" if i != 1 else "" for i in self.array])
         return ""
+    
+    def render_tb_compute_tile_ports(self, noc, port_1st_render):
+        """Render the compute tile port specific of the endpoint."""
+        ports = []
+        # Ports that instantiate for only one time if there is any compute tile inside noc network
+        if port_1st_render:
+            ports.append(f".mtip_i ('0)")
+            ports.append(f".msip_i ('0)")
+        return ports
+        
+    def render_tb_hbm_tile_ports(self, noc, port_1st_render):
+        """Render the hbm tile port specific of the endpoint."""
+        ports = []
+        # Ports that instantiate for only one time if there is any hbm tile inside noc network
+        if port_1st_render:
+            ports.append(f".clk_hbmcfg_i (1'b0)")
+            ports.append(f".rst_hbmcfg_ni (1'b0)")
+        endpoint_id = noc.graph.get_node_id(self.name)
+        # endpoint_id = endpoint_id - noc.routing.id_offset
+        hbm_name_xy = self.name + str(endpoint_id.x) + "_" + str(endpoint_id.y)
+        ports.append(f".{hbm_name_xy}_clk_hbmphy_i (1'b0)")
+        ports.append(f".{hbm_name_xy}_pll_lock_hbmphy_i (1'b0)")
+        ports.append(f".{hbm_name_xy}_XbarAddrMap ('0)")
+        ports.append(f".{hbm_name_xy}_Xdram_CK ()")
+        ports.append(f".{hbm_name_xy}_Xdram_CKB ()")
+        ports.append(f".{hbm_name_xy}_Xdram_APAR ()")
+        ports.append(f".{hbm_name_xy}_Xdram_ARFU ()")
+        ports.append(f".{hbm_name_xy}_Xdram_AERR ()")
+        ports.append(f".{hbm_name_xy}_Xdram_RA ()")
+        ports.append(f".{hbm_name_xy}_Xdram_CA ()")
+        ports.append(f".{hbm_name_xy}_Xdram_RRC ()")
+        ports.append(f".{hbm_name_xy}_Xdram_DQ ()")
+        ports.append(f".{hbm_name_xy}_Xdram_ECC ()")
+        ports.append(f".{hbm_name_xy}_Xdram_SEV ()")
+        ports.append(f".{hbm_name_xy}_Xdram_DBI ()")
+        ports.append(f".{hbm_name_xy}_Xdram_DPAR ()")
+        ports.append(f".{hbm_name_xy}_Xdram_DERR ()")
+        ports.append(f".{hbm_name_xy}_Xdram_RDQSP ()")
+        ports.append(f".{hbm_name_xy}_Xdram_RDQSN ()")
+        ports.append(f".{hbm_name_xy}_Xdram_WDQSP ()")
+        ports.append(f".{hbm_name_xy}_Xdram_WDQSN ()")
+        ports.append(f".{hbm_name_xy}_Xdram_RD ()")
+        return ports
         
     def render_tb_ports(self):
         """Render the testbench ports of the endpoint."""

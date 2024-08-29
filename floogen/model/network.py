@@ -35,13 +35,8 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    # Template for compute_tile_gen=False
     with as_file(files(floogen.templates).joinpath("floo_noc_top.sv.mako")) as _tpl_path:
         tpl: ClassVar = Template(filename=str(_tpl_path))
-    
-    # Template for compute_tile_gen=True
-    with as_file(files(floogen.templates).joinpath("floo_noc_top_compute_tile.sv.mako")) as _tpl_path:
-        tpl_top: ClassVar = Template(filename=str(_tpl_path))
     
     with as_file(files(floogen.templates).joinpath("compute_tile.sv.mako")) as _tpl_path:
         tpl_tile: ClassVar = Template(filename=str(_tpl_path))  
@@ -66,7 +61,6 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
 
     name: str
     description: Optional[str]
-    compute_tile_gen : Optional[bool] = False
     num_snitch_core : Optional[int] = 9
     
     protocols: List[AXI4]
@@ -87,7 +81,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Compile the network."""
         self.compile_ids()
         self.compile_links()
-        self.compile_endpoints() # May need to edit to create temp AXI4Bus object for is_sub_addr endpoint
+        self.compile_endpoints()
         self.compile_nis()
         self.compile_routers()
 
@@ -639,19 +633,35 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                                                   sbr_wide_port=ni.sbr_wide_port)
             addr_table.append(addr_rule)
         return RouteMap(name="sam", rules=addr_table)
-
+    
+    # render output port of tile wrapper
+    def render_tile_ports(self):
+        """Render the tile ports in the generated code."""
+        ports = []
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_compute_tile_nodes = [ep for ep in ep_eject_nodes if ep.is_compute_tile]
+        ep_hbm_tile_nodes = [ep for ep in ep_eject_nodes if ep.is_hbm_tile]
+        hbm_tile_port_1st_render = True
+        compute_tile_port_1st_render = True
+        for ep in ep_compute_tile_nodes:
+            ports += ep.render_compute_tile_ports(noc=self, port_1st_render=compute_tile_port_1st_render)
+            compute_tile_port_1st_render = False
+        for ep in ep_hbm_tile_nodes:
+            ports += ep.render_hbm_tile_ports(noc=self, port_1st_render=hbm_tile_port_1st_render)
+            hbm_tile_port_1st_render = False
+        port_string = ",\n  ".join(ports) + ",\n"
+        return port_string
+        
     # render output port of wrapper
     def render_ports(self):
         """Render the ports in the generated code."""
-        # TODO: Replace filtering of ep_nodes that declared as a port by using self.get_ports()
         ports, declared_ports = [], []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
-        # Remove node that connect to Eject from the top level interface port for compute tile array structure
-        if self.compute_tile_gen:
-            ep_eject_nodes = self.graph.get_ep_eject_nodes()
-            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
-        
+        # Remove node that connect to Eject from the top level interface port for compute tile and hbm tile structure
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_tile_nodes = [ep for ep in ep_eject_nodes if (ep.is_compute_tile or ep.is_hbm_tile)]
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_tile_nodes]
         for ep in ep_nodes:
             # Skip for port that already declared
             # There is a problem if only some node in the node array connected to eject, 
@@ -673,9 +683,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
-        if self.compute_tile_gen:
-            ep_eject_nodes = self.graph.get_ep_eject_nodes()
-            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_tile_nodes = [ep for ep in ep_eject_nodes if (ep.is_compute_tile or ep.is_hbm_tile)]
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_tile_nodes]
         port_nodes = []
         for ep in ep_nodes:
             # Skip for port that already declared
@@ -773,23 +783,42 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         """Render the links in the generated code."""
         string = ""
         links = self.graph.get_link_edges()
-        if self.compute_tile_gen:
-            # Remove router link to Eject endpoint link for compute tile array structure
-            ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
-            links = [li for li in links if (li.source not in ep_eject_ni) and (li.dest not in ep_eject_ni)]
-            # Exclude export NI endpoint
-            ep_export_ni = self.get_export_ni_name()
-            links = [li for li in links if (li.source not in ep_export_ni) and (li.dest not in ep_export_ni)]
+        # Remove router link to Eject endpoint link for compute tile array structure
+        ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+        ep_eject_tile_ni = []
+        for i in range(len(ep_eject_node)):
+            if (ep_eject_node[i].is_compute_tile or ep_eject_node[i].is_hbm_tile):
+                ep_eject_tile_ni.append(ep_eject_ni[i])
+        links = [li for li in links if (li.source not in ep_eject_ni) and (li.dest not in ep_eject_ni)]
+        # Exclude export NI endpoint
+        ep_export_ni = self.get_export_ni_name()
+        links = [li for li in links if (li.source not in ep_export_ni) and (li.dest not in ep_export_ni)]
+        # Generate link
         for link in links:
             string += link.declare()
         return string
 
     def render_routers(self):
         """Render the routers in the generated code."""
+        ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+        ep_eject_cp_tile_ni = []
+        ep_eject_hbm_tile_ni = []
+        for i in range(len(ep_eject_node)):
+            if ep_eject_node[i].is_compute_tile:
+                ep_eject_cp_tile_ni.append(ep_eject_ni[i])
+            if ep_eject_node[i].is_hbm_tile:
+                ep_eject_hbm_tile_ni.append(ep_eject_ni[i])
+            if (ep_eject_node[i].is_compute_tile and ep_eject_node[i].is_hbm_tile):
+                raise ValueError("is_compute_tile and is_hbm_tile can't assert at the same time")
         string = ""
-        for rt in self.graph.get_rt_nodes():
-            if self.compute_tile_gen:
-                string += rt.render_tile(self.routing.id_offset, self.routers[0].array, self.num_snitch_core)
+        rt_nodes = self.graph.get_rt_nodes()
+        for rt in rt_nodes:
+            # Render compute tile
+            if (rt.incoming.EJECT.source in ep_eject_cp_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_cp_tile_ni):
+                string += rt.render_compute_tile(self.routing.id_offset, self.routers[0].array, self.num_snitch_core)
+            # Render hbm tile
+            elif (rt.incoming.EJECT.source in ep_eject_hbm_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_hbm_tile_ni):
+                string += rt.render_hbm_tile(self.routing.id_offset, self.routers[0].array)
             else:
                 string += rt.render()
         return string
@@ -799,23 +828,23 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         string = ""
         ni_nodes = self.graph.get_ni_nodes()
         ni_nodes = [ni for ni in ni_nodes if ni.is_sub_addr==False]
-        if self.compute_tile_gen:
-            # Remove NI for node that connect with Eject for compute tile array structure
-            ep_eject_ni, _ = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
-            ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_eject_ni]
-            # Exclude export NI endpoint
-            ep_export_ni = self.get_export_ni_name()
-            ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_export_ni]
+        # Remove NI for node that connect with Eject for compute tile array structure
+        ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+        ep_eject_tile_ni = []
+        for i in range(len(ep_eject_node)):
+            if (ep_eject_node[i].is_compute_tile or ep_eject_node[i].is_hbm_tile):
+                ep_eject_tile_ni.append(ep_eject_ni[i])
+        ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_eject_tile_ni]
+        # Exclude export NI endpoint
+        ep_export_ni = self.get_export_ni_name()
+        ni_nodes = [ni for ni in ni_nodes if ni.name not in ep_export_ni]
         for ni in ni_nodes:
             string += ni.render(noc=self)
         return string
 
     def render_network(self):
         """Render the network in the generated code."""
-        if self.compute_tile_gen:
-            return self.tpl_top.render(noc=self)
-        else:
-            return self.tpl.render(noc=self)
+        return self.tpl.render(noc=self)
         
     def render_tile(self):
         """Render the compute tile in the generated code."""
@@ -899,10 +928,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
-        if self.compute_tile_gen:
-            ep_eject_nodes = self.graph.get_ep_eject_nodes()
-            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
-
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_tile_nodes = [ep for ep in ep_eject_nodes if (ep.is_compute_tile or ep.is_hbm_tile)]
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_tile_nodes]
         for ep in ep_nodes:
             # Skip for port that already declared
             # There is a problem if only some node in the node array connected to eject, 
@@ -929,9 +957,9 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
-        if self.compute_tile_gen:
-            ep_eject_nodes = self.graph.get_ep_eject_nodes()
-            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_tile_nodes = [ep for ep in ep_eject_nodes if (ep.is_compute_tile or ep.is_hbm_tile)]
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_tile_nodes]
         # Due to limitation of current version, only memory simulation model is supported
         #ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
         ep_nodes = [ep for ep in ep_nodes if ep.is_memory_tb()]
@@ -946,15 +974,31 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             declared_endpoints.append(ep.name)
         return endpoints
     
+    def render_tb_dut_tile_ports(self):
+        ports = []
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_compute_tile_nodes = [ep for ep in ep_eject_nodes if ep.is_compute_tile]
+        ep_hbm_tile_nodes = [ep for ep in ep_eject_nodes if ep.is_hbm_tile]
+        hbm_tile_port_1st_render = True
+        compute_tile_port_1st_render = True
+        for ep in ep_compute_tile_nodes:
+            ports += ep.render_tb_compute_tile_ports(noc=self, port_1st_render=compute_tile_port_1st_render)
+            compute_tile_port_1st_render = False
+        for ep in ep_hbm_tile_nodes:
+            ports += ep.render_tb_hbm_tile_ports(noc=self, port_1st_render=hbm_tile_port_1st_render)
+            hbm_tile_port_1st_render = False
+        port_string = ",\n  ".join(ports) + ",\n"
+        return port_string
+    
     def render_tb_dut_ports(self):
         """Render the ports in the generated code."""
         ports, declared_ports = [], []
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
-        if self.compute_tile_gen:
-            ep_eject_nodes = self.graph.get_ep_eject_nodes()
-            ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        ep_eject_nodes = self.graph.get_ep_eject_nodes()
+        ep_tile_nodes = [ep for ep in ep_eject_nodes if (ep.is_compute_tile or ep.is_hbm_tile)]
+        ep_nodes = [ep for ep in ep_nodes if ep not in ep_tile_nodes]
         
         for ep in ep_nodes:
             # Skip for port that already declared

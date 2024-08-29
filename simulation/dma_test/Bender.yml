@@ -12,23 +12,27 @@ dependencies:
   common_verification: { git: "https://github.com/pulp-platform/common_verification.git", version: 0.2 }
   axi: { git: "git@github.com:persimmonsai/axi", version: 0.39.1 }
   axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
-  idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
   floo_noc: {path: ../../}
+  idma: { git: "https://github.com/pulp-platform/iDMA.git", version: 0.5.1 }
 
 sources:
   - target: dma_test
     include_dirs:
       - ../../hw/test
     files:
+      # package
+      - ../../hw/test/hbm_pd_pkg.sv
+      - ../../hw/tb/compute_tile_array_test_pkg.sv
+      # Level 0
       - ../../hw/test/floo_dma_test_node.sv
       - ../../hw/test/floo_hbm_model.sv
       # Level 1
-      - ../../hw/floo_noc_pd_top.sv # Generated wrapper from floogen
+      - ../../hw/floo_noc_pd_top.sv
+      - ../../hw/floo_noc_hbm_pd_top.sv
+      - ../../hw/hbm_tile.sv
       - ../../hw/compute_tile.sv # Generated wrapper from floogen
       - ../../hw/compute_tile_array_floo_noc.sv # Generated wrapper from floogen
       - ../../hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level
-      # Level 2
-      - ../../hw/tb/compute_tile_array_test_pkg.sv
       # Level 3
       - ../../hw/test/snitch_cluster_test_node.sv
       - ../../hw/test/dma_test_node.sv

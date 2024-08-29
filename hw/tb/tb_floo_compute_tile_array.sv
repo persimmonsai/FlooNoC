@@ -448,10 +448,10 @@ module tb_floo_compute_tile_array;
   //   Compute Tile Array (DUT)   //
   //////////////////////////////////
 
-  logic [64:1] mtip_i;
-  logic [64:1] msip_i;
-  assign mtip_i = 'b0;
-  assign msip_i = 'b0;
+  // logic [64:1] mtip_i;
+  // logic [64:1] msip_i;
+  // assign mtip_i = 'b0;
+  // assign msip_i = 'b0;
 
   // occamy_pkg::sram_cfgs_t = sram_cfgs_i;
   // assign sram_cfgs_i = 'b0;
@@ -461,9 +461,11 @@ module tb_floo_compute_tile_array;
       .rst_ni(rst_n),
       .test_enable_i(1'b0),
 
-      .mtip_i(mtip_i),
-      .msip_i(msip_i),
-      // .sram_cfgs_i(sram_cfgs_i),
+      // .mtip_i(mtip_i),
+      // .msip_i(msip_i),
+      .mtip_i('0),
+      .msip_i('0),
+
 
       .hbm_south_dram_narrow_req_o(hbm_south_dram_narrow_req),
       .hbm_south_dram_narrow_rsp_i(hbm_south_dram_narrow_rsp),
