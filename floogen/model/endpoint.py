@@ -24,6 +24,8 @@ class EndpointDesc(BaseModel):
     is_sub_addr : Optional[bool] = False
     export_ni : Optional[bool] = False
     is_compute_tile : Optional[bool] = False
+    start_tile_id : Optional[int] = 0
+    tile_id : Optional[int] = 0
     is_hbm_tile : Optional[bool] = False
     array: Optional[Union[Tuple[int], Tuple[int, int]]] = None
     addr_range: Optional[AddrRange] = None

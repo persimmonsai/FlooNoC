@@ -963,7 +963,6 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         # Due to limitation of current version, only memory simulation model is supported
         #ep_nodes = [ep for ep in ep_nodes if ep.soc_type == "memory"]
         ep_nodes = [ep for ep in ep_nodes if ep.is_memory_tb()]
-
         for ep in ep_nodes:
             # Skip for port that already declared
             # There is a problem if only some node in the node array connected to eject, 
@@ -999,7 +998,6 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         ep_eject_nodes = self.graph.get_ep_eject_nodes()
         ep_tile_nodes = [ep for ep in ep_eject_nodes if (ep.is_compute_tile or ep.is_hbm_tile)]
         ep_nodes = [ep for ep in ep_nodes if ep not in ep_tile_nodes]
-        
         for ep in ep_nodes:
             # Skip for port that already declared
             # There is a problem if only some node in the node array connected to eject, 
@@ -1014,18 +1012,22 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
     def render_tb(self):
         """Render the testbench of the generated network."""
         routers = self.graph.get_rt_nodes() # 1 Compute tile have one router
-        
         ep_nodes = self.graph.get_ep_nodes() # All endpoint node
         ep_nodes = [ep for ep in ep_nodes if ep.is_sub_addr==False]
         # Remove node that connect to Eject from the top level interface port for compute tile array structure
-        ep_eject_nodes = self.graph.get_ep_eject_nodes()
-        ep_nodes = [ep for ep in ep_nodes if ep not in ep_eject_nodes]
+        ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+        ep_eject_tile_ni = []
+        for i in range(len(ep_eject_node)):
+            if (ep_eject_node[i].is_compute_tile):
+                ep_eject_tile_ni.append(ep_eject_ni[i])
+        cp_tiles = [rt for rt in routers if (rt.incoming.EJECT.source in ep_eject_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_tile_ni)]
+        ep_nodes = [ep for ep in ep_nodes if (not ep.is_compute_tile) and (not ep.is_hbm_tile)]
         # DMA node need to have both master and slave
         endpoint_dma = [ep for ep in ep_nodes if ep.sbr_port_protocol == ep.mgr_port_protocol]
-        endpoint_dma_num = 0;
+        endpoint_dma_num = 0
         for ep in endpoint_dma:
             endpoint_dma_num += len(ep.mgr_port_protocol)
-        return self.tpl_tb.render(noc=self, cp_tiles=routers, \
+        return self.tpl_tb.render(noc=self, cp_tiles=cp_tiles, \
             endpoint_dma=endpoint_dma, endpoint_dma_num=endpoint_dma_num)
     
     def render_testharness(self):

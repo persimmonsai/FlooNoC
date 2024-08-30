@@ -153,13 +153,13 @@ class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
             ep_tmp = None
             if rt_obj.incoming.EJECT.source is not None:
                 ep_eject_obj = self.get_node_obj(rt_obj.incoming.EJECT.source)
-                if ep_eject_obj.mgr_narrow_port.source is not None:
+                if ep_eject_obj.mgr_narrow_port is not None:
                     ep_tmp = ep_eject_obj.mgr_narrow_port.source
-                elif ep_eject_obj.mgr_wide_port.source is not None:
+                elif ep_eject_obj.mgr_wide_port is not None:
                     ep_tmp = ep_eject_obj.mgr_wide_port.source
-                elif ep_eject_obj.sbr_narrow_port.dest is not None:
+                elif ep_eject_obj.sbr_narrow_port is not None:
                     ep_tmp = ep_eject_obj.sbr_narrow_port.dest
-                elif ep_eject_obj.sbr_wide_port.dest is not None:
+                elif ep_eject_obj.sbr_wide_port is not None:
                     ep_tmp = ep_eject_obj.sbr_wide_port.dest
                 if ep_tmp is None:
                     raise ValueError(f"Eject port of {rt.name} have endpoint, but no connection!")
@@ -167,13 +167,13 @@ class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
                 ep_eject_ni.append(rt_obj.incoming.EJECT.source)
             elif rt_obj.outgoing.EJECT.dest is not None:
                 ep_eject_obj = self.get_node_obj(rt_obj.incoming.EJECT.dest)
-                if ep_eject_obj.mgr_narrow_port.dest is not None:
+                if ep_eject_obj.mgr_narrow_port is not None:
                     ep_tmp = ep_eject_obj.mgr_narrow_port.dest
-                elif ep_eject_obj.mgr_wide_port.dest is not None:
+                elif ep_eject_obj.mgr_wide_port is not None:
                     ep_tmp = ep_eject_obj.mgr_wide_port.dest
-                elif ep_eject_obj.sbr_narrow_port.source is not None:
+                elif ep_eject_obj.sbr_narrow_port is not None:
                     ep_tmp = ep_eject_obj.sbr_narrow_port.source
-                elif ep_eject_obj.sbr_wide_port.source is not None:
+                elif ep_eject_obj.sbr_wide_port is not None:
                     ep_tmp = ep_eject_obj.sbr_wide_port.source
                 if ep_tmp is None:
                     raise ValueError(f"Eject port of {rt.name} have endpoint, but no connection!")
