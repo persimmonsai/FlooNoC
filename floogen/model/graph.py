@@ -10,6 +10,7 @@ from typing import List, Tuple
 # package for graph management and visualization
 import networkx as nx
 
+from copy import deepcopy
 
 class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
     """Network graph class."""
@@ -274,10 +275,16 @@ class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
         connect=True,
     ): # pylint: disable=too-many-arguments
         """Add nodes as an array."""
+        if node_type=="endpoint" and node_obj.is_compute_tile:
+            tile_id = node_obj.start_tile_id
         match array:
             case [n]:
                 for i in range(n):
                     node = f"{name}_{i}"
+                    if node_type=="endpoint" and node_obj.is_compute_tile:
+                        node_obj = deepcopy(node_obj)
+                        node_obj.tile_id = tile_id
+                        tile_id += 1
                     self.add_node(node, type=node_type, arr_idx=(i,), obj=node_obj)
                     if i > 0 and connect:
                         self.add_edge(node, f"{name}_{i-1}", type=edge_type, obj=edge_obj)
@@ -286,6 +293,10 @@ class Graph(nx.DiGraph): # pylint: disable=too-many-public-methods
                 for i in range(n):
                     for j in range(m):
                         node = f"{name}_{i}_{j}"
+                        if node_type=="endpoint" and node_obj.is_compute_tile:
+                            node_obj = deepcopy(node_obj)
+                            node_obj.tile_id = tile_id
+                            tile_id += 1
                         self.add_node(node, type=node_type, arr_idx=(i, j), obj=node_obj)
                         if i > 0 and connect:
                             self.add_edge(

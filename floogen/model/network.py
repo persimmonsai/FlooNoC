@@ -27,6 +27,7 @@ from floogen.utils import clog2, idx_to_sv_idx
 import floogen.templates
 
 from copy import deepcopy
+import math
 
 class Network(BaseModel):  # pylint: disable=too-many-public-methods
     """
@@ -803,19 +804,26 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
         ep_eject_cp_tile_ni = []
         ep_eject_hbm_tile_ni = []
+        ep_eject_cp_tile_node = []
         for i in range(len(ep_eject_node)):
             if ep_eject_node[i].is_compute_tile:
                 ep_eject_cp_tile_ni.append(ep_eject_ni[i])
+                ep_eject_cp_tile_node.append(ep_eject_node[i])
             if ep_eject_node[i].is_hbm_tile:
                 ep_eject_hbm_tile_ni.append(ep_eject_ni[i])
             if (ep_eject_node[i].is_compute_tile and ep_eject_node[i].is_hbm_tile):
                 raise ValueError("is_compute_tile and is_hbm_tile can't assert at the same time")
         string = ""
         rt_nodes = self.graph.get_rt_nodes()
+        tile_id_bit_num = int(math.ceil(math.log2(len(ep_eject_cp_tile_node))))
         for rt in rt_nodes:
             # Render compute tile
             if (rt.incoming.EJECT.source in ep_eject_cp_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_cp_tile_ni):
-                string += rt.render_compute_tile(self.routing.id_offset, self.routers[0].array, self.num_snitch_core)
+                for i in range(len(ep_eject_cp_tile_ni)):
+                    if ((rt.incoming.EJECT.source==ep_eject_cp_tile_ni[i]) or (rt.outgoing.EJECT.dest==ep_eject_cp_tile_ni[i])):
+                        ep_node = ep_eject_cp_tile_node[i]
+                        break
+                string += rt.render_compute_tile(self.routing.id_offset, tile_id_bit_num, ep_node.tile_id, self.num_snitch_core)
             # Render hbm tile
             elif (rt.incoming.EJECT.source in ep_eject_hbm_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_hbm_tile_ni):
                 string += rt.render_hbm_tile(self.routing.id_offset, self.routers[0].array)

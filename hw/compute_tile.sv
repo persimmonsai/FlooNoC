@@ -20,9 +20,9 @@ module compute_tile
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
     
-    input  logic [1:0]   meip_i,
-    input  logic [1:0]   mtip_i,
-    input  logic [1:0]   msip_i,
+    input  logic [16:0]   meip_i,
+    input  logic [16:0]   mtip_i,
+    input  logic [16:0]   msip_i,
     input  logic [4:0]   tile_id_i,
 
     input  id_t                         id_i, // XY ID for router and cluster NI

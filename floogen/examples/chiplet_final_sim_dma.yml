@@ -77,17 +77,18 @@ endpoints:
     id_offset:
       x: 0 # 0 to 2
       y: 0 # 0 to 3
-  - name: "quadrant_ctrl_l"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [3, 4]
-    addr_range:
-      base: 0x0000_0F00_0000
-      size: 0x0000_0001_0000 # size per single quadrant control per compute tile
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 0 # 0 to 2
-      y: 0 # 0 to 3
+  # **** Warning: sub address simulation is not support for the current version
+  # - name: "quadrant_ctrl_l"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [3, 4]
+  #   addr_range:
+  #     base: 0x0000_0F00_0000
+  #     size: 0x0000_0001_0000 # size per single quadrant control per compute tile
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 0 # 0 to 2
+  #     y: 0 # 0 to 3
   # 3x4 right side compute tile network
   - name: "cluster_r"
     is_compute_tile: true # Replace this endpoint with compute tile structure
@@ -105,23 +106,23 @@ endpoints:
     id_offset:
       x: 4 # 4 to 6
       y: 0 # 0 to 3
-  - name: "quadrant_ctrl_r"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [3, 4]
-    addr_range:
-      base: 0x0000_0F0C_0000
-      size: 0x0000_0001_0000 # size per single quadrant control per compute tile
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 4 # 4 to 6
-      y: 0 # 0 to 3
+  # - name: "quadrant_ctrl_r"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [3, 4]
+  #   addr_range:
+  #     base: 0x0000_0F0C_0000
+  #     size: 0x0000_0001_0000 # size per single quadrant control per compute tile
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 4 # 4 to 6
+  #     y: 0 # 0 to 3
 # Define endpoint for each border side (North, East, South, and West)
   ##### North border
   # HBM memory
   # Split to allocate within 32-bit address for snitch cluster that is 32-bit processor
   - name: "hbm_north_dram_0"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     addr_range:
       base: 0x0000_8000_0000
       size: 0x0000_4000_0000 # 1 GiB
@@ -131,18 +132,18 @@ endpoints:
     id_offset:
       x: 2
       y: 4 # mean border of the north side
-  - name: "hbm_north_dram_0_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    addr_range:
-      base: 0x0000_0C00_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 2
-      y: 4 # mean border of the north side
+  # - name: "hbm_north_dram_0_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C00_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 2
+  #     y: 4 # mean border of the north side
   - name: "hbm_north_dram_1"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     addr_range:
       base: 0x0000_C000_0000
       size: 0x0000_4000_0000 # 1 GiB
@@ -152,18 +153,18 @@ endpoints:
     id_offset:
       x: 4
       y: 4 # mean border of the north side
-  - name: "hbm_north_dram_1_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    addr_range:
-      base: 0x0000_0C10_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 4
-      y: 4 # mean border of the north side
+  # - name: "hbm_north_dram_1_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C10_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 4
+  #     y: 4 # mean border of the north side
   - name: "hbm_north_2"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     addr_range:
       base: 0x0010_0000_0000
       size: 0x0000_4000_0000 # 1 GiB
@@ -173,18 +174,18 @@ endpoints:
     id_offset:
       x: 1
       y: 4 # mean border of the north side
-  - name: "hbm_north_2_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    addr_range:
-      base: 0x0000_0C20_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 1
-      y: 4 # mean border of the north side
+  # - name: "hbm_north_2_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C20_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 1
+  #     y: 4 # mean border of the north side
   - name: "hbm_north_3"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     addr_range:
       base: 0x0010_4000_0000
       size: 0x0000_4000_0000 # 1 GiB
@@ -194,20 +195,20 @@ endpoints:
     id_offset:
       x: 5
       y: 4 # mean border of the north side
-  - name: "hbm_north_3_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    addr_range:
-      base: 0x0000_0C30_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 5
-      y: 4 # mean border of the north side
+  # - name: "hbm_north_3_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C30_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 5
+  #     y: 4 # mean border of the north side
   ##### South border
   # HBM memory
   - name: "hbm_south_0"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [2, 1]
     addr_range:
       base: 0x0010_8000_0000
@@ -218,19 +219,19 @@ endpoints:
     id_offset:
       x: 1 # 1 to 2
       y: -1 # -1 mean border of the south side
-  - name: "hbm_south_0_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [2, 1]
-    addr_range:
-      base: 0x0000_0C40_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 1 # 1 to 2
-      y: -1 # -1 mean border of the south side
+  # - name: "hbm_south_0_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [2, 1]
+  #   addr_range:
+  #     base: 0x0000_0C40_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 1 # 1 to 2
+  #     y: -1 # -1 mean border of the south side
   - name: "hbm_south_2"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [2, 1]
     addr_range:
       base: 0x0011_0000_0000
@@ -241,20 +242,20 @@ endpoints:
     id_offset:
       x: 4 # 4 to 5
       y: -1 # -1 mean border of the south side
-  - name: "hbm_south_2_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [2, 1]
-    addr_range:
-      base: 0x0000_0C60_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 4 # 4 to 5
-      y: -1 # -1 mean border of the south side
+  # - name: "hbm_south_2_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [2, 1]
+  #   addr_range:
+  #     base: 0x0000_0C60_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 4 # 4 to 5
+  #     y: -1 # -1 mean border of the south side
   ##### West border
   - name: "hbm_west"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [1, 4]
     addr_range:
       base: 0x0011_8000_0000
@@ -265,20 +266,20 @@ endpoints:
     id_offset:
       x: -1
       y: 0 # 0 to 3
-  - name: "hbm_west_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [1, 4]
-    addr_range:
-      base: 0x0000_0C80_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: -1
-      y: 0 # 0 to 3
+  # - name: "hbm_west_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [1, 4]
+  #   addr_range:
+  #     base: 0x0000_0C80_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: -1
+  #     y: 0 # 0 to 3
   ##### East border
   - name: "hbm_east"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
     array: [1, 4]
     addr_range:
       base: 0x0012_8000_0000
@@ -289,17 +290,17 @@ endpoints:
     id_offset:
       x: 7
       y: 0 # 0 to 3
-  - name: "hbm_east_cfg"
-    is_sub_addr : true # must not use this endpoint on "connections" section
-    array: [1, 4]
-    addr_range:
-      base: 0x0000_0CC0_0000
-      size: 0x0000_0010_0000
-    sbr_port_protocol:
-      - "narrow"
-    id_offset:
-      x: 7
-      y: 0 # 0 to 3
+  # - name: "hbm_east_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [1, 4]
+  #   addr_range:
+  #     base: 0x0000_0CC0_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 7
+  #     y: 0 # 0 to 3
   ##### Center
   # iDMA, narrow configuration and wide transfer data
   - name: "idma"
@@ -307,9 +308,11 @@ endpoints:
       base: 0x0000_1100_0000
       size: 0x0000_0001_0000 # 64 kiB
     mgr_port_protocol:
+      - "narrow" # Add for simulation purpose
       - "wide"
     sbr_port_protocol:
       - "narrow" # iDMA frontend configuration
+      - "wide" # Add for simulation purpose
     id_offset:
       x: 3
       y: 4
@@ -326,10 +329,16 @@ endpoints:
       y: 3
   # CVA6
   - name: "cva6"
-    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # No slave port so no endpoint address assign to its
+    addr_range:
+      base: 0x8000_0000_0000 # Add for simulation purpose
+      size: 0x0000_0010_0000 # Add for simulation purpose
     # No slave port so no endpoint address assign to its
     mgr_port_protocol:
       - "narrow"
+    sbr_port_protocol:
+      - "narrow" # Add for simulation purpose
     id_offset:
       x: 3
       y: 2

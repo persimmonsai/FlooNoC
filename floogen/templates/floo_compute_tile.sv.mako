@@ -10,10 +10,6 @@
 <% compute_tile_name = "compute_tile_" + str(router.id.x) + "_" + str(router.id.y) %>\
 <% compute_tile_id = compute_tile_name + "_id" %>\
 <% actual_xy_id = router.id - id_offset %>\
-<% NUM_X = xy_array[0] %>\
-<% NUM_Y = xy_array[1] %>\
-<% tile_id = router.id.x*NUM_Y + router.id.y %>\
-<% tile_id_bit_num = int(math.ceil(math.log2(NUM_X*NUM_Y))) %>\
 <% sv_array_irq = "[{}:{}]".format((tile_id+1)*num_snitch_core, tile_id*num_snitch_core+1) %>\
 
 ${req_type} [West:North] ${router.name}_req_in;
