@@ -4,6 +4,7 @@
 <% req_type = next(d for d in router.incoming._asdict().values() if d is not None).req_type %>\
 <% rsp_type = next(d for d in router.incoming._asdict().values() if d is not None).rsp_type %>\
 <% wide_type = next(d for d in router.incoming._asdict().values() if d is not None).wide_type %>\
+<% actual_xy_id = router.id - id_offset %>\
 <% router_id = router.name + "_id" %>\
 
 ${req_type} [NumDirections-1:0] ${router.name}_req_in;
@@ -43,15 +44,16 @@ ${wide_type} [NumDirections-1:0] ${router.name}_wide_out;
   % endif
 % endfor
 
-localparam id_t ${router_id} = ${router.id.render()};
+localparam id_t ${router_id} = ${actual_xy_id.render()};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
   .ChannelFifoDepth (2),
   .OutputFifoDepth (2),
   .RouteAlgo (XYRouting),
+  .XYRouteOpt(XYRouteOpt),
   .id_t(id_t),
-  .border_id_t(border_id_t),
-  .BorderId(BorderId)
+  .border_id_t(floo_narrow_wide_pkg::border_id_t),
+  .BorderId(floo_narrow_wide_pkg::BorderId)
 ) ${router.name} (
   .clk_i,
   .rst_ni,

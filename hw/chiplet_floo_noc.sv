@@ -273,6 +273,10 @@ floo_req_t router_3_0_to_router_4_0_req;
 floo_rsp_t router_4_0_to_router_3_0_rsp;
 floo_wide_t router_3_0_to_router_4_0_wide;
 
+floo_req_t router_3_0_to_jtag_ni_req;
+floo_rsp_t jtag_ni_to_router_3_0_rsp;
+floo_wide_t router_3_0_to_jtag_ni_wide;
+
 floo_req_t router_3_0_to_zero_mem_ni_req;
 floo_rsp_t zero_mem_ni_to_router_3_0_rsp;
 floo_wide_t router_3_0_to_zero_mem_ni_wide;
@@ -293,6 +297,10 @@ floo_req_t router_3_1_to_router_4_1_req;
 floo_rsp_t router_4_1_to_router_3_1_rsp;
 floo_wide_t router_3_1_to_router_4_1_wide;
 
+floo_req_t router_3_1_to_peripherals_ni_req;
+floo_rsp_t peripherals_ni_to_router_3_1_rsp;
+floo_wide_t router_3_1_to_peripherals_ni_wide;
+
 floo_req_t router_3_2_to_router_2_2_req;
 floo_rsp_t router_2_2_to_router_3_2_rsp;
 floo_wide_t router_3_2_to_router_2_2_wide;
@@ -309,6 +317,10 @@ floo_req_t router_3_2_to_router_4_2_req;
 floo_rsp_t router_4_2_to_router_3_2_rsp;
 floo_wide_t router_3_2_to_router_4_2_wide;
 
+floo_req_t router_3_2_to_cva6_ni_req;
+floo_rsp_t cva6_ni_to_router_3_2_rsp;
+floo_wide_t router_3_2_to_cva6_ni_wide;
+
 floo_req_t router_3_3_to_router_2_3_req;
 floo_rsp_t router_2_3_to_router_3_3_rsp;
 floo_wide_t router_3_3_to_router_2_3_wide;
@@ -324,6 +336,10 @@ floo_wide_t router_3_3_to_router_4_3_wide;
 floo_req_t router_3_3_to_idma_ni_req;
 floo_rsp_t idma_ni_to_router_3_3_rsp;
 floo_wide_t router_3_3_to_idma_ni_wide;
+
+floo_req_t router_3_3_to_spm_ni_req;
+floo_rsp_t spm_ni_to_router_3_3_rsp;
+floo_wide_t router_3_3_to_spm_ni_wide;
 
 floo_req_t router_4_0_to_router_3_0_req;
 floo_rsp_t router_3_0_to_router_4_0_rsp;
@@ -576,6 +592,22 @@ floo_wide_t hbm_east_ni_0_3_to_router_6_3_wide;
 floo_req_t idma_ni_to_router_3_3_req;
 floo_rsp_t router_3_3_to_idma_ni_rsp;
 floo_wide_t idma_ni_to_router_3_3_wide;
+
+floo_req_t spm_ni_to_router_3_3_req;
+floo_rsp_t router_3_3_to_spm_ni_rsp;
+floo_wide_t spm_ni_to_router_3_3_wide;
+
+floo_req_t cva6_ni_to_router_3_2_req;
+floo_rsp_t router_3_2_to_cva6_ni_rsp;
+floo_wide_t cva6_ni_to_router_3_2_wide;
+
+floo_req_t peripherals_ni_to_router_3_1_req;
+floo_rsp_t router_3_1_to_peripherals_ni_rsp;
+floo_wide_t peripherals_ni_to_router_3_1_wide;
+
+floo_req_t jtag_ni_to_router_3_0_req;
+floo_rsp_t router_3_0_to_jtag_ni_rsp;
+floo_wide_t jtag_ni_to_router_3_0_wide;
 
 floo_req_t zero_mem_ni_to_router_3_0_req;
 floo_rsp_t router_3_0_to_zero_mem_ni_rsp;
@@ -2059,15 +2091,16 @@ floo_wide_t [NumDirections-1:0] router_3_0_wide_out;
   assign router_3_0_to_zero_mem_ni_wide = router_3_0_wide_out[South];
   assign router_3_0_to_router_2_0_wide = router_3_0_wide_out[West];
 
-localparam id_t router_3_0_id = '{x: 3, y: 0};
+localparam id_t router_3_0_id = '{x: 4, y: 1};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
   .ChannelFifoDepth (2),
   .OutputFifoDepth (2),
   .RouteAlgo (XYRouting),
+  .XYRouteOpt(XYRouteOpt),
   .id_t(id_t),
-  .border_id_t(border_id_t),
-  .BorderId(BorderId)
+  .border_id_t(floo_narrow_wide_pkg::border_id_t),
+  .BorderId(floo_narrow_wide_pkg::BorderId)
 ) router_3_0 (
   .clk_i,
   .rst_ni,
@@ -2126,15 +2159,16 @@ floo_wide_t [NumDirections-1:0] router_3_1_wide_out;
   assign router_3_1_to_router_3_0_wide = router_3_1_wide_out[South];
   assign router_3_1_to_router_2_1_wide = router_3_1_wide_out[West];
 
-localparam id_t router_3_1_id = '{x: 3, y: 1};
+localparam id_t router_3_1_id = '{x: 4, y: 2};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
   .ChannelFifoDepth (2),
   .OutputFifoDepth (2),
   .RouteAlgo (XYRouting),
+  .XYRouteOpt(XYRouteOpt),
   .id_t(id_t),
-  .border_id_t(border_id_t),
-  .BorderId(BorderId)
+  .border_id_t(floo_narrow_wide_pkg::border_id_t),
+  .BorderId(floo_narrow_wide_pkg::BorderId)
 ) router_3_1 (
   .clk_i,
   .rst_ni,
@@ -2193,15 +2227,16 @@ floo_wide_t [NumDirections-1:0] router_3_2_wide_out;
   assign router_3_2_to_router_3_1_wide = router_3_2_wide_out[South];
   assign router_3_2_to_router_2_2_wide = router_3_2_wide_out[West];
 
-localparam id_t router_3_2_id = '{x: 3, y: 2};
+localparam id_t router_3_2_id = '{x: 4, y: 3};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
   .ChannelFifoDepth (2),
   .OutputFifoDepth (2),
   .RouteAlgo (XYRouting),
+  .XYRouteOpt(XYRouteOpt),
   .id_t(id_t),
-  .border_id_t(border_id_t),
-  .BorderId(BorderId)
+  .border_id_t(floo_narrow_wide_pkg::border_id_t),
+  .BorderId(floo_narrow_wide_pkg::BorderId)
 ) router_3_2 (
   .clk_i,
   .rst_ni,
@@ -2260,15 +2295,16 @@ floo_wide_t [NumDirections-1:0] router_3_3_wide_out;
   assign router_3_3_to_router_3_2_wide = router_3_3_wide_out[South];
   assign router_3_3_to_router_2_3_wide = router_3_3_wide_out[West];
 
-localparam id_t router_3_3_id = '{x: 3, y: 3};
+localparam id_t router_3_3_id = '{x: 4, y: 4};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
   .ChannelFifoDepth (2),
   .OutputFifoDepth (2),
   .RouteAlgo (XYRouting),
+  .XYRouteOpt(XYRouteOpt),
   .id_t(id_t),
-  .border_id_t(border_id_t),
-  .BorderId(BorderId)
+  .border_id_t(floo_narrow_wide_pkg::border_id_t),
+  .BorderId(floo_narrow_wide_pkg::BorderId)
 ) router_3_3 (
   .clk_i,
   .rst_ni,

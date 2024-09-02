@@ -790,7 +790,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         for i in range(len(ep_eject_node)):
             if (ep_eject_node[i].is_compute_tile or ep_eject_node[i].is_hbm_tile):
                 ep_eject_tile_ni.append(ep_eject_ni[i])
-        links = [li for li in links if (li.source not in ep_eject_ni) and (li.dest not in ep_eject_ni)]
+        links = [li for li in links if (li.source not in ep_eject_tile_ni) and (li.dest not in ep_eject_tile_ni)]
         # Exclude export NI endpoint
         ep_export_ni = self.get_export_ni_name()
         links = [li for li in links if (li.source not in ep_export_ni) and (li.dest not in ep_export_ni)]
@@ -828,7 +828,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             elif (rt.incoming.EJECT.source in ep_eject_hbm_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_hbm_tile_ni):
                 string += rt.render_hbm_tile(self.routing.id_offset, self.routers[0].array)
             else:
-                string += rt.render()
+                string += rt.render(self.routing.id_offset)
         return string
 
     def render_nis(self):

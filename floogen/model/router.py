@@ -70,7 +70,7 @@ class XYRouter(BaseModel, ABC):
     id: Coord
 
     @abstractmethod
-    def render(self):
+    def render(self, id_offset):
         """Declare the router in the generated code."""
 
 
@@ -105,9 +105,9 @@ class NarrowWideXYRouter(XYRouter):
     ) as _tpl_path:
         _tpl_hbm_tile: ClassVar = Template(filename=str(_tpl_path))
 
-    def render(self):
+    def render(self, id_offset):
         """Declare the router in the generated code."""
-        return self._tpl.render(router=self) + "\n"
+        return self._tpl.render(router=self, id_offset=id_offset) + "\n"
 
     def render_compute_tile(self, id_offset, tile_id_bit_num, tile_id, num_snitch_core):
         """Declare the compute tile in the generated code."""
