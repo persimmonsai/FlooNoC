@@ -70,7 +70,7 @@ class XYRouter(BaseModel, ABC):
     id: Coord
 
     @abstractmethod
-    def render(self):
+    def render(self, id_offset):
         """Declare the router in the generated code."""
 
 
@@ -98,12 +98,21 @@ class NarrowWideXYRouter(XYRouter):
     with as_file(
         files(floogen.templates).joinpath("floo_compute_tile.sv.mako")
     ) as _tpl_path:
-        _tpl_tile: ClassVar = Template(filename=str(_tpl_path))
+        _tpl_compute_tile: ClassVar = Template(filename=str(_tpl_path))
+        
+    with as_file(
+        files(floogen.templates).joinpath("floo_hbm_tile.sv.mako")
+    ) as _tpl_path:
+        _tpl_hbm_tile: ClassVar = Template(filename=str(_tpl_path))
 
-    def render(self):
+    def render(self, id_offset):
         """Declare the router in the generated code."""
-        return self._tpl.render(router=self) + "\n"
+        return self._tpl.render(router=self, id_offset=id_offset) + "\n"
 
-    def render_tile(self, id_offset, xy_array, num_snitch_core):
+    def render_compute_tile(self, id_offset, tile_id_bit_num, tile_id, num_snitch_core):
         """Declare the compute tile in the generated code."""
-        return self._tpl_tile.render(router=self, id_offset=id_offset, xy_array=xy_array, num_snitch_core=num_snitch_core) + "\n"
+        return self._tpl_compute_tile.render(router=self, id_offset=id_offset, tile_id_bit_num=tile_id_bit_num, tile_id=tile_id, num_snitch_core=num_snitch_core) + "\n"
+
+    def render_hbm_tile(self, id_offset, xy_array):
+        """Declare the hbm tile in the generated code."""
+        return self._tpl_hbm_tile.render(router=self, id_offset=id_offset, xy_array=xy_array) + "\n"

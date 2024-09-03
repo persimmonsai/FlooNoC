@@ -156,7 +156,7 @@ package floo_narrow_wide_pkg;
   localparam int unsigned NumYBits = 3;
   localparam int unsigned XYAddrOffsetX = 48;
   localparam int unsigned XYAddrOffsetY = 52;
-  localparam border_id_t BorderId = '{north: 5, west: 0, south: 0, east: 9};
+  localparam border_id_t BorderId = '{north: 5, west: 0, south: 0, east: 8};
   localparam int unsigned IdAddrOffset = 0;
 
 
@@ -176,7 +176,7 @@ package floo_narrow_wide_pkg;
   //   Address Map   //
   /////////////////////
 
-  localparam int unsigned SamNumRules = 56;
+  localparam int unsigned SamNumRules = 46;
 
   typedef struct packed {
     id_t idx;
@@ -189,281 +189,231 @@ package floo_narrow_wide_pkg;
           idx: '{x: 1, y: 1},
           start_addr: 48'h000010000000,
           end_addr: 48'h000010040000
-      },  // cluster_ni_0_0
+      },  // cluster_l_ni_0_0
       '{
           idx: '{x: 1, y: 2},
           start_addr: 48'h000010040000,
           end_addr: 48'h000010080000
-      },  // cluster_ni_0_1
+      },  // cluster_l_ni_0_1
       '{
           idx: '{x: 1, y: 3},
           start_addr: 48'h000010080000,
           end_addr: 48'h0000100c0000
-      },  // cluster_ni_0_2
+      },  // cluster_l_ni_0_2
       '{
           idx: '{x: 1, y: 4},
           start_addr: 48'h0000100c0000,
           end_addr: 48'h000010100000
-      },  // cluster_ni_0_3
+      },  // cluster_l_ni_0_3
       '{
           idx: '{x: 2, y: 1},
           start_addr: 48'h000010100000,
           end_addr: 48'h000010140000
-      },  // cluster_ni_1_0
+      },  // cluster_l_ni_1_0
       '{
           idx: '{x: 2, y: 2},
           start_addr: 48'h000010140000,
           end_addr: 48'h000010180000
-      },  // cluster_ni_1_1
+      },  // cluster_l_ni_1_1
       '{
           idx: '{x: 2, y: 3},
           start_addr: 48'h000010180000,
           end_addr: 48'h0000101c0000
-      },  // cluster_ni_1_2
+      },  // cluster_l_ni_1_2
       '{
           idx: '{x: 2, y: 4},
           start_addr: 48'h0000101c0000,
           end_addr: 48'h000010200000
-      },  // cluster_ni_1_3
+      },  // cluster_l_ni_1_3
       '{
           idx: '{x: 3, y: 1},
           start_addr: 48'h000010200000,
           end_addr: 48'h000010240000
-      },  // cluster_ni_2_0
+      },  // cluster_l_ni_2_0
       '{
           idx: '{x: 3, y: 2},
           start_addr: 48'h000010240000,
           end_addr: 48'h000010280000
-      },  // cluster_ni_2_1
+      },  // cluster_l_ni_2_1
       '{
           idx: '{x: 3, y: 3},
           start_addr: 48'h000010280000,
           end_addr: 48'h0000102c0000
-      },  // cluster_ni_2_2
+      },  // cluster_l_ni_2_2
       '{
           idx: '{x: 3, y: 4},
           start_addr: 48'h0000102c0000,
           end_addr: 48'h000010300000
-      },  // cluster_ni_2_3
-      '{
-          idx: '{x: 4, y: 1},
-          start_addr: 48'h000010300000,
-          end_addr: 48'h000010340000
-      },  // cluster_ni_3_0
-      '{
-          idx: '{x: 4, y: 2},
-          start_addr: 48'h000010340000,
-          end_addr: 48'h000010380000
-      },  // cluster_ni_3_1
-      '{
-          idx: '{x: 4, y: 3},
-          start_addr: 48'h000010380000,
-          end_addr: 48'h0000103c0000
-      },  // cluster_ni_3_2
-      '{
-          idx: '{x: 4, y: 4},
-          start_addr: 48'h0000103c0000,
-          end_addr: 48'h000010400000
-      },  // cluster_ni_3_3
+      },  // cluster_l_ni_2_3
       '{
           idx: '{x: 5, y: 1},
-          start_addr: 48'h000010400000,
-          end_addr: 48'h000010440000
-      },  // cluster_ni_4_0
+          start_addr: 48'h000010300000,
+          end_addr: 48'h000010340000
+      },  // cluster_r_ni_0_0
       '{
           idx: '{x: 5, y: 2},
-          start_addr: 48'h000010440000,
-          end_addr: 48'h000010480000
-      },  // cluster_ni_4_1
+          start_addr: 48'h000010340000,
+          end_addr: 48'h000010380000
+      },  // cluster_r_ni_0_1
       '{
           idx: '{x: 5, y: 3},
-          start_addr: 48'h000010480000,
-          end_addr: 48'h0000104c0000
-      },  // cluster_ni_4_2
+          start_addr: 48'h000010380000,
+          end_addr: 48'h0000103c0000
+      },  // cluster_r_ni_0_2
       '{
           idx: '{x: 5, y: 4},
-          start_addr: 48'h0000104c0000,
-          end_addr: 48'h000010500000
-      },  // cluster_ni_4_3
+          start_addr: 48'h0000103c0000,
+          end_addr: 48'h000010400000
+      },  // cluster_r_ni_0_3
       '{
           idx: '{x: 6, y: 1},
-          start_addr: 48'h000010500000,
-          end_addr: 48'h000010540000
-      },  // cluster_ni_5_0
+          start_addr: 48'h000010400000,
+          end_addr: 48'h000010440000
+      },  // cluster_r_ni_1_0
       '{
           idx: '{x: 6, y: 2},
-          start_addr: 48'h000010540000,
-          end_addr: 48'h000010580000
-      },  // cluster_ni_5_1
+          start_addr: 48'h000010440000,
+          end_addr: 48'h000010480000
+      },  // cluster_r_ni_1_1
       '{
           idx: '{x: 6, y: 3},
-          start_addr: 48'h000010580000,
-          end_addr: 48'h0000105c0000
-      },  // cluster_ni_5_2
+          start_addr: 48'h000010480000,
+          end_addr: 48'h0000104c0000
+      },  // cluster_r_ni_1_2
       '{
           idx: '{x: 6, y: 4},
-          start_addr: 48'h0000105c0000,
-          end_addr: 48'h000010600000
-      },  // cluster_ni_5_3
+          start_addr: 48'h0000104c0000,
+          end_addr: 48'h000010500000
+      },  // cluster_r_ni_1_3
       '{
           idx: '{x: 7, y: 1},
-          start_addr: 48'h000010600000,
-          end_addr: 48'h000010640000
-      },  // cluster_ni_6_0
+          start_addr: 48'h000010500000,
+          end_addr: 48'h000010540000
+      },  // cluster_r_ni_2_0
       '{
           idx: '{x: 7, y: 2},
-          start_addr: 48'h000010640000,
-          end_addr: 48'h000010680000
-      },  // cluster_ni_6_1
+          start_addr: 48'h000010540000,
+          end_addr: 48'h000010580000
+      },  // cluster_r_ni_2_1
       '{
           idx: '{x: 7, y: 3},
-          start_addr: 48'h000010680000,
-          end_addr: 48'h0000106c0000
-      },  // cluster_ni_6_2
+          start_addr: 48'h000010580000,
+          end_addr: 48'h0000105c0000
+      },  // cluster_r_ni_2_2
       '{
           idx: '{x: 7, y: 4},
-          start_addr: 48'h0000106c0000,
-          end_addr: 48'h000010700000
-      },  // cluster_ni_6_3
-      '{
-          idx: '{x: 8, y: 1},
-          start_addr: 48'h000010700000,
-          end_addr: 48'h000010740000
-      },  // cluster_ni_7_0
-      '{
-          idx: '{x: 8, y: 2},
-          start_addr: 48'h000010740000,
-          end_addr: 48'h000010780000
-      },  // cluster_ni_7_1
-      '{
-          idx: '{x: 8, y: 3},
-          start_addr: 48'h000010780000,
-          end_addr: 48'h0000107c0000
-      },  // cluster_ni_7_2
-      '{
-          idx: '{x: 8, y: 4},
-          start_addr: 48'h0000107c0000,
-          end_addr: 48'h000010800000
-      },  // cluster_ni_7_3
-      '{
-          idx: '{x: 1, y: 5},
-          start_addr: 48'h001000000000,
-          end_addr: 48'h001040000000
-      },  // hbm_north_ni_0_0
-      '{
-          idx: '{x: 2, y: 5},
-          start_addr: 48'h001040000000,
-          end_addr: 48'h001080000000
-      },  // hbm_north_ni_1_0
+          start_addr: 48'h0000105c0000,
+          end_addr: 48'h000010600000
+      },  // cluster_r_ni_2_3
       '{
           idx: '{x: 3, y: 5},
-          start_addr: 48'h001080000000,
-          end_addr: 48'h0010c0000000
-      },  // hbm_north_ni_2_0
-      '{
-          idx: '{x: 4, y: 5},
-          start_addr: 48'h0010c0000000,
-          end_addr: 48'h001100000000
-      },  // hbm_north_ni_3_0
+          start_addr: 48'h000080000000,
+          end_addr: 48'h0000c0000000
+      },  // hbm_north_dram_0_ni
       '{
           idx: '{x: 5, y: 5},
-          start_addr: 48'h001100000000,
-          end_addr: 48'h001140000000
-      },  // hbm_north_ni_4_0
+          start_addr: 48'h0000c0000000,
+          end_addr: 48'h000100000000
+      },  // hbm_north_dram_1_ni
+      '{
+          idx: '{x: 2, y: 5},
+          start_addr: 48'h001000000000,
+          end_addr: 48'h001040000000
+      },  // hbm_north_2_ni
       '{
           idx: '{x: 6, y: 5},
-          start_addr: 48'h001140000000,
-          end_addr: 48'h001180000000
-      },  // hbm_north_ni_5_0
-      '{
-          idx: '{x: 7, y: 5},
-          start_addr: 48'h001180000000,
-          end_addr: 48'h0011c0000000
-      },  // hbm_north_ni_6_0
-      '{
-          idx: '{x: 8, y: 5},
-          start_addr: 48'h0011c0000000,
-          end_addr: 48'h001200000000
-      },  // hbm_north_ni_7_0
-      '{
-          idx: '{x: 1, y: 0},
-          start_addr: 48'h000200000000,
-          end_addr: 48'h000240000000
-      },  // hbm_south_ni_0_0
+          start_addr: 48'h001040000000,
+          end_addr: 48'h001080000000
+      },  // hbm_north_3_ni
       '{
           idx: '{x: 2, y: 0},
-          start_addr: 48'h000240000000,
-          end_addr: 48'h000280000000
-      },  // hbm_south_ni_1_0
+          start_addr: 48'h001080000000,
+          end_addr: 48'h0010c0000000
+      },  // hbm_south_0_ni_0_0
       '{
           idx: '{x: 3, y: 0},
-          start_addr: 48'h000280000000,
-          end_addr: 48'h0002c0000000
-      },  // hbm_south_ni_2_0
-      '{
-          idx: '{x: 4, y: 0},
-          start_addr: 48'h0002c0000000,
-          end_addr: 48'h000300000000
-      },  // hbm_south_ni_3_0
+          start_addr: 48'h0010c0000000,
+          end_addr: 48'h001100000000
+      },  // hbm_south_0_ni_1_0
       '{
           idx: '{x: 5, y: 0},
-          start_addr: 48'h000300000000,
-          end_addr: 48'h000340000000
-      },  // hbm_south_ni_4_0
+          start_addr: 48'h001100000000,
+          end_addr: 48'h001140000000
+      },  // hbm_south_2_ni_0_0
       '{
           idx: '{x: 6, y: 0},
-          start_addr: 48'h000340000000,
-          end_addr: 48'h000380000000
-      },  // hbm_south_ni_5_0
-      '{
-          idx: '{x: 7, y: 0},
-          start_addr: 48'h000380000000,
-          end_addr: 48'h0003c0000000
-      },  // hbm_south_ni_6_0
-      '{
-          idx: '{x: 8, y: 0},
-          start_addr: 48'h0003c0000000,
-          end_addr: 48'h000400000000
-      },  // hbm_south_ni_7_0
-      '{
-          idx: '{x: 0, y: 4},
-          start_addr: 48'h000020000000,
-          end_addr: 48'h000070000000
-      },  // pcie_ni
-      '{
-          idx: '{x: 0, y: 3},
-          start_addr: 48'h000001000000,
-          end_addr: 48'h00000f000000
-      },  // peripherals_ni
-      '{
-          idx: '{x: 0, y: 2},
-          start_addr: 48'h000000000000,
-          end_addr: 48'h000000001000
-      },  // jtag_ni
+          start_addr: 48'h001140000000,
+          end_addr: 48'h001180000000
+      },  // hbm_south_2_ni_1_0
       '{
           idx: '{x: 0, y: 1},
-          start_addr: 48'h800000000000,
-          end_addr: 48'h800000100000
-      },  // cva6_ni
+          start_addr: 48'h001180000000,
+          end_addr: 48'h0011c0000000
+      },  // hbm_west_ni_0_0
       '{
-          idx: '{x: 9, y: 4},
-          start_addr: 48'h000071000000,
-          end_addr: 48'h000071100000
-      },  // spm_wide_ni
+          idx: '{x: 0, y: 2},
+          start_addr: 48'h0011c0000000,
+          end_addr: 48'h001200000000
+      },  // hbm_west_ni_0_1
       '{
-          idx: '{x: 9, y: 3},
-          start_addr: 48'h000070000000,
-          end_addr: 48'h000070080000
-      },  // spm_narrow_ni
+          idx: '{x: 0, y: 3},
+          start_addr: 48'h001200000000,
+          end_addr: 48'h001240000000
+      },  // hbm_west_ni_0_2
       '{
-          idx: '{x: 9, y: 2},
+          idx: '{x: 0, y: 4},
+          start_addr: 48'h001240000000,
+          end_addr: 48'h001280000000
+      },  // hbm_west_ni_0_3
+      '{
+          idx: '{x: 8, y: 1},
+          start_addr: 48'h001280000000,
+          end_addr: 48'h0012c0000000
+      },  // hbm_east_ni_0_0
+      '{
+          idx: '{x: 8, y: 2},
+          start_addr: 48'h0012c0000000,
+          end_addr: 48'h001300000000
+      },  // hbm_east_ni_0_1
+      '{
+          idx: '{x: 8, y: 3},
+          start_addr: 48'h001300000000,
+          end_addr: 48'h001340000000
+      },  // hbm_east_ni_0_2
+      '{
+          idx: '{x: 8, y: 4},
+          start_addr: 48'h001340000000,
+          end_addr: 48'h001380000000
+      },  // hbm_east_ni_0_3
+      '{
+          idx: '{x: 4, y: 5},
           start_addr: 48'h000011000000,
           end_addr: 48'h000011010000
       },  // idma_ni
       '{
-          idx: '{x: 9, y: 1},
-          start_addr: 48'h008000000000,
-          end_addr: 48'h008200000000
+          idx: '{x: 4, y: 4},
+          start_addr: 48'h000071000000,
+          end_addr: 48'h000071100000
+      },  // spm_ni
+      '{
+          idx: '{x: 4, y: 3},
+          start_addr: 48'h800000000000,
+          end_addr: 48'h800000100000
+      },  // cva6_ni
+      '{
+          idx: '{x: 4, y: 2},
+          start_addr: 48'h000001000000,
+          end_addr: 48'h00000c000000
+      },  // peripherals_ni
+      '{
+          idx: '{x: 4, y: 1},
+          start_addr: 48'h000000000000,
+          end_addr: 48'h000000001000
+      },  // jtag_ni
+      '{
+          idx: '{x: 4, y: 0},
+          start_addr: 48'h000100000000,
+          end_addr: 48'h000300000000
       }  // zero_mem_ni
 
   };

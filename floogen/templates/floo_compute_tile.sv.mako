@@ -10,10 +10,6 @@
 <% compute_tile_name = "compute_tile_" + str(router.id.x) + "_" + str(router.id.y) %>\
 <% compute_tile_id = compute_tile_name + "_id" %>\
 <% actual_xy_id = router.id - id_offset %>\
-<% NUM_X = xy_array[0] %>\
-<% NUM_Y = xy_array[1] %>\
-<% tile_id = router.id.x*NUM_Y + router.id.y %>\
-<% tile_id_bit_num = int(math.ceil(math.log2(NUM_X*NUM_Y))) %>\
 <% sv_array_irq = "[{}:{}]".format((tile_id+1)*num_snitch_core, tile_id*num_snitch_core+1) %>\
 
 ${req_type} [West:North] ${router.name}_req_in;
@@ -25,10 +21,14 @@ ${wide_type} [West:North] ${router.name}_wide_out;
 
 % for dir, link in router.incoming._asdict().items():
   % if dir != 'EJECT':
-    % if link.export_ni:
-  assign ${router.name}_req_in[${camelcase(dir)}] = ${"'0" if link is None else "{}_floo_req_i{}".format(link.source_name,link.source_idx)};
+    % if link is not None:
+      % if link.export_ni:
+  assign ${router.name}_req_in[${camelcase(dir)}] = ${"{}_floo_req_i{}".format(link.source_name,link.source_idx)};
+      % else:
+  assign ${router.name}_req_in[${camelcase(dir)}] = ${link.req_name()};
+      % endif
     % else:
-  assign ${router.name}_req_in[${camelcase(dir)}] = ${"'0" if link is None else link.req_name()};
+  assign ${router.name}_req_in[${camelcase(dir)}] = '0;
     % endif
   % endif
 % endfor
@@ -55,20 +55,28 @@ ${wide_type} [West:North] ${router.name}_wide_out;
 
 % for dir, link in router.outgoing._asdict().items():
   % if dir != 'EJECT':
-    % if link.export_ni:
-  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"'0" if link is None else "{}_floo_rsp_i{}".format(link.dest_name,link.dest_idx)};
+    % if link is not None:
+      % if link.export_ni:
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"{}_floo_rsp_i{}".format(link.dest_name,link.dest_idx)};
+      % else:
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${link.rsp_name()};
+      % endif
     % else:
-  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"'0" if link is None else link.rsp_name()};
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = '0;
     % endif
   % endif
 % endfor
 
 % for dir, link in router.incoming._asdict().items():
   % if dir != 'EJECT':
-    % if link.export_ni:
-  assign ${router.name}_wide_in[${camelcase(dir)}] = ${"'0" if link is None else "{}_floo_wide_i{}".format(link.source_name,link.source_idx)};
+    % if link is not None:
+      % if link.export_ni:
+  assign ${router.name}_wide_in[${camelcase(dir)}] = ${"{}_floo_wide_i{}".format(link.source_name,link.source_idx)};
+      % else:
+  assign ${router.name}_wide_in[${camelcase(dir)}] = ${link.wide_name()};
+      % endif
     % else:
-  assign ${router.name}_wide_in[${camelcase(dir)}] = ${"'0" if link is None else link.wide_name()};
+  assign ${router.name}_wide_in[${camelcase(dir)}] = '0;
     % endif
   % endif
 % endfor

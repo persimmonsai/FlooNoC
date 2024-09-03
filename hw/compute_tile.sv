@@ -20,9 +20,9 @@ module compute_tile
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
     
-    input  logic [8:0]   meip_i,
-    input  logic [8:0]   mtip_i,
-    input  logic [8:0]   msip_i,
+    input  logic [16:0]   meip_i,
+    input  logic [16:0]   mtip_i,
+    input  logic [16:0]   msip_i,
     input  logic [4:0]   tile_id_i,
 
     input  id_t                         id_i, // XY ID for router and cluster NI
@@ -33,10 +33,6 @@ module compute_tile
     input  floo_rsp_t  [West:North]     floo_rsp_i,
     input  floo_wide_t [West:North]     floo_wide_i,
     output floo_wide_t [West:North]     floo_wide_o
-`ifndef TARGET_DMA_TEST
-    // SRAM configuration
-    ,input  occamy_pkg::sram_cfgs_t  sram_cfgs_i
-`endif
 );
   // --- Cluster to NI ---
   // in/out direction type that is declared in this scope is respect to NI
@@ -99,7 +95,7 @@ module compute_tile
     .quadrant_wide_in_req_i (ni_to_cluster_wide_req),
     .quadrant_wide_in_rsp_o (cluster_to_ni_wide_resp),
     // SRAM configuration
-    .sram_cfg_i (sram_cfgs_i.quadrant)
+    .sram_cfg_i ('0)
   );
 `endif
 

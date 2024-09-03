@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 overrides:
-    axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1 }
+    axi: { git: "git@github.com:persimmonsai/axi", version: 0.39.1 }

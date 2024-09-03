@@ -21,7 +21,7 @@ package compute_tile_array_test_pkg;
   localparam time TestTime = 8ns;
 
   // System parameters
-  localparam int unsigned NumX = 8;
+  localparam int unsigned NumX = 7;
   localparam int unsigned NumY = 4;
 
   localparam int unsigned HBMLatency = 100;  // latency in cycle before HBM sent response
