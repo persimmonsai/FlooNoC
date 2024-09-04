@@ -705,7 +705,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         sys_param_dict["xy_route_opt"] = self.routing.xy_route_opt
         sys_param_dict["x_num"] = self.routers[0].array[0]
         sys_param_dict["y_num"] = self.routers[0].array[1]
-        sys_param_dict["tile_id_list"] = self.get_export_tile_id()
+        sys_param_dict["tile_param_list"] = self.get_export_tile_id()
         for prot in self.protocols:
             if (prot.name=="narrow" and prot.svdirection=="input"):
                 sys_param_dict["narrow_in"] = dict()
@@ -737,19 +737,31 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         export_tile_id_list = []
         ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
         ep_eject_cp_tile_ni = []
+        ep_eject_cp_tile_node = []
         for i in range(len(ep_eject_node)):
             if ep_eject_node[i].is_compute_tile:
                 ep_eject_cp_tile_ni.append(ep_eject_ni[i])
+                ep_eject_cp_tile_node.append(ep_eject_node[i])
         rt_nodes = self.graph.get_rt_nodes()
         for rt in rt_nodes:
             # Render compute tile
             if (rt.incoming.EJECT.source in ep_eject_cp_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_cp_tile_ni):
-                tmp_tile_id = {} 
-                tmp_tile_id["id"] = {}
+                for i in range(len(ep_eject_cp_tile_ni)):
+                    if ((rt.incoming.EJECT.source==ep_eject_cp_tile_ni[i]) or (rt.outgoing.EJECT.dest==ep_eject_cp_tile_ni[i])):
+                        ni_node = self.graph.get_node_obj(ep_eject_cp_tile_ni[i])
+                        ep_node = ep_eject_cp_tile_node[i]
+                        break
+                tmp_tile_param = {} 
+                tmp_tile_param["id"] = {}
                 actual_xy_id = rt.id - self.routing.id_offset
-                tmp_tile_id["id"]["x"] = actual_xy_id.x
-                tmp_tile_id["id"]["y"] = actual_xy_id.y
-                export_tile_id_list.append(tmp_tile_id)
+                tmp_tile_param["id"]["x"] = actual_xy_id.x
+                tmp_tile_param["id"]["y"] = actual_xy_id.y
+                tmp_tile_param["tile_id"] = ep_node.tile_id # For checking if the address is okay by the rule of chipletgen
+                tmp_tile_param["addr"] = {}
+                tmp_tile_param["addr"]["base"] = ni_node.addr_range.base
+                tmp_tile_param["addr"]["start"] = ni_node.addr_range.start
+                tmp_tile_param["addr"]["size"] = ni_node.addr_range.size
+                export_tile_id_list.append(tmp_tile_param)
         return export_tile_id_list
     
     def get_export_ni_param(self):
