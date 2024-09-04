@@ -705,6 +705,7 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
         sys_param_dict["xy_route_opt"] = self.routing.xy_route_opt
         sys_param_dict["x_num"] = self.routers[0].array[0]
         sys_param_dict["y_num"] = self.routers[0].array[1]
+        sys_param_dict["tile_id_list"] = self.get_export_tile_id()
         for prot in self.protocols:
             if (prot.name=="narrow" and prot.svdirection=="input"):
                 sys_param_dict["narrow_in"] = dict()
@@ -731,6 +732,25 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
                 sys_param_dict["wide_out"]["dw"] = prot.data_width
                 sys_param_dict["wide_out"]["aw"] = prot.addr_width
         return sys_param_dict
+    
+    def get_export_tile_id(self):
+        export_tile_id_list = []
+        ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+        ep_eject_cp_tile_ni = []
+        for i in range(len(ep_eject_node)):
+            if ep_eject_node[i].is_compute_tile:
+                ep_eject_cp_tile_ni.append(ep_eject_ni[i])
+        rt_nodes = self.graph.get_rt_nodes()
+        for rt in rt_nodes:
+            # Render compute tile
+            if (rt.incoming.EJECT.source in ep_eject_cp_tile_ni) or (rt.outgoing.EJECT.dest in ep_eject_cp_tile_ni):
+                tmp_tile_id = {} 
+                tmp_tile_id["id"] = {}
+                actual_xy_id = rt.id - self.routing.id_offset
+                tmp_tile_id["id"]["x"] = actual_xy_id.x
+                tmp_tile_id["id"]["y"] = actual_xy_id.y
+                export_tile_id_list.append(tmp_tile_id)
+        return export_tile_id_list
     
     def get_export_ni_param(self):
         ni_nodes = self.graph.get_ni_nodes()
