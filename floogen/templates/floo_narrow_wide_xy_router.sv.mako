@@ -15,32 +15,68 @@ ${wide_type} [NumDirections-1:0] ${router.name}_wide_in;
 ${wide_type} [NumDirections-1:0] ${router.name}_wide_out;
 
 % for dir, link in router.incoming._asdict().items():
-  assign ${router.name}_req_in[${camelcase(dir)}] = ${"'0" if link is None else link.req_name()};
+  % if link is not None:
+    % if link.export_ni:
+  assign ${router.name}_req_in[${camelcase(dir)}] = ${"{}_floo_req_i{}".format(link.source_name,link.source_idx)};
+    % else:
+  assign ${router.name}_req_in[${camelcase(dir)}] = ${link.req_name()};
+    % endif
+  % else:
+  assign ${router.name}_req_in[${camelcase(dir)}] = '0;
+  % endif
 % endfor
 
 % for dir, link in router.incoming._asdict().items():
   % if link is not None:
+    % if link.export_ni:
+  assign ${"{}_floo_rsp_o{}".format(link.source_name,link.source_idx)} = ${router.name}_rsp_out[${camelcase(dir)}];
+    % else:
   assign ${link.rsp_name()} = ${router.name}_rsp_out[${camelcase(dir)}];
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.outgoing._asdict().items():
   % if link is not None:
+    % if link.export_ni:
+  assign ${"{}_floo_req_o{}".format(link.dest_name,link.dest_idx)} = ${router.name}_req_out[${camelcase(dir)}];
+    % else:
   assign ${link.req_name()} = ${router.name}_req_out[${camelcase(dir)}];
+    % endif
   % endif
 % endfor
 
 % for dir, link in router.outgoing._asdict().items():
-  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"'0" if link is None else link.rsp_name()};
+  % if link is not None:
+    % if link.export_ni:
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${"{}_floo_rsp_i{}".format(link.dest_name,link.dest_idx)};
+    % else:
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = ${link.rsp_name()};
+    % endif
+  % else:
+  assign ${router.name}_rsp_in[${camelcase(dir)}] = '0;
+  % endif
 % endfor
 
 % for dir, link in router.incoming._asdict().items():
-  assign ${router.name}_wide_in[${camelcase(dir)}] = ${"'0" if link is None else link.wide_name()};
+  % if link is not None:
+    % if link.export_ni:
+  assign ${router.name}_wide_in[${camelcase(dir)}] = ${"{}_floo_wide_i{}".format(link.source_name,link.source_idx)};
+    % else:
+  assign ${router.name}_wide_in[${camelcase(dir)}] = ${link.wide_name()};
+    % endif
+  % else:
+  assign ${router.name}_wide_in[${camelcase(dir)}] = '0;
+  % endif
 % endfor
 
 % for dir, link in router.outgoing._asdict().items():
   % if link is not None:
+    % if link.export_ni:
+  assign ${"{}_floo_wide_o{}".format(link.dest_name,link.dest_idx)} = ${router.name}_wide_out[${camelcase(dir)}];
+    % else:
   assign ${link.wide_name()} = ${router.name}_wide_out[${camelcase(dir)}];
+    % endif
   % endif
 % endfor
 
