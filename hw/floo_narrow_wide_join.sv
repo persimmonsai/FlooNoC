@@ -50,7 +50,7 @@ module floo_narrow_wide_join #(
     /// Maximum number of in-flight transactions with the same ID at the narrow master port.
     parameter  int unsigned AxiNarrowMstPortMaxTxnsPerId = AxiNarrowMaxTxns,
     /// Default parameter for number of inflight wide transactions
-    localparam int unsigned AxiWideMaxTxns               = 32,
+    parameter int unsigned AxiWideMaxTxns               = 32,
     /// Maximum number of in-flight AXI wide write transactions
     parameter  int unsigned AxiWideMaxWriteTxns          = AxiWideMaxTxns,
     /// Maximum number of in-flight AXI wide write transactions
