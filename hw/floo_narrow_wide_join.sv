@@ -34,7 +34,7 @@ module floo_narrow_wide_join #(
     /// Data width of wide AXI4+ATOP ports
     parameter  int unsigned AxiDataOutWidth              = 32'd0,
     /// Default parameter for number of inflight narrow transactions
-    localparam int unsigned AxiNarrowMaxTxns             = 8,
+    parameter int unsigned AxiNarrowMaxTxns             = 8,
     /// Maximum number of in-flight AXI narrow write transactions
     parameter  int unsigned AxiNarrowMaxWriteTxns        = AxiNarrowMaxTxns,
     /// Maximum number of in-flight AXI narrow read transactions
