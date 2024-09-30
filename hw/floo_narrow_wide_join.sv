@@ -33,6 +33,8 @@ module floo_narrow_wide_join #(
     localparam int unsigned AxiIdConvWidth               = AxiIdOutWidth - 1,
     /// Data width of wide AXI4+ATOP ports
     parameter  int unsigned AxiDataOutWidth              = 32'd0,
+    /// AXI Cuts of the Atomic input
+    parameter  int unsigned AtopInputNoCut               = 0,
     /// Default parameter for number of inflight narrow transactions
     parameter int unsigned AxiNarrowMaxTxns             = 8,
     /// Maximum number of in-flight AXI narrow write transactions
@@ -352,6 +354,31 @@ module floo_narrow_wide_join #(
       .mst_resp_i (axi_out_rsp)
   );
 
+  /////////////////////////////////////
+  ///  Optional Cuts before Atomics  //
+  /////////////////////////////////////
+
+  axi_out_req_t axi_out_cuts_req;
+  axi_out_rsp_t axi_out_cuts_rsp;
+
+  axi_multicut #(
+      .NoCuts(AtopInputNoCut),
+      .aw_chan_t(axi_out_aw_chan_t),
+      .w_chan_t(axi_out_w_chan_t),
+      .b_chan_t(axi_out_b_chan_t),
+      .ar_chan_t(axi_out_ar_chan_t),
+      .r_chan_t(axi_out_r_chan_t),
+      .axi_req_t(axi_out_req_t),
+      .axi_resp_t(axi_out_rsp_t)
+  ) i_axi_out_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .slv_req_i(axi_out_req),
+      .slv_resp_o(axi_out_rsp),
+      .mst_req_o(axi_out_cuts_req),
+      .mst_resp_i(axi_out_cuts_rsp)
+  );
+
   ////////////////////////
   ///  Atomics Adapter  //
   ////////////////////////
@@ -375,8 +402,8 @@ module floo_narrow_wide_join #(
   ) i_axi_riscv_atomics_structs (
       .clk_i        (clk_i),
       .rst_ni       (rst_ni),
-      .axi_slv_req_i(axi_out_req),
-      .axi_slv_rsp_o(axi_out_rsp),
+      .axi_slv_req_i(axi_out_cuts_req),
+      .axi_slv_rsp_o(axi_out_cuts_rsp),
       .axi_mst_req_o(axi_out_req_atop),
       .axi_mst_rsp_i(axi_out_rsp_atop)
   );
