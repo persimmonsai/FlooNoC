@@ -33,6 +33,8 @@ module floo_narrow_wide_join #(
     localparam int unsigned AxiIdConvWidth               = AxiIdOutWidth - 1,
     /// Data width of wide AXI4+ATOP ports
     parameter  int unsigned AxiDataOutWidth              = 32'd0,
+    /// AXI Cuts of the Up/down datawidth input
+    parameter  int unsigned UpdownInputNoCut             = 0,
     /// AXI Cuts of the Atomic input
     parameter  int unsigned AtopInputNoCut               = 0,
     /// Default parameter for number of inflight narrow transactions
@@ -244,6 +246,25 @@ module floo_narrow_wide_join #(
   axi_wide_dw_conv_rsp_t   axi_wide_rsp_dw_conv;
 
   if (AxiDataOutWidth == AxiNarrowDataWidth) begin : gen_narrow_dw_conv
+    axi_wide_iw_conv_req_t axi_wide_req_iw_conv_cuts;
+    axi_wide_iw_conv_rsp_t axi_wide_rsp_iw_conv_cuts;
+    axi_multicut #(
+        .NoCuts(UpdownInputNoCut),
+        .aw_chan_t(axi_wide_iw_conv_aw_chan_t),
+        .w_chan_t(axi_wide_iw_conv_w_chan_t),
+        .b_chan_t(axi_wide_iw_conv_b_chan_t),
+        .ar_chan_t(axi_wide_iw_conv_ar_chan_t),
+        .r_chan_t(axi_wide_iw_conv_r_chan_t),
+        .axi_req_t(axi_wide_iw_conv_req_t),
+        .axi_resp_t(axi_wide_iw_conv_rsp_t)
+    ) i_axi_wide_iw_cut (
+        .clk_i(clk_i),
+        .rst_ni(rst_ni),
+        .slv_req_i(axi_wide_req_iw_conv),
+        .slv_resp_o(axi_wide_rsp_iw_conv),
+        .mst_req_o(axi_wide_req_iw_conv_cuts),
+        .mst_resp_i(axi_wide_rsp_iw_conv_cuts)
+    );
     // Convert wide to narrow
     axi_dw_converter #(
         .AxiMaxReads        (AxiWideMaxReadTxns),
@@ -265,8 +286,8 @@ module floo_narrow_wide_join #(
     ) i_axi_dw_converter (
         .clk_i     (clk_i),
         .rst_ni    (rst_ni),
-        .slv_req_i (axi_wide_req_iw_conv),
-        .slv_resp_o(axi_wide_rsp_iw_conv),
+        .slv_req_i (axi_wide_req_iw_conv_cuts),
+        .slv_resp_o(axi_wide_rsp_iw_conv_cuts),
         .mst_req_o (axi_wide_req_dw_conv),
         .mst_resp_i(axi_wide_rsp_dw_conv)
     );
@@ -274,6 +295,25 @@ module floo_narrow_wide_join #(
     assign axi_narrow_req_dw_conv = axi_narrow_req_iw_conv;
     assign axi_narrow_rsp_iw_conv = axi_narrow_rsp_dw_conv;
   end else begin : gen_wide_dw_conv
+    axi_narrow_iw_conv_req_t axi_narrow_req_iw_conv_cuts;
+    axi_narrow_iw_conv_rsp_t axi_narrow_rsp_iw_conv_cuts;
+    axi_multicut #(
+        .NoCuts(UpdownInputNoCut),
+        .aw_chan_t(axi_narrow_iw_conv_aw_chan_t),
+        .w_chan_t(axi_narrow_iw_conv_w_chan_t),
+        .b_chan_t(axi_narrow_iw_conv_b_chan_t),
+        .ar_chan_t(axi_narrow_iw_conv_ar_chan_t),
+        .r_chan_t(axi_narrow_iw_conv_r_chan_t),
+        .axi_req_t(axi_narrow_iw_conv_req_t),
+        .axi_resp_t(axi_narrow_iw_conv_rsp_t)
+    ) i_axi_narrow_iw_cut (
+        .clk_i(clk_i),
+        .rst_ni(rst_ni),
+        .slv_req_i(axi_narrow_req_iw_conv),
+        .slv_resp_o(axi_narrow_rsp_iw_conv),
+        .mst_req_o(axi_narrow_req_iw_conv_cuts),
+        .mst_resp_i(axi_narrow_rsp_iw_conv_cuts)
+    );
     // Convert narrow to wide
     axi_dw_converter #(
         .AxiMaxReads        (AxiNarrowMaxReadTxns),
@@ -295,8 +335,8 @@ module floo_narrow_wide_join #(
     ) i_axi_dw_converter (
         .clk_i     (clk_i),
         .rst_ni    (rst_ni),
-        .slv_req_i (axi_narrow_req_iw_conv),
-        .slv_resp_o(axi_narrow_rsp_iw_conv),
+        .slv_req_i (axi_narrow_req_iw_conv_cuts),
+        .slv_resp_o(axi_narrow_rsp_iw_conv_cuts),
         .mst_req_o (axi_narrow_req_dw_conv),
         .mst_resp_i(axi_narrow_rsp_dw_conv)
     );
