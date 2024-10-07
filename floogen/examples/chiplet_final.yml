@@ -4,7 +4,7 @@
 
 name: chiplet
 description: "Top Level Chiplet"
-num_snitch_core: 17 # snitch core 16, dma core 1
+num_snitch_core: 13 # snitch core 12, dma core 1
 
 routing:
   route_algo: "XY"
@@ -67,7 +67,7 @@ endpoints:
     array: [3, 4]
     addr_range:
       base: 0x0000_1000_0000
-      size: 0x0000_0004_0000 # size per single snitch cluster per compute tile
+      size: 0x0000_0008_0000 # size per single snitch cluster per compute tile
     mgr_port_protocol:
       - "narrow"
       - "wide"
@@ -94,8 +94,8 @@ endpoints:
     start_tile_id: 12
     array: [3, 4]
     addr_range:
-      base: 0x0000_1030_0000
-      size: 0x0000_0004_0000 # size per single snitch cluster per compute tile
+      base: 0x0000_1060_0000
+      size: 0x0000_0008_0000 # size per single snitch cluster per compute tile
     mgr_port_protocol:
       - "narrow"
       - "wide"
@@ -222,7 +222,7 @@ endpoints:
     is_sub_addr : true # must not use this endpoint on "connections" section
     array: [2, 1]
     addr_range:
-      base: 0x0000_0C40_0000
+      base: 0x0000_0C80_0000
       size: 0x0000_0010_0000
     sbr_port_protocol:
       - "narrow"
@@ -245,7 +245,7 @@ endpoints:
     is_sub_addr : true # must not use this endpoint on "connections" section
     array: [2, 1]
     addr_range:
-      base: 0x0000_0C60_0000
+      base: 0x0000_0CA0_0000
       size: 0x0000_0010_0000
     sbr_port_protocol:
       - "narrow"
@@ -269,7 +269,7 @@ endpoints:
     is_sub_addr : true # must not use this endpoint on "connections" section
     array: [1, 4]
     addr_range:
-      base: 0x0000_0C80_0000
+      base: 0x0000_0D00_0000
       size: 0x0000_0010_0000
     sbr_port_protocol:
       - "narrow"
@@ -293,7 +293,7 @@ endpoints:
     is_sub_addr : true # must not use this endpoint on "connections" section
     array: [1, 4]
     addr_range:
-      base: 0x0000_0CC0_0000
+      base: 0x0000_0D80_0000
       size: 0x0000_0010_0000
     sbr_port_protocol:
       - "narrow"
@@ -316,7 +316,7 @@ endpoints:
   # SPM Wide with floo join for narrow access
   - name: "spm"
     addr_range:
-      base: 0x0000_7100_0000
+      base: 0x0000_7000_0000
       size: 0x0000_0010_0000
     sbr_port_protocol:
       - "narrow"
