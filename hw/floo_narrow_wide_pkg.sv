@@ -548,4 +548,14 @@ package floo_narrow_wide_pkg;
   } floo_wide_t;
 
 
+
+  ///////////////////////
+  //     Bit Vector    //
+  ///////////////////////
+
+  typedef logic [115:0] floo_vec_req_t;
+  typedef logic [99:0] floo_vec_rsp_t;
+  typedef logic [604:0] floo_vec_wide_t;
+
+
 endpackage

@@ -9,7 +9,7 @@ from typing import ClassVar, List, Union, Dict, Optional, NamedTuple
 from abc import ABC, abstractmethod
 from pydantic import BaseModel
 
-from floogen.utils import snake_to_camel, sv_struct_typedef, clog2
+from floogen.utils import snake_to_camel, sv_typedef, sv_struct_typedef, clog2
 
 
 class Link(BaseModel, ABC):
@@ -26,6 +26,7 @@ class Link(BaseModel, ABC):
     is_bidirectional: bool = False
     is_array: bool = False
     array: list = None
+    axi_ch_num: int = None
 
     channel_mapping: ClassVar[Dict] = {}
 
@@ -50,6 +51,7 @@ class Link(BaseModel, ABC):
                     i += 1
         string = f"typedef enum logic [{clog2(i+1)-1}:0]{{" + string
         string += f"NumAxiChannels = {i}\n}} axi_ch_e;\n"
+        cls.axi_ch_num = i+1
         return string
 
     @classmethod
@@ -111,6 +113,23 @@ class Link(BaseModel, ABC):
                 "rsvd": f"logic[{size-1}:0]",
             }
             string += sv_struct_typedef(f"floo_{phys_ch}_generic_flit_t", struct_dict)
+        
+        return string
+    
+    @classmethod
+    def render_bitvec(cls, protocols, routing):
+        """Render the bit vector of the protocol."""
+        string = ""
+        control_bit = 2 # valid, ready
+        header_bit = 3 # rob_req, last, atop
+        header_bit += routing.rob_idx_bits # rob_idx
+        header_bit += routing.num_x_bits + routing.num_y_bits # dst_id
+        header_bit += routing.num_x_bits + routing.num_y_bits # src_id
+        header_bit +=  clog2(cls.axi_ch_num) # axi_ch_e
+        link_sizes = cls.calc_link_sizes(protocols)
+        for phys_ch, data_bit in link_sizes.items():
+            size = control_bit + header_bit + data_bit
+            string += sv_typedef(f"floo_vec_{phys_ch}_t", "logic", size)
         return string
 
     @classmethod

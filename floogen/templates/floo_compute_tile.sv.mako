@@ -91,6 +91,21 @@ ${wide_type} [West:North] ${router.name}_wide_out;
   % endif
 % endfor
 
+% for dir in ["north","east","south","west"]:
+  floo_vec_req_t  ${router.name}_${dir}_req_in;
+  floo_vec_rsp_t  ${router.name}_${dir}_rsp_out;
+  floo_vec_req_t  ${router.name}_${dir}_req_out;
+  floo_vec_rsp_t  ${router.name}_${dir}_rsp_in;
+  floo_vec_wide_t ${router.name}_${dir}_wide_in;
+  floo_vec_wide_t ${router.name}_${dir}_wide_out;
+  assign ${router.name}_req_out[${camelcase(dir)}] = ${router.name}_${dir}_req_out;
+  assign ${router.name}_rsp_out[${camelcase(dir)}] = ${router.name}_${dir}_rsp_out;
+  assign ${router.name}_wide_out[${camelcase(dir)}] = ${router.name}_${dir}_wide_out;
+  assign ${router.name}_${dir}_req_in = ${router.name}_req_in[${camelcase(dir)}];
+  assign ${router.name}_${dir}_rsp_in = ${router.name}_rsp_in[${camelcase(dir)}];
+  assign ${router.name}_${dir}_wide_in = ${router.name}_wide_in[${camelcase(dir)}];
+% endfor
+
 localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -108,10 +123,16 @@ localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   .mtip_i (mtip_i${sv_array_irq}),
   .msip_i (msip_i${sv_array_irq}),
   .id_i (${compute_tile_id}),
-  .floo_req_i (${router.name}_req_in),
-  .floo_rsp_o (${router.name}_rsp_out),
-  .floo_req_o (${router.name}_req_out),
-  .floo_rsp_i (${router.name}_rsp_in),
-  .floo_wide_i (${router.name}_wide_in),
-  .floo_wide_o (${router.name}_wide_out)
+% for dir in ["north","east","south","west"]:
+  .floo_${dir}_req_i (${router.name}_${dir}_req_in),
+  .floo_${dir}_rsp_o (${router.name}_${dir}_rsp_out),
+  .floo_${dir}_req_o (${router.name}_${dir}_req_out),
+  .floo_${dir}_rsp_i (${router.name}_${dir}_rsp_in),
+  .floo_${dir}_wide_i (${router.name}_${dir}_wide_in),
+% if dir!="west":
+  .floo_${dir}_wide_o (${router.name}_${dir}_wide_out),
+% else:
+  .floo_${dir}_wide_o (${router.name}_${dir}_wide_out)
+% endif
+% endfor
 );

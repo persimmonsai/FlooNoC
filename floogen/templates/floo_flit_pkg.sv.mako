@@ -62,4 +62,11 @@ package floo_${name}_pkg;
   ///////////////////////
 
   ${link.render_link_typedefs()}
+
+  ///////////////////////
+  //     Bit Vector    //
+  ///////////////////////
+
+  ${link.render_bitvec(noc.protocols, noc.routing)}
+
 endpackage
