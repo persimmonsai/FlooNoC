@@ -107,7 +107,7 @@ work-vcs/compile_vcs.sh: Bender.yml
 	chmod +x work-vcs/compile_vcs.sh
 
 compile-vcs-batch: work-vcs/compile_vcs.sh
-	work-vcs/compile_vcs.sh > work-vcs/compile.log
+	work-vcs/compile_vcs.sh > work-vcs/parsing.log
 
 compile-vcs: VLOGAN_ARGS+=-debug_access+all
 compile-vcs: compile-vcs-batch
@@ -115,11 +115,11 @@ compile-vcs: compile-vcs-batch
 bin/floo_noc_gui.vcs: VCS_FLAGS+=-debug_access+all
 bin/floo_noc_gui.vcs: compile-vcs
 	mkdir -p bin
-	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_gui.vcs $(TB_DUT)
+	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_gui.vcs $(TB_DUT) 2>&1 | tee work-vcs/compile.log
 
 bin/floo_noc_batch.vcs: compile-vcs-batch
 	mkdir -p bin
-	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_batch.vcs $(TB_DUT)
+	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_batch.vcs $(TB_DUT) 2>&1 | tee work-vcs/compile.log
 
 run-vcs:
 	./bin/floo_noc_gui.vcs $(SIMV_FLAGS)

@@ -2,7 +2,6 @@
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
 // SPDX-License-Identifier: SHL-0.51
 
-
 `include "axi/typedef.svh"
 
 module compute_tile
@@ -20,19 +19,37 @@ module compute_tile
     input  logic                        rst_ni,
     input  logic                        test_enable_i,
     
-    input  logic [16:0]   meip_i,
-    input  logic [16:0]   mtip_i,
-    input  logic [16:0]   msip_i,
+    input  logic [12:0]   meip_i,
+    input  logic [12:0]   mtip_i,
+    input  logic [12:0]   msip_i,
     input  logic [4:0]   tile_id_i,
 
     input  id_t                         id_i, // XY ID for router and cluster NI
     // North, East, South, and West floonoc router interface
-    input  floo_req_t  [West:North]     floo_req_i,
-    output floo_rsp_t  [West:North]     floo_rsp_o,
-    output floo_req_t  [West:North]     floo_req_o,
-    input  floo_rsp_t  [West:North]     floo_rsp_i,
-    input  floo_wide_t [West:North]     floo_wide_i,
-    output floo_wide_t [West:North]     floo_wide_o
+    input  floo_vec_req_t    floo_north_req_i,
+    output floo_vec_rsp_t    floo_north_rsp_o,
+    output floo_vec_req_t    floo_north_req_o,
+    input  floo_vec_rsp_t    floo_north_rsp_i,
+    input  floo_vec_wide_t   floo_north_wide_i,
+    output floo_vec_wide_t   floo_north_wide_o,
+    input  floo_vec_req_t    floo_east_req_i,
+    output floo_vec_rsp_t    floo_east_rsp_o,
+    output floo_vec_req_t    floo_east_req_o,
+    input  floo_vec_rsp_t    floo_east_rsp_i,
+    input  floo_vec_wide_t   floo_east_wide_i,
+    output floo_vec_wide_t   floo_east_wide_o,
+    input  floo_vec_req_t    floo_south_req_i,
+    output floo_vec_rsp_t    floo_south_rsp_o,
+    output floo_vec_req_t    floo_south_req_o,
+    input  floo_vec_rsp_t    floo_south_rsp_i,
+    input  floo_vec_wide_t   floo_south_wide_i,
+    output floo_vec_wide_t   floo_south_wide_o,
+    input  floo_vec_req_t    floo_west_req_i,
+    output floo_vec_rsp_t    floo_west_rsp_o,
+    output floo_vec_req_t    floo_west_req_o,
+    input  floo_vec_rsp_t    floo_west_rsp_i,
+    input  floo_vec_wide_t   floo_west_wide_i,
+    output floo_vec_wide_t   floo_west_wide_o
 );
   // --- Cluster to NI ---
   // in/out direction type that is declared in this scope is respect to NI
@@ -98,6 +115,37 @@ module compute_tile
     .sram_cfg_i ('0)
   );
 `endif
+
+  floo_req_t  [West:North] floo_req_i;
+  floo_rsp_t  [West:North] floo_rsp_o;
+  floo_req_t  [West:North] floo_req_o;
+  floo_rsp_t  [West:North] floo_rsp_i;
+  floo_wide_t [West:North] floo_wide_i;
+  floo_wide_t [West:North] floo_wide_o;
+  assign floo_req_i[North] = floo_north_req_i;
+  assign floo_rsp_i[North] = floo_north_rsp_i;
+  assign floo_wide_i[North] = floo_north_wide_i;
+  assign floo_north_req_o = floo_req_o[North];
+  assign floo_north_rsp_o = floo_rsp_o[North];
+  assign floo_north_wide_o = floo_wide_o[North];
+  assign floo_req_i[East] = floo_east_req_i;
+  assign floo_rsp_i[East] = floo_east_rsp_i;
+  assign floo_wide_i[East] = floo_east_wide_i;
+  assign floo_east_req_o = floo_req_o[East];
+  assign floo_east_rsp_o = floo_rsp_o[East];
+  assign floo_east_wide_o = floo_wide_o[East];
+  assign floo_req_i[South] = floo_south_req_i;
+  assign floo_rsp_i[South] = floo_south_rsp_i;
+  assign floo_wide_i[South] = floo_south_wide_i;
+  assign floo_south_req_o = floo_req_o[South];
+  assign floo_south_rsp_o = floo_rsp_o[South];
+  assign floo_south_wide_o = floo_wide_o[South];
+  assign floo_req_i[West] = floo_west_req_i;
+  assign floo_rsp_i[West] = floo_west_rsp_i;
+  assign floo_wide_i[West] = floo_west_wide_i;
+  assign floo_west_req_o = floo_req_o[West];
+  assign floo_west_rsp_o = floo_rsp_o[West];
+  assign floo_west_wide_o = floo_wide_o[West];
 
   floo_noc_pd_top i_floo_noc_pd
   (

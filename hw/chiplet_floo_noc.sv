@@ -13,8 +13,8 @@ module chiplet_floo_noc
   input logic rst_ni,
   input logic test_enable_i,
 
-  input logic [408:1] mtip_i,
-  input logic [408:1] msip_i,
+  input logic [312:1] mtip_i,
+  input logic [312:1] msip_i,
 
   output axi_narrow_out_req_t              hbm_north_dram_0_narrow_req_o,
   input axi_narrow_out_rsp_t              hbm_north_dram_0_narrow_rsp_i,
@@ -1332,6 +1332,55 @@ floo_wide_t [West:North] router_0_0_wide_out;
   assign router_0_0_to_router_0_1_wide = router_0_0_wide_out[North];
   assign router_0_0_to_hbm_west_ni_0_0_wide = router_0_0_wide_out[West];
 
+  floo_vec_req_t  router_0_0_north_req_in;
+  floo_vec_rsp_t  router_0_0_north_rsp_out;
+  floo_vec_req_t  router_0_0_north_req_out;
+  floo_vec_rsp_t  router_0_0_north_rsp_in;
+  floo_vec_wide_t router_0_0_north_wide_in;
+  floo_vec_wide_t router_0_0_north_wide_out;
+  assign router_0_0_req_out[North] = router_0_0_north_req_out;
+  assign router_0_0_rsp_out[North] = router_0_0_north_rsp_out;
+  assign router_0_0_wide_out[North] = router_0_0_north_wide_out;
+  assign router_0_0_north_req_in = router_0_0_req_in[North];
+  assign router_0_0_north_rsp_in = router_0_0_rsp_in[North];
+  assign router_0_0_north_wide_in = router_0_0_wide_in[North];
+  floo_vec_req_t  router_0_0_east_req_in;
+  floo_vec_rsp_t  router_0_0_east_rsp_out;
+  floo_vec_req_t  router_0_0_east_req_out;
+  floo_vec_rsp_t  router_0_0_east_rsp_in;
+  floo_vec_wide_t router_0_0_east_wide_in;
+  floo_vec_wide_t router_0_0_east_wide_out;
+  assign router_0_0_req_out[East] = router_0_0_east_req_out;
+  assign router_0_0_rsp_out[East] = router_0_0_east_rsp_out;
+  assign router_0_0_wide_out[East] = router_0_0_east_wide_out;
+  assign router_0_0_east_req_in = router_0_0_req_in[East];
+  assign router_0_0_east_rsp_in = router_0_0_rsp_in[East];
+  assign router_0_0_east_wide_in = router_0_0_wide_in[East];
+  floo_vec_req_t  router_0_0_south_req_in;
+  floo_vec_rsp_t  router_0_0_south_rsp_out;
+  floo_vec_req_t  router_0_0_south_req_out;
+  floo_vec_rsp_t  router_0_0_south_rsp_in;
+  floo_vec_wide_t router_0_0_south_wide_in;
+  floo_vec_wide_t router_0_0_south_wide_out;
+  assign router_0_0_req_out[South] = router_0_0_south_req_out;
+  assign router_0_0_rsp_out[South] = router_0_0_south_rsp_out;
+  assign router_0_0_wide_out[South] = router_0_0_south_wide_out;
+  assign router_0_0_south_req_in = router_0_0_req_in[South];
+  assign router_0_0_south_rsp_in = router_0_0_rsp_in[South];
+  assign router_0_0_south_wide_in = router_0_0_wide_in[South];
+  floo_vec_req_t  router_0_0_west_req_in;
+  floo_vec_rsp_t  router_0_0_west_rsp_out;
+  floo_vec_req_t  router_0_0_west_req_out;
+  floo_vec_rsp_t  router_0_0_west_rsp_in;
+  floo_vec_wide_t router_0_0_west_wide_in;
+  floo_vec_wide_t router_0_0_west_wide_out;
+  assign router_0_0_req_out[West] = router_0_0_west_req_out;
+  assign router_0_0_rsp_out[West] = router_0_0_west_rsp_out;
+  assign router_0_0_wide_out[West] = router_0_0_west_wide_out;
+  assign router_0_0_west_req_in = router_0_0_req_in[West];
+  assign router_0_0_west_rsp_in = router_0_0_rsp_in[West];
+  assign router_0_0_west_wide_in = router_0_0_wide_in[West];
+
 localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1345,16 +1394,34 @@ localparam id_t compute_tile_0_0_id = '{x: 1, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd0),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[17:1]),
-  .msip_i (msip_i[17:1]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[13:1]),
+  .msip_i (msip_i[13:1]),
   .id_i (compute_tile_0_0_id),
-  .floo_req_i (router_0_0_req_in),
-  .floo_rsp_o (router_0_0_rsp_out),
-  .floo_req_o (router_0_0_req_out),
-  .floo_rsp_i (router_0_0_rsp_in),
-  .floo_wide_i (router_0_0_wide_in),
-  .floo_wide_o (router_0_0_wide_out)
+  .floo_north_req_i (router_0_0_north_req_in),
+  .floo_north_rsp_o (router_0_0_north_rsp_out),
+  .floo_north_req_o (router_0_0_north_req_out),
+  .floo_north_rsp_i (router_0_0_north_rsp_in),
+  .floo_north_wide_i (router_0_0_north_wide_in),
+  .floo_north_wide_o (router_0_0_north_wide_out),
+  .floo_east_req_i (router_0_0_east_req_in),
+  .floo_east_rsp_o (router_0_0_east_rsp_out),
+  .floo_east_req_o (router_0_0_east_req_out),
+  .floo_east_rsp_i (router_0_0_east_rsp_in),
+  .floo_east_wide_i (router_0_0_east_wide_in),
+  .floo_east_wide_o (router_0_0_east_wide_out),
+  .floo_south_req_i (router_0_0_south_req_in),
+  .floo_south_rsp_o (router_0_0_south_rsp_out),
+  .floo_south_req_o (router_0_0_south_req_out),
+  .floo_south_rsp_i (router_0_0_south_rsp_in),
+  .floo_south_wide_i (router_0_0_south_wide_in),
+  .floo_south_wide_o (router_0_0_south_wide_out),
+  .floo_west_req_i (router_0_0_west_req_in),
+  .floo_west_rsp_o (router_0_0_west_rsp_out),
+  .floo_west_req_o (router_0_0_west_req_out),
+  .floo_west_rsp_i (router_0_0_west_rsp_in),
+  .floo_west_wide_i (router_0_0_west_wide_in),
+  .floo_west_wide_o (router_0_0_west_wide_out)
 );
 
 
@@ -1395,6 +1462,55 @@ floo_wide_t [West:North] router_0_1_wide_out;
   assign router_0_1_to_router_0_0_wide = router_0_1_wide_out[South];
   assign router_0_1_to_hbm_west_ni_0_1_wide = router_0_1_wide_out[West];
 
+  floo_vec_req_t  router_0_1_north_req_in;
+  floo_vec_rsp_t  router_0_1_north_rsp_out;
+  floo_vec_req_t  router_0_1_north_req_out;
+  floo_vec_rsp_t  router_0_1_north_rsp_in;
+  floo_vec_wide_t router_0_1_north_wide_in;
+  floo_vec_wide_t router_0_1_north_wide_out;
+  assign router_0_1_req_out[North] = router_0_1_north_req_out;
+  assign router_0_1_rsp_out[North] = router_0_1_north_rsp_out;
+  assign router_0_1_wide_out[North] = router_0_1_north_wide_out;
+  assign router_0_1_north_req_in = router_0_1_req_in[North];
+  assign router_0_1_north_rsp_in = router_0_1_rsp_in[North];
+  assign router_0_1_north_wide_in = router_0_1_wide_in[North];
+  floo_vec_req_t  router_0_1_east_req_in;
+  floo_vec_rsp_t  router_0_1_east_rsp_out;
+  floo_vec_req_t  router_0_1_east_req_out;
+  floo_vec_rsp_t  router_0_1_east_rsp_in;
+  floo_vec_wide_t router_0_1_east_wide_in;
+  floo_vec_wide_t router_0_1_east_wide_out;
+  assign router_0_1_req_out[East] = router_0_1_east_req_out;
+  assign router_0_1_rsp_out[East] = router_0_1_east_rsp_out;
+  assign router_0_1_wide_out[East] = router_0_1_east_wide_out;
+  assign router_0_1_east_req_in = router_0_1_req_in[East];
+  assign router_0_1_east_rsp_in = router_0_1_rsp_in[East];
+  assign router_0_1_east_wide_in = router_0_1_wide_in[East];
+  floo_vec_req_t  router_0_1_south_req_in;
+  floo_vec_rsp_t  router_0_1_south_rsp_out;
+  floo_vec_req_t  router_0_1_south_req_out;
+  floo_vec_rsp_t  router_0_1_south_rsp_in;
+  floo_vec_wide_t router_0_1_south_wide_in;
+  floo_vec_wide_t router_0_1_south_wide_out;
+  assign router_0_1_req_out[South] = router_0_1_south_req_out;
+  assign router_0_1_rsp_out[South] = router_0_1_south_rsp_out;
+  assign router_0_1_wide_out[South] = router_0_1_south_wide_out;
+  assign router_0_1_south_req_in = router_0_1_req_in[South];
+  assign router_0_1_south_rsp_in = router_0_1_rsp_in[South];
+  assign router_0_1_south_wide_in = router_0_1_wide_in[South];
+  floo_vec_req_t  router_0_1_west_req_in;
+  floo_vec_rsp_t  router_0_1_west_rsp_out;
+  floo_vec_req_t  router_0_1_west_req_out;
+  floo_vec_rsp_t  router_0_1_west_rsp_in;
+  floo_vec_wide_t router_0_1_west_wide_in;
+  floo_vec_wide_t router_0_1_west_wide_out;
+  assign router_0_1_req_out[West] = router_0_1_west_req_out;
+  assign router_0_1_rsp_out[West] = router_0_1_west_rsp_out;
+  assign router_0_1_wide_out[West] = router_0_1_west_wide_out;
+  assign router_0_1_west_req_in = router_0_1_req_in[West];
+  assign router_0_1_west_rsp_in = router_0_1_rsp_in[West];
+  assign router_0_1_west_wide_in = router_0_1_wide_in[West];
+
 localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1408,16 +1524,34 @@ localparam id_t compute_tile_0_1_id = '{x: 1, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd1),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[34:18]),
-  .msip_i (msip_i[34:18]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[26:14]),
+  .msip_i (msip_i[26:14]),
   .id_i (compute_tile_0_1_id),
-  .floo_req_i (router_0_1_req_in),
-  .floo_rsp_o (router_0_1_rsp_out),
-  .floo_req_o (router_0_1_req_out),
-  .floo_rsp_i (router_0_1_rsp_in),
-  .floo_wide_i (router_0_1_wide_in),
-  .floo_wide_o (router_0_1_wide_out)
+  .floo_north_req_i (router_0_1_north_req_in),
+  .floo_north_rsp_o (router_0_1_north_rsp_out),
+  .floo_north_req_o (router_0_1_north_req_out),
+  .floo_north_rsp_i (router_0_1_north_rsp_in),
+  .floo_north_wide_i (router_0_1_north_wide_in),
+  .floo_north_wide_o (router_0_1_north_wide_out),
+  .floo_east_req_i (router_0_1_east_req_in),
+  .floo_east_rsp_o (router_0_1_east_rsp_out),
+  .floo_east_req_o (router_0_1_east_req_out),
+  .floo_east_rsp_i (router_0_1_east_rsp_in),
+  .floo_east_wide_i (router_0_1_east_wide_in),
+  .floo_east_wide_o (router_0_1_east_wide_out),
+  .floo_south_req_i (router_0_1_south_req_in),
+  .floo_south_rsp_o (router_0_1_south_rsp_out),
+  .floo_south_req_o (router_0_1_south_req_out),
+  .floo_south_rsp_i (router_0_1_south_rsp_in),
+  .floo_south_wide_i (router_0_1_south_wide_in),
+  .floo_south_wide_o (router_0_1_south_wide_out),
+  .floo_west_req_i (router_0_1_west_req_in),
+  .floo_west_rsp_o (router_0_1_west_rsp_out),
+  .floo_west_req_o (router_0_1_west_req_out),
+  .floo_west_rsp_i (router_0_1_west_rsp_in),
+  .floo_west_wide_i (router_0_1_west_wide_in),
+  .floo_west_wide_o (router_0_1_west_wide_out)
 );
 
 
@@ -1458,6 +1592,55 @@ floo_wide_t [West:North] router_0_2_wide_out;
   assign router_0_2_to_router_0_1_wide = router_0_2_wide_out[South];
   assign router_0_2_to_hbm_west_ni_0_2_wide = router_0_2_wide_out[West];
 
+  floo_vec_req_t  router_0_2_north_req_in;
+  floo_vec_rsp_t  router_0_2_north_rsp_out;
+  floo_vec_req_t  router_0_2_north_req_out;
+  floo_vec_rsp_t  router_0_2_north_rsp_in;
+  floo_vec_wide_t router_0_2_north_wide_in;
+  floo_vec_wide_t router_0_2_north_wide_out;
+  assign router_0_2_req_out[North] = router_0_2_north_req_out;
+  assign router_0_2_rsp_out[North] = router_0_2_north_rsp_out;
+  assign router_0_2_wide_out[North] = router_0_2_north_wide_out;
+  assign router_0_2_north_req_in = router_0_2_req_in[North];
+  assign router_0_2_north_rsp_in = router_0_2_rsp_in[North];
+  assign router_0_2_north_wide_in = router_0_2_wide_in[North];
+  floo_vec_req_t  router_0_2_east_req_in;
+  floo_vec_rsp_t  router_0_2_east_rsp_out;
+  floo_vec_req_t  router_0_2_east_req_out;
+  floo_vec_rsp_t  router_0_2_east_rsp_in;
+  floo_vec_wide_t router_0_2_east_wide_in;
+  floo_vec_wide_t router_0_2_east_wide_out;
+  assign router_0_2_req_out[East] = router_0_2_east_req_out;
+  assign router_0_2_rsp_out[East] = router_0_2_east_rsp_out;
+  assign router_0_2_wide_out[East] = router_0_2_east_wide_out;
+  assign router_0_2_east_req_in = router_0_2_req_in[East];
+  assign router_0_2_east_rsp_in = router_0_2_rsp_in[East];
+  assign router_0_2_east_wide_in = router_0_2_wide_in[East];
+  floo_vec_req_t  router_0_2_south_req_in;
+  floo_vec_rsp_t  router_0_2_south_rsp_out;
+  floo_vec_req_t  router_0_2_south_req_out;
+  floo_vec_rsp_t  router_0_2_south_rsp_in;
+  floo_vec_wide_t router_0_2_south_wide_in;
+  floo_vec_wide_t router_0_2_south_wide_out;
+  assign router_0_2_req_out[South] = router_0_2_south_req_out;
+  assign router_0_2_rsp_out[South] = router_0_2_south_rsp_out;
+  assign router_0_2_wide_out[South] = router_0_2_south_wide_out;
+  assign router_0_2_south_req_in = router_0_2_req_in[South];
+  assign router_0_2_south_rsp_in = router_0_2_rsp_in[South];
+  assign router_0_2_south_wide_in = router_0_2_wide_in[South];
+  floo_vec_req_t  router_0_2_west_req_in;
+  floo_vec_rsp_t  router_0_2_west_rsp_out;
+  floo_vec_req_t  router_0_2_west_req_out;
+  floo_vec_rsp_t  router_0_2_west_rsp_in;
+  floo_vec_wide_t router_0_2_west_wide_in;
+  floo_vec_wide_t router_0_2_west_wide_out;
+  assign router_0_2_req_out[West] = router_0_2_west_req_out;
+  assign router_0_2_rsp_out[West] = router_0_2_west_rsp_out;
+  assign router_0_2_wide_out[West] = router_0_2_west_wide_out;
+  assign router_0_2_west_req_in = router_0_2_req_in[West];
+  assign router_0_2_west_rsp_in = router_0_2_rsp_in[West];
+  assign router_0_2_west_wide_in = router_0_2_wide_in[West];
+
 localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1471,16 +1654,34 @@ localparam id_t compute_tile_0_2_id = '{x: 1, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd2),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[51:35]),
-  .msip_i (msip_i[51:35]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[39:27]),
+  .msip_i (msip_i[39:27]),
   .id_i (compute_tile_0_2_id),
-  .floo_req_i (router_0_2_req_in),
-  .floo_rsp_o (router_0_2_rsp_out),
-  .floo_req_o (router_0_2_req_out),
-  .floo_rsp_i (router_0_2_rsp_in),
-  .floo_wide_i (router_0_2_wide_in),
-  .floo_wide_o (router_0_2_wide_out)
+  .floo_north_req_i (router_0_2_north_req_in),
+  .floo_north_rsp_o (router_0_2_north_rsp_out),
+  .floo_north_req_o (router_0_2_north_req_out),
+  .floo_north_rsp_i (router_0_2_north_rsp_in),
+  .floo_north_wide_i (router_0_2_north_wide_in),
+  .floo_north_wide_o (router_0_2_north_wide_out),
+  .floo_east_req_i (router_0_2_east_req_in),
+  .floo_east_rsp_o (router_0_2_east_rsp_out),
+  .floo_east_req_o (router_0_2_east_req_out),
+  .floo_east_rsp_i (router_0_2_east_rsp_in),
+  .floo_east_wide_i (router_0_2_east_wide_in),
+  .floo_east_wide_o (router_0_2_east_wide_out),
+  .floo_south_req_i (router_0_2_south_req_in),
+  .floo_south_rsp_o (router_0_2_south_rsp_out),
+  .floo_south_req_o (router_0_2_south_req_out),
+  .floo_south_rsp_i (router_0_2_south_rsp_in),
+  .floo_south_wide_i (router_0_2_south_wide_in),
+  .floo_south_wide_o (router_0_2_south_wide_out),
+  .floo_west_req_i (router_0_2_west_req_in),
+  .floo_west_rsp_o (router_0_2_west_rsp_out),
+  .floo_west_req_o (router_0_2_west_req_out),
+  .floo_west_rsp_i (router_0_2_west_rsp_in),
+  .floo_west_wide_i (router_0_2_west_wide_in),
+  .floo_west_wide_o (router_0_2_west_wide_out)
 );
 
 
@@ -1518,6 +1719,55 @@ floo_wide_t [West:North] router_0_3_wide_out;
   assign router_0_3_to_router_0_2_wide = router_0_3_wide_out[South];
   assign router_0_3_to_hbm_west_ni_0_3_wide = router_0_3_wide_out[West];
 
+  floo_vec_req_t  router_0_3_north_req_in;
+  floo_vec_rsp_t  router_0_3_north_rsp_out;
+  floo_vec_req_t  router_0_3_north_req_out;
+  floo_vec_rsp_t  router_0_3_north_rsp_in;
+  floo_vec_wide_t router_0_3_north_wide_in;
+  floo_vec_wide_t router_0_3_north_wide_out;
+  assign router_0_3_req_out[North] = router_0_3_north_req_out;
+  assign router_0_3_rsp_out[North] = router_0_3_north_rsp_out;
+  assign router_0_3_wide_out[North] = router_0_3_north_wide_out;
+  assign router_0_3_north_req_in = router_0_3_req_in[North];
+  assign router_0_3_north_rsp_in = router_0_3_rsp_in[North];
+  assign router_0_3_north_wide_in = router_0_3_wide_in[North];
+  floo_vec_req_t  router_0_3_east_req_in;
+  floo_vec_rsp_t  router_0_3_east_rsp_out;
+  floo_vec_req_t  router_0_3_east_req_out;
+  floo_vec_rsp_t  router_0_3_east_rsp_in;
+  floo_vec_wide_t router_0_3_east_wide_in;
+  floo_vec_wide_t router_0_3_east_wide_out;
+  assign router_0_3_req_out[East] = router_0_3_east_req_out;
+  assign router_0_3_rsp_out[East] = router_0_3_east_rsp_out;
+  assign router_0_3_wide_out[East] = router_0_3_east_wide_out;
+  assign router_0_3_east_req_in = router_0_3_req_in[East];
+  assign router_0_3_east_rsp_in = router_0_3_rsp_in[East];
+  assign router_0_3_east_wide_in = router_0_3_wide_in[East];
+  floo_vec_req_t  router_0_3_south_req_in;
+  floo_vec_rsp_t  router_0_3_south_rsp_out;
+  floo_vec_req_t  router_0_3_south_req_out;
+  floo_vec_rsp_t  router_0_3_south_rsp_in;
+  floo_vec_wide_t router_0_3_south_wide_in;
+  floo_vec_wide_t router_0_3_south_wide_out;
+  assign router_0_3_req_out[South] = router_0_3_south_req_out;
+  assign router_0_3_rsp_out[South] = router_0_3_south_rsp_out;
+  assign router_0_3_wide_out[South] = router_0_3_south_wide_out;
+  assign router_0_3_south_req_in = router_0_3_req_in[South];
+  assign router_0_3_south_rsp_in = router_0_3_rsp_in[South];
+  assign router_0_3_south_wide_in = router_0_3_wide_in[South];
+  floo_vec_req_t  router_0_3_west_req_in;
+  floo_vec_rsp_t  router_0_3_west_rsp_out;
+  floo_vec_req_t  router_0_3_west_req_out;
+  floo_vec_rsp_t  router_0_3_west_rsp_in;
+  floo_vec_wide_t router_0_3_west_wide_in;
+  floo_vec_wide_t router_0_3_west_wide_out;
+  assign router_0_3_req_out[West] = router_0_3_west_req_out;
+  assign router_0_3_rsp_out[West] = router_0_3_west_rsp_out;
+  assign router_0_3_wide_out[West] = router_0_3_west_wide_out;
+  assign router_0_3_west_req_in = router_0_3_req_in[West];
+  assign router_0_3_west_rsp_in = router_0_3_rsp_in[West];
+  assign router_0_3_west_wide_in = router_0_3_wide_in[West];
+
 localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1531,16 +1781,34 @@ localparam id_t compute_tile_0_3_id = '{x: 1, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd3),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[68:52]),
-  .msip_i (msip_i[68:52]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[52:40]),
+  .msip_i (msip_i[52:40]),
   .id_i (compute_tile_0_3_id),
-  .floo_req_i (router_0_3_req_in),
-  .floo_rsp_o (router_0_3_rsp_out),
-  .floo_req_o (router_0_3_req_out),
-  .floo_rsp_i (router_0_3_rsp_in),
-  .floo_wide_i (router_0_3_wide_in),
-  .floo_wide_o (router_0_3_wide_out)
+  .floo_north_req_i (router_0_3_north_req_in),
+  .floo_north_rsp_o (router_0_3_north_rsp_out),
+  .floo_north_req_o (router_0_3_north_req_out),
+  .floo_north_rsp_i (router_0_3_north_rsp_in),
+  .floo_north_wide_i (router_0_3_north_wide_in),
+  .floo_north_wide_o (router_0_3_north_wide_out),
+  .floo_east_req_i (router_0_3_east_req_in),
+  .floo_east_rsp_o (router_0_3_east_rsp_out),
+  .floo_east_req_o (router_0_3_east_req_out),
+  .floo_east_rsp_i (router_0_3_east_rsp_in),
+  .floo_east_wide_i (router_0_3_east_wide_in),
+  .floo_east_wide_o (router_0_3_east_wide_out),
+  .floo_south_req_i (router_0_3_south_req_in),
+  .floo_south_rsp_o (router_0_3_south_rsp_out),
+  .floo_south_req_o (router_0_3_south_req_out),
+  .floo_south_rsp_i (router_0_3_south_rsp_in),
+  .floo_south_wide_i (router_0_3_south_wide_in),
+  .floo_south_wide_o (router_0_3_south_wide_out),
+  .floo_west_req_i (router_0_3_west_req_in),
+  .floo_west_rsp_o (router_0_3_west_rsp_out),
+  .floo_west_req_o (router_0_3_west_req_out),
+  .floo_west_rsp_i (router_0_3_west_rsp_in),
+  .floo_west_wide_i (router_0_3_west_wide_in),
+  .floo_west_wide_o (router_0_3_west_wide_out)
 );
 
 
@@ -1581,6 +1849,55 @@ floo_wide_t [West:North] router_1_0_wide_out;
   assign router_1_0_to_hbm_south_0_ni_0_0_wide = router_1_0_wide_out[South];
   assign router_1_0_to_router_0_0_wide = router_1_0_wide_out[West];
 
+  floo_vec_req_t  router_1_0_north_req_in;
+  floo_vec_rsp_t  router_1_0_north_rsp_out;
+  floo_vec_req_t  router_1_0_north_req_out;
+  floo_vec_rsp_t  router_1_0_north_rsp_in;
+  floo_vec_wide_t router_1_0_north_wide_in;
+  floo_vec_wide_t router_1_0_north_wide_out;
+  assign router_1_0_req_out[North] = router_1_0_north_req_out;
+  assign router_1_0_rsp_out[North] = router_1_0_north_rsp_out;
+  assign router_1_0_wide_out[North] = router_1_0_north_wide_out;
+  assign router_1_0_north_req_in = router_1_0_req_in[North];
+  assign router_1_0_north_rsp_in = router_1_0_rsp_in[North];
+  assign router_1_0_north_wide_in = router_1_0_wide_in[North];
+  floo_vec_req_t  router_1_0_east_req_in;
+  floo_vec_rsp_t  router_1_0_east_rsp_out;
+  floo_vec_req_t  router_1_0_east_req_out;
+  floo_vec_rsp_t  router_1_0_east_rsp_in;
+  floo_vec_wide_t router_1_0_east_wide_in;
+  floo_vec_wide_t router_1_0_east_wide_out;
+  assign router_1_0_req_out[East] = router_1_0_east_req_out;
+  assign router_1_0_rsp_out[East] = router_1_0_east_rsp_out;
+  assign router_1_0_wide_out[East] = router_1_0_east_wide_out;
+  assign router_1_0_east_req_in = router_1_0_req_in[East];
+  assign router_1_0_east_rsp_in = router_1_0_rsp_in[East];
+  assign router_1_0_east_wide_in = router_1_0_wide_in[East];
+  floo_vec_req_t  router_1_0_south_req_in;
+  floo_vec_rsp_t  router_1_0_south_rsp_out;
+  floo_vec_req_t  router_1_0_south_req_out;
+  floo_vec_rsp_t  router_1_0_south_rsp_in;
+  floo_vec_wide_t router_1_0_south_wide_in;
+  floo_vec_wide_t router_1_0_south_wide_out;
+  assign router_1_0_req_out[South] = router_1_0_south_req_out;
+  assign router_1_0_rsp_out[South] = router_1_0_south_rsp_out;
+  assign router_1_0_wide_out[South] = router_1_0_south_wide_out;
+  assign router_1_0_south_req_in = router_1_0_req_in[South];
+  assign router_1_0_south_rsp_in = router_1_0_rsp_in[South];
+  assign router_1_0_south_wide_in = router_1_0_wide_in[South];
+  floo_vec_req_t  router_1_0_west_req_in;
+  floo_vec_rsp_t  router_1_0_west_rsp_out;
+  floo_vec_req_t  router_1_0_west_req_out;
+  floo_vec_rsp_t  router_1_0_west_rsp_in;
+  floo_vec_wide_t router_1_0_west_wide_in;
+  floo_vec_wide_t router_1_0_west_wide_out;
+  assign router_1_0_req_out[West] = router_1_0_west_req_out;
+  assign router_1_0_rsp_out[West] = router_1_0_west_rsp_out;
+  assign router_1_0_wide_out[West] = router_1_0_west_wide_out;
+  assign router_1_0_west_req_in = router_1_0_req_in[West];
+  assign router_1_0_west_rsp_in = router_1_0_rsp_in[West];
+  assign router_1_0_west_wide_in = router_1_0_wide_in[West];
+
 localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1594,16 +1911,34 @@ localparam id_t compute_tile_1_0_id = '{x: 2, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd4),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[85:69]),
-  .msip_i (msip_i[85:69]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[65:53]),
+  .msip_i (msip_i[65:53]),
   .id_i (compute_tile_1_0_id),
-  .floo_req_i (router_1_0_req_in),
-  .floo_rsp_o (router_1_0_rsp_out),
-  .floo_req_o (router_1_0_req_out),
-  .floo_rsp_i (router_1_0_rsp_in),
-  .floo_wide_i (router_1_0_wide_in),
-  .floo_wide_o (router_1_0_wide_out)
+  .floo_north_req_i (router_1_0_north_req_in),
+  .floo_north_rsp_o (router_1_0_north_rsp_out),
+  .floo_north_req_o (router_1_0_north_req_out),
+  .floo_north_rsp_i (router_1_0_north_rsp_in),
+  .floo_north_wide_i (router_1_0_north_wide_in),
+  .floo_north_wide_o (router_1_0_north_wide_out),
+  .floo_east_req_i (router_1_0_east_req_in),
+  .floo_east_rsp_o (router_1_0_east_rsp_out),
+  .floo_east_req_o (router_1_0_east_req_out),
+  .floo_east_rsp_i (router_1_0_east_rsp_in),
+  .floo_east_wide_i (router_1_0_east_wide_in),
+  .floo_east_wide_o (router_1_0_east_wide_out),
+  .floo_south_req_i (router_1_0_south_req_in),
+  .floo_south_rsp_o (router_1_0_south_rsp_out),
+  .floo_south_req_o (router_1_0_south_req_out),
+  .floo_south_rsp_i (router_1_0_south_rsp_in),
+  .floo_south_wide_i (router_1_0_south_wide_in),
+  .floo_south_wide_o (router_1_0_south_wide_out),
+  .floo_west_req_i (router_1_0_west_req_in),
+  .floo_west_rsp_o (router_1_0_west_rsp_out),
+  .floo_west_req_o (router_1_0_west_req_out),
+  .floo_west_rsp_i (router_1_0_west_rsp_in),
+  .floo_west_wide_i (router_1_0_west_wide_in),
+  .floo_west_wide_o (router_1_0_west_wide_out)
 );
 
 
@@ -1644,6 +1979,55 @@ floo_wide_t [West:North] router_1_1_wide_out;
   assign router_1_1_to_router_1_0_wide = router_1_1_wide_out[South];
   assign router_1_1_to_router_0_1_wide = router_1_1_wide_out[West];
 
+  floo_vec_req_t  router_1_1_north_req_in;
+  floo_vec_rsp_t  router_1_1_north_rsp_out;
+  floo_vec_req_t  router_1_1_north_req_out;
+  floo_vec_rsp_t  router_1_1_north_rsp_in;
+  floo_vec_wide_t router_1_1_north_wide_in;
+  floo_vec_wide_t router_1_1_north_wide_out;
+  assign router_1_1_req_out[North] = router_1_1_north_req_out;
+  assign router_1_1_rsp_out[North] = router_1_1_north_rsp_out;
+  assign router_1_1_wide_out[North] = router_1_1_north_wide_out;
+  assign router_1_1_north_req_in = router_1_1_req_in[North];
+  assign router_1_1_north_rsp_in = router_1_1_rsp_in[North];
+  assign router_1_1_north_wide_in = router_1_1_wide_in[North];
+  floo_vec_req_t  router_1_1_east_req_in;
+  floo_vec_rsp_t  router_1_1_east_rsp_out;
+  floo_vec_req_t  router_1_1_east_req_out;
+  floo_vec_rsp_t  router_1_1_east_rsp_in;
+  floo_vec_wide_t router_1_1_east_wide_in;
+  floo_vec_wide_t router_1_1_east_wide_out;
+  assign router_1_1_req_out[East] = router_1_1_east_req_out;
+  assign router_1_1_rsp_out[East] = router_1_1_east_rsp_out;
+  assign router_1_1_wide_out[East] = router_1_1_east_wide_out;
+  assign router_1_1_east_req_in = router_1_1_req_in[East];
+  assign router_1_1_east_rsp_in = router_1_1_rsp_in[East];
+  assign router_1_1_east_wide_in = router_1_1_wide_in[East];
+  floo_vec_req_t  router_1_1_south_req_in;
+  floo_vec_rsp_t  router_1_1_south_rsp_out;
+  floo_vec_req_t  router_1_1_south_req_out;
+  floo_vec_rsp_t  router_1_1_south_rsp_in;
+  floo_vec_wide_t router_1_1_south_wide_in;
+  floo_vec_wide_t router_1_1_south_wide_out;
+  assign router_1_1_req_out[South] = router_1_1_south_req_out;
+  assign router_1_1_rsp_out[South] = router_1_1_south_rsp_out;
+  assign router_1_1_wide_out[South] = router_1_1_south_wide_out;
+  assign router_1_1_south_req_in = router_1_1_req_in[South];
+  assign router_1_1_south_rsp_in = router_1_1_rsp_in[South];
+  assign router_1_1_south_wide_in = router_1_1_wide_in[South];
+  floo_vec_req_t  router_1_1_west_req_in;
+  floo_vec_rsp_t  router_1_1_west_rsp_out;
+  floo_vec_req_t  router_1_1_west_req_out;
+  floo_vec_rsp_t  router_1_1_west_rsp_in;
+  floo_vec_wide_t router_1_1_west_wide_in;
+  floo_vec_wide_t router_1_1_west_wide_out;
+  assign router_1_1_req_out[West] = router_1_1_west_req_out;
+  assign router_1_1_rsp_out[West] = router_1_1_west_rsp_out;
+  assign router_1_1_wide_out[West] = router_1_1_west_wide_out;
+  assign router_1_1_west_req_in = router_1_1_req_in[West];
+  assign router_1_1_west_rsp_in = router_1_1_rsp_in[West];
+  assign router_1_1_west_wide_in = router_1_1_wide_in[West];
+
 localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1657,16 +2041,34 @@ localparam id_t compute_tile_1_1_id = '{x: 2, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd5),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[102:86]),
-  .msip_i (msip_i[102:86]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[78:66]),
+  .msip_i (msip_i[78:66]),
   .id_i (compute_tile_1_1_id),
-  .floo_req_i (router_1_1_req_in),
-  .floo_rsp_o (router_1_1_rsp_out),
-  .floo_req_o (router_1_1_req_out),
-  .floo_rsp_i (router_1_1_rsp_in),
-  .floo_wide_i (router_1_1_wide_in),
-  .floo_wide_o (router_1_1_wide_out)
+  .floo_north_req_i (router_1_1_north_req_in),
+  .floo_north_rsp_o (router_1_1_north_rsp_out),
+  .floo_north_req_o (router_1_1_north_req_out),
+  .floo_north_rsp_i (router_1_1_north_rsp_in),
+  .floo_north_wide_i (router_1_1_north_wide_in),
+  .floo_north_wide_o (router_1_1_north_wide_out),
+  .floo_east_req_i (router_1_1_east_req_in),
+  .floo_east_rsp_o (router_1_1_east_rsp_out),
+  .floo_east_req_o (router_1_1_east_req_out),
+  .floo_east_rsp_i (router_1_1_east_rsp_in),
+  .floo_east_wide_i (router_1_1_east_wide_in),
+  .floo_east_wide_o (router_1_1_east_wide_out),
+  .floo_south_req_i (router_1_1_south_req_in),
+  .floo_south_rsp_o (router_1_1_south_rsp_out),
+  .floo_south_req_o (router_1_1_south_req_out),
+  .floo_south_rsp_i (router_1_1_south_rsp_in),
+  .floo_south_wide_i (router_1_1_south_wide_in),
+  .floo_south_wide_o (router_1_1_south_wide_out),
+  .floo_west_req_i (router_1_1_west_req_in),
+  .floo_west_rsp_o (router_1_1_west_rsp_out),
+  .floo_west_req_o (router_1_1_west_req_out),
+  .floo_west_rsp_i (router_1_1_west_rsp_in),
+  .floo_west_wide_i (router_1_1_west_wide_in),
+  .floo_west_wide_o (router_1_1_west_wide_out)
 );
 
 
@@ -1707,6 +2109,55 @@ floo_wide_t [West:North] router_1_2_wide_out;
   assign router_1_2_to_router_1_1_wide = router_1_2_wide_out[South];
   assign router_1_2_to_router_0_2_wide = router_1_2_wide_out[West];
 
+  floo_vec_req_t  router_1_2_north_req_in;
+  floo_vec_rsp_t  router_1_2_north_rsp_out;
+  floo_vec_req_t  router_1_2_north_req_out;
+  floo_vec_rsp_t  router_1_2_north_rsp_in;
+  floo_vec_wide_t router_1_2_north_wide_in;
+  floo_vec_wide_t router_1_2_north_wide_out;
+  assign router_1_2_req_out[North] = router_1_2_north_req_out;
+  assign router_1_2_rsp_out[North] = router_1_2_north_rsp_out;
+  assign router_1_2_wide_out[North] = router_1_2_north_wide_out;
+  assign router_1_2_north_req_in = router_1_2_req_in[North];
+  assign router_1_2_north_rsp_in = router_1_2_rsp_in[North];
+  assign router_1_2_north_wide_in = router_1_2_wide_in[North];
+  floo_vec_req_t  router_1_2_east_req_in;
+  floo_vec_rsp_t  router_1_2_east_rsp_out;
+  floo_vec_req_t  router_1_2_east_req_out;
+  floo_vec_rsp_t  router_1_2_east_rsp_in;
+  floo_vec_wide_t router_1_2_east_wide_in;
+  floo_vec_wide_t router_1_2_east_wide_out;
+  assign router_1_2_req_out[East] = router_1_2_east_req_out;
+  assign router_1_2_rsp_out[East] = router_1_2_east_rsp_out;
+  assign router_1_2_wide_out[East] = router_1_2_east_wide_out;
+  assign router_1_2_east_req_in = router_1_2_req_in[East];
+  assign router_1_2_east_rsp_in = router_1_2_rsp_in[East];
+  assign router_1_2_east_wide_in = router_1_2_wide_in[East];
+  floo_vec_req_t  router_1_2_south_req_in;
+  floo_vec_rsp_t  router_1_2_south_rsp_out;
+  floo_vec_req_t  router_1_2_south_req_out;
+  floo_vec_rsp_t  router_1_2_south_rsp_in;
+  floo_vec_wide_t router_1_2_south_wide_in;
+  floo_vec_wide_t router_1_2_south_wide_out;
+  assign router_1_2_req_out[South] = router_1_2_south_req_out;
+  assign router_1_2_rsp_out[South] = router_1_2_south_rsp_out;
+  assign router_1_2_wide_out[South] = router_1_2_south_wide_out;
+  assign router_1_2_south_req_in = router_1_2_req_in[South];
+  assign router_1_2_south_rsp_in = router_1_2_rsp_in[South];
+  assign router_1_2_south_wide_in = router_1_2_wide_in[South];
+  floo_vec_req_t  router_1_2_west_req_in;
+  floo_vec_rsp_t  router_1_2_west_rsp_out;
+  floo_vec_req_t  router_1_2_west_req_out;
+  floo_vec_rsp_t  router_1_2_west_rsp_in;
+  floo_vec_wide_t router_1_2_west_wide_in;
+  floo_vec_wide_t router_1_2_west_wide_out;
+  assign router_1_2_req_out[West] = router_1_2_west_req_out;
+  assign router_1_2_rsp_out[West] = router_1_2_west_rsp_out;
+  assign router_1_2_wide_out[West] = router_1_2_west_wide_out;
+  assign router_1_2_west_req_in = router_1_2_req_in[West];
+  assign router_1_2_west_rsp_in = router_1_2_rsp_in[West];
+  assign router_1_2_west_wide_in = router_1_2_wide_in[West];
+
 localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1720,16 +2171,34 @@ localparam id_t compute_tile_1_2_id = '{x: 2, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd6),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[119:103]),
-  .msip_i (msip_i[119:103]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[91:79]),
+  .msip_i (msip_i[91:79]),
   .id_i (compute_tile_1_2_id),
-  .floo_req_i (router_1_2_req_in),
-  .floo_rsp_o (router_1_2_rsp_out),
-  .floo_req_o (router_1_2_req_out),
-  .floo_rsp_i (router_1_2_rsp_in),
-  .floo_wide_i (router_1_2_wide_in),
-  .floo_wide_o (router_1_2_wide_out)
+  .floo_north_req_i (router_1_2_north_req_in),
+  .floo_north_rsp_o (router_1_2_north_rsp_out),
+  .floo_north_req_o (router_1_2_north_req_out),
+  .floo_north_rsp_i (router_1_2_north_rsp_in),
+  .floo_north_wide_i (router_1_2_north_wide_in),
+  .floo_north_wide_o (router_1_2_north_wide_out),
+  .floo_east_req_i (router_1_2_east_req_in),
+  .floo_east_rsp_o (router_1_2_east_rsp_out),
+  .floo_east_req_o (router_1_2_east_req_out),
+  .floo_east_rsp_i (router_1_2_east_rsp_in),
+  .floo_east_wide_i (router_1_2_east_wide_in),
+  .floo_east_wide_o (router_1_2_east_wide_out),
+  .floo_south_req_i (router_1_2_south_req_in),
+  .floo_south_rsp_o (router_1_2_south_rsp_out),
+  .floo_south_req_o (router_1_2_south_req_out),
+  .floo_south_rsp_i (router_1_2_south_rsp_in),
+  .floo_south_wide_i (router_1_2_south_wide_in),
+  .floo_south_wide_o (router_1_2_south_wide_out),
+  .floo_west_req_i (router_1_2_west_req_in),
+  .floo_west_rsp_o (router_1_2_west_rsp_out),
+  .floo_west_req_o (router_1_2_west_req_out),
+  .floo_west_rsp_i (router_1_2_west_rsp_in),
+  .floo_west_wide_i (router_1_2_west_wide_in),
+  .floo_west_wide_o (router_1_2_west_wide_out)
 );
 
 
@@ -1770,6 +2239,55 @@ floo_wide_t [West:North] router_1_3_wide_out;
   assign router_1_3_to_router_1_2_wide = router_1_3_wide_out[South];
   assign router_1_3_to_router_0_3_wide = router_1_3_wide_out[West];
 
+  floo_vec_req_t  router_1_3_north_req_in;
+  floo_vec_rsp_t  router_1_3_north_rsp_out;
+  floo_vec_req_t  router_1_3_north_req_out;
+  floo_vec_rsp_t  router_1_3_north_rsp_in;
+  floo_vec_wide_t router_1_3_north_wide_in;
+  floo_vec_wide_t router_1_3_north_wide_out;
+  assign router_1_3_req_out[North] = router_1_3_north_req_out;
+  assign router_1_3_rsp_out[North] = router_1_3_north_rsp_out;
+  assign router_1_3_wide_out[North] = router_1_3_north_wide_out;
+  assign router_1_3_north_req_in = router_1_3_req_in[North];
+  assign router_1_3_north_rsp_in = router_1_3_rsp_in[North];
+  assign router_1_3_north_wide_in = router_1_3_wide_in[North];
+  floo_vec_req_t  router_1_3_east_req_in;
+  floo_vec_rsp_t  router_1_3_east_rsp_out;
+  floo_vec_req_t  router_1_3_east_req_out;
+  floo_vec_rsp_t  router_1_3_east_rsp_in;
+  floo_vec_wide_t router_1_3_east_wide_in;
+  floo_vec_wide_t router_1_3_east_wide_out;
+  assign router_1_3_req_out[East] = router_1_3_east_req_out;
+  assign router_1_3_rsp_out[East] = router_1_3_east_rsp_out;
+  assign router_1_3_wide_out[East] = router_1_3_east_wide_out;
+  assign router_1_3_east_req_in = router_1_3_req_in[East];
+  assign router_1_3_east_rsp_in = router_1_3_rsp_in[East];
+  assign router_1_3_east_wide_in = router_1_3_wide_in[East];
+  floo_vec_req_t  router_1_3_south_req_in;
+  floo_vec_rsp_t  router_1_3_south_rsp_out;
+  floo_vec_req_t  router_1_3_south_req_out;
+  floo_vec_rsp_t  router_1_3_south_rsp_in;
+  floo_vec_wide_t router_1_3_south_wide_in;
+  floo_vec_wide_t router_1_3_south_wide_out;
+  assign router_1_3_req_out[South] = router_1_3_south_req_out;
+  assign router_1_3_rsp_out[South] = router_1_3_south_rsp_out;
+  assign router_1_3_wide_out[South] = router_1_3_south_wide_out;
+  assign router_1_3_south_req_in = router_1_3_req_in[South];
+  assign router_1_3_south_rsp_in = router_1_3_rsp_in[South];
+  assign router_1_3_south_wide_in = router_1_3_wide_in[South];
+  floo_vec_req_t  router_1_3_west_req_in;
+  floo_vec_rsp_t  router_1_3_west_rsp_out;
+  floo_vec_req_t  router_1_3_west_req_out;
+  floo_vec_rsp_t  router_1_3_west_rsp_in;
+  floo_vec_wide_t router_1_3_west_wide_in;
+  floo_vec_wide_t router_1_3_west_wide_out;
+  assign router_1_3_req_out[West] = router_1_3_west_req_out;
+  assign router_1_3_rsp_out[West] = router_1_3_west_rsp_out;
+  assign router_1_3_wide_out[West] = router_1_3_west_wide_out;
+  assign router_1_3_west_req_in = router_1_3_req_in[West];
+  assign router_1_3_west_rsp_in = router_1_3_rsp_in[West];
+  assign router_1_3_west_wide_in = router_1_3_wide_in[West];
+
 localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1783,16 +2301,34 @@ localparam id_t compute_tile_1_3_id = '{x: 2, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd7),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[136:120]),
-  .msip_i (msip_i[136:120]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[104:92]),
+  .msip_i (msip_i[104:92]),
   .id_i (compute_tile_1_3_id),
-  .floo_req_i (router_1_3_req_in),
-  .floo_rsp_o (router_1_3_rsp_out),
-  .floo_req_o (router_1_3_req_out),
-  .floo_rsp_i (router_1_3_rsp_in),
-  .floo_wide_i (router_1_3_wide_in),
-  .floo_wide_o (router_1_3_wide_out)
+  .floo_north_req_i (router_1_3_north_req_in),
+  .floo_north_rsp_o (router_1_3_north_rsp_out),
+  .floo_north_req_o (router_1_3_north_req_out),
+  .floo_north_rsp_i (router_1_3_north_rsp_in),
+  .floo_north_wide_i (router_1_3_north_wide_in),
+  .floo_north_wide_o (router_1_3_north_wide_out),
+  .floo_east_req_i (router_1_3_east_req_in),
+  .floo_east_rsp_o (router_1_3_east_rsp_out),
+  .floo_east_req_o (router_1_3_east_req_out),
+  .floo_east_rsp_i (router_1_3_east_rsp_in),
+  .floo_east_wide_i (router_1_3_east_wide_in),
+  .floo_east_wide_o (router_1_3_east_wide_out),
+  .floo_south_req_i (router_1_3_south_req_in),
+  .floo_south_rsp_o (router_1_3_south_rsp_out),
+  .floo_south_req_o (router_1_3_south_req_out),
+  .floo_south_rsp_i (router_1_3_south_rsp_in),
+  .floo_south_wide_i (router_1_3_south_wide_in),
+  .floo_south_wide_o (router_1_3_south_wide_out),
+  .floo_west_req_i (router_1_3_west_req_in),
+  .floo_west_rsp_o (router_1_3_west_rsp_out),
+  .floo_west_req_o (router_1_3_west_req_out),
+  .floo_west_rsp_i (router_1_3_west_rsp_in),
+  .floo_west_wide_i (router_1_3_west_wide_in),
+  .floo_west_wide_o (router_1_3_west_wide_out)
 );
 
 
@@ -1833,6 +2369,55 @@ floo_wide_t [West:North] router_2_0_wide_out;
   assign router_2_0_to_hbm_south_0_ni_1_0_wide = router_2_0_wide_out[South];
   assign router_2_0_to_router_1_0_wide = router_2_0_wide_out[West];
 
+  floo_vec_req_t  router_2_0_north_req_in;
+  floo_vec_rsp_t  router_2_0_north_rsp_out;
+  floo_vec_req_t  router_2_0_north_req_out;
+  floo_vec_rsp_t  router_2_0_north_rsp_in;
+  floo_vec_wide_t router_2_0_north_wide_in;
+  floo_vec_wide_t router_2_0_north_wide_out;
+  assign router_2_0_req_out[North] = router_2_0_north_req_out;
+  assign router_2_0_rsp_out[North] = router_2_0_north_rsp_out;
+  assign router_2_0_wide_out[North] = router_2_0_north_wide_out;
+  assign router_2_0_north_req_in = router_2_0_req_in[North];
+  assign router_2_0_north_rsp_in = router_2_0_rsp_in[North];
+  assign router_2_0_north_wide_in = router_2_0_wide_in[North];
+  floo_vec_req_t  router_2_0_east_req_in;
+  floo_vec_rsp_t  router_2_0_east_rsp_out;
+  floo_vec_req_t  router_2_0_east_req_out;
+  floo_vec_rsp_t  router_2_0_east_rsp_in;
+  floo_vec_wide_t router_2_0_east_wide_in;
+  floo_vec_wide_t router_2_0_east_wide_out;
+  assign router_2_0_req_out[East] = router_2_0_east_req_out;
+  assign router_2_0_rsp_out[East] = router_2_0_east_rsp_out;
+  assign router_2_0_wide_out[East] = router_2_0_east_wide_out;
+  assign router_2_0_east_req_in = router_2_0_req_in[East];
+  assign router_2_0_east_rsp_in = router_2_0_rsp_in[East];
+  assign router_2_0_east_wide_in = router_2_0_wide_in[East];
+  floo_vec_req_t  router_2_0_south_req_in;
+  floo_vec_rsp_t  router_2_0_south_rsp_out;
+  floo_vec_req_t  router_2_0_south_req_out;
+  floo_vec_rsp_t  router_2_0_south_rsp_in;
+  floo_vec_wide_t router_2_0_south_wide_in;
+  floo_vec_wide_t router_2_0_south_wide_out;
+  assign router_2_0_req_out[South] = router_2_0_south_req_out;
+  assign router_2_0_rsp_out[South] = router_2_0_south_rsp_out;
+  assign router_2_0_wide_out[South] = router_2_0_south_wide_out;
+  assign router_2_0_south_req_in = router_2_0_req_in[South];
+  assign router_2_0_south_rsp_in = router_2_0_rsp_in[South];
+  assign router_2_0_south_wide_in = router_2_0_wide_in[South];
+  floo_vec_req_t  router_2_0_west_req_in;
+  floo_vec_rsp_t  router_2_0_west_rsp_out;
+  floo_vec_req_t  router_2_0_west_req_out;
+  floo_vec_rsp_t  router_2_0_west_rsp_in;
+  floo_vec_wide_t router_2_0_west_wide_in;
+  floo_vec_wide_t router_2_0_west_wide_out;
+  assign router_2_0_req_out[West] = router_2_0_west_req_out;
+  assign router_2_0_rsp_out[West] = router_2_0_west_rsp_out;
+  assign router_2_0_wide_out[West] = router_2_0_west_wide_out;
+  assign router_2_0_west_req_in = router_2_0_req_in[West];
+  assign router_2_0_west_rsp_in = router_2_0_rsp_in[West];
+  assign router_2_0_west_wide_in = router_2_0_wide_in[West];
+
 localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1846,16 +2431,34 @@ localparam id_t compute_tile_2_0_id = '{x: 3, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd8),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[153:137]),
-  .msip_i (msip_i[153:137]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[117:105]),
+  .msip_i (msip_i[117:105]),
   .id_i (compute_tile_2_0_id),
-  .floo_req_i (router_2_0_req_in),
-  .floo_rsp_o (router_2_0_rsp_out),
-  .floo_req_o (router_2_0_req_out),
-  .floo_rsp_i (router_2_0_rsp_in),
-  .floo_wide_i (router_2_0_wide_in),
-  .floo_wide_o (router_2_0_wide_out)
+  .floo_north_req_i (router_2_0_north_req_in),
+  .floo_north_rsp_o (router_2_0_north_rsp_out),
+  .floo_north_req_o (router_2_0_north_req_out),
+  .floo_north_rsp_i (router_2_0_north_rsp_in),
+  .floo_north_wide_i (router_2_0_north_wide_in),
+  .floo_north_wide_o (router_2_0_north_wide_out),
+  .floo_east_req_i (router_2_0_east_req_in),
+  .floo_east_rsp_o (router_2_0_east_rsp_out),
+  .floo_east_req_o (router_2_0_east_req_out),
+  .floo_east_rsp_i (router_2_0_east_rsp_in),
+  .floo_east_wide_i (router_2_0_east_wide_in),
+  .floo_east_wide_o (router_2_0_east_wide_out),
+  .floo_south_req_i (router_2_0_south_req_in),
+  .floo_south_rsp_o (router_2_0_south_rsp_out),
+  .floo_south_req_o (router_2_0_south_req_out),
+  .floo_south_rsp_i (router_2_0_south_rsp_in),
+  .floo_south_wide_i (router_2_0_south_wide_in),
+  .floo_south_wide_o (router_2_0_south_wide_out),
+  .floo_west_req_i (router_2_0_west_req_in),
+  .floo_west_rsp_o (router_2_0_west_rsp_out),
+  .floo_west_req_o (router_2_0_west_req_out),
+  .floo_west_rsp_i (router_2_0_west_rsp_in),
+  .floo_west_wide_i (router_2_0_west_wide_in),
+  .floo_west_wide_o (router_2_0_west_wide_out)
 );
 
 
@@ -1896,6 +2499,55 @@ floo_wide_t [West:North] router_2_1_wide_out;
   assign router_2_1_to_router_2_0_wide = router_2_1_wide_out[South];
   assign router_2_1_to_router_1_1_wide = router_2_1_wide_out[West];
 
+  floo_vec_req_t  router_2_1_north_req_in;
+  floo_vec_rsp_t  router_2_1_north_rsp_out;
+  floo_vec_req_t  router_2_1_north_req_out;
+  floo_vec_rsp_t  router_2_1_north_rsp_in;
+  floo_vec_wide_t router_2_1_north_wide_in;
+  floo_vec_wide_t router_2_1_north_wide_out;
+  assign router_2_1_req_out[North] = router_2_1_north_req_out;
+  assign router_2_1_rsp_out[North] = router_2_1_north_rsp_out;
+  assign router_2_1_wide_out[North] = router_2_1_north_wide_out;
+  assign router_2_1_north_req_in = router_2_1_req_in[North];
+  assign router_2_1_north_rsp_in = router_2_1_rsp_in[North];
+  assign router_2_1_north_wide_in = router_2_1_wide_in[North];
+  floo_vec_req_t  router_2_1_east_req_in;
+  floo_vec_rsp_t  router_2_1_east_rsp_out;
+  floo_vec_req_t  router_2_1_east_req_out;
+  floo_vec_rsp_t  router_2_1_east_rsp_in;
+  floo_vec_wide_t router_2_1_east_wide_in;
+  floo_vec_wide_t router_2_1_east_wide_out;
+  assign router_2_1_req_out[East] = router_2_1_east_req_out;
+  assign router_2_1_rsp_out[East] = router_2_1_east_rsp_out;
+  assign router_2_1_wide_out[East] = router_2_1_east_wide_out;
+  assign router_2_1_east_req_in = router_2_1_req_in[East];
+  assign router_2_1_east_rsp_in = router_2_1_rsp_in[East];
+  assign router_2_1_east_wide_in = router_2_1_wide_in[East];
+  floo_vec_req_t  router_2_1_south_req_in;
+  floo_vec_rsp_t  router_2_1_south_rsp_out;
+  floo_vec_req_t  router_2_1_south_req_out;
+  floo_vec_rsp_t  router_2_1_south_rsp_in;
+  floo_vec_wide_t router_2_1_south_wide_in;
+  floo_vec_wide_t router_2_1_south_wide_out;
+  assign router_2_1_req_out[South] = router_2_1_south_req_out;
+  assign router_2_1_rsp_out[South] = router_2_1_south_rsp_out;
+  assign router_2_1_wide_out[South] = router_2_1_south_wide_out;
+  assign router_2_1_south_req_in = router_2_1_req_in[South];
+  assign router_2_1_south_rsp_in = router_2_1_rsp_in[South];
+  assign router_2_1_south_wide_in = router_2_1_wide_in[South];
+  floo_vec_req_t  router_2_1_west_req_in;
+  floo_vec_rsp_t  router_2_1_west_rsp_out;
+  floo_vec_req_t  router_2_1_west_req_out;
+  floo_vec_rsp_t  router_2_1_west_rsp_in;
+  floo_vec_wide_t router_2_1_west_wide_in;
+  floo_vec_wide_t router_2_1_west_wide_out;
+  assign router_2_1_req_out[West] = router_2_1_west_req_out;
+  assign router_2_1_rsp_out[West] = router_2_1_west_rsp_out;
+  assign router_2_1_wide_out[West] = router_2_1_west_wide_out;
+  assign router_2_1_west_req_in = router_2_1_req_in[West];
+  assign router_2_1_west_rsp_in = router_2_1_rsp_in[West];
+  assign router_2_1_west_wide_in = router_2_1_wide_in[West];
+
 localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1909,16 +2561,34 @@ localparam id_t compute_tile_2_1_id = '{x: 3, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd9),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[170:154]),
-  .msip_i (msip_i[170:154]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[130:118]),
+  .msip_i (msip_i[130:118]),
   .id_i (compute_tile_2_1_id),
-  .floo_req_i (router_2_1_req_in),
-  .floo_rsp_o (router_2_1_rsp_out),
-  .floo_req_o (router_2_1_req_out),
-  .floo_rsp_i (router_2_1_rsp_in),
-  .floo_wide_i (router_2_1_wide_in),
-  .floo_wide_o (router_2_1_wide_out)
+  .floo_north_req_i (router_2_1_north_req_in),
+  .floo_north_rsp_o (router_2_1_north_rsp_out),
+  .floo_north_req_o (router_2_1_north_req_out),
+  .floo_north_rsp_i (router_2_1_north_rsp_in),
+  .floo_north_wide_i (router_2_1_north_wide_in),
+  .floo_north_wide_o (router_2_1_north_wide_out),
+  .floo_east_req_i (router_2_1_east_req_in),
+  .floo_east_rsp_o (router_2_1_east_rsp_out),
+  .floo_east_req_o (router_2_1_east_req_out),
+  .floo_east_rsp_i (router_2_1_east_rsp_in),
+  .floo_east_wide_i (router_2_1_east_wide_in),
+  .floo_east_wide_o (router_2_1_east_wide_out),
+  .floo_south_req_i (router_2_1_south_req_in),
+  .floo_south_rsp_o (router_2_1_south_rsp_out),
+  .floo_south_req_o (router_2_1_south_req_out),
+  .floo_south_rsp_i (router_2_1_south_rsp_in),
+  .floo_south_wide_i (router_2_1_south_wide_in),
+  .floo_south_wide_o (router_2_1_south_wide_out),
+  .floo_west_req_i (router_2_1_west_req_in),
+  .floo_west_rsp_o (router_2_1_west_rsp_out),
+  .floo_west_req_o (router_2_1_west_req_out),
+  .floo_west_rsp_i (router_2_1_west_rsp_in),
+  .floo_west_wide_i (router_2_1_west_wide_in),
+  .floo_west_wide_o (router_2_1_west_wide_out)
 );
 
 
@@ -1959,6 +2629,55 @@ floo_wide_t [West:North] router_2_2_wide_out;
   assign router_2_2_to_router_2_1_wide = router_2_2_wide_out[South];
   assign router_2_2_to_router_1_2_wide = router_2_2_wide_out[West];
 
+  floo_vec_req_t  router_2_2_north_req_in;
+  floo_vec_rsp_t  router_2_2_north_rsp_out;
+  floo_vec_req_t  router_2_2_north_req_out;
+  floo_vec_rsp_t  router_2_2_north_rsp_in;
+  floo_vec_wide_t router_2_2_north_wide_in;
+  floo_vec_wide_t router_2_2_north_wide_out;
+  assign router_2_2_req_out[North] = router_2_2_north_req_out;
+  assign router_2_2_rsp_out[North] = router_2_2_north_rsp_out;
+  assign router_2_2_wide_out[North] = router_2_2_north_wide_out;
+  assign router_2_2_north_req_in = router_2_2_req_in[North];
+  assign router_2_2_north_rsp_in = router_2_2_rsp_in[North];
+  assign router_2_2_north_wide_in = router_2_2_wide_in[North];
+  floo_vec_req_t  router_2_2_east_req_in;
+  floo_vec_rsp_t  router_2_2_east_rsp_out;
+  floo_vec_req_t  router_2_2_east_req_out;
+  floo_vec_rsp_t  router_2_2_east_rsp_in;
+  floo_vec_wide_t router_2_2_east_wide_in;
+  floo_vec_wide_t router_2_2_east_wide_out;
+  assign router_2_2_req_out[East] = router_2_2_east_req_out;
+  assign router_2_2_rsp_out[East] = router_2_2_east_rsp_out;
+  assign router_2_2_wide_out[East] = router_2_2_east_wide_out;
+  assign router_2_2_east_req_in = router_2_2_req_in[East];
+  assign router_2_2_east_rsp_in = router_2_2_rsp_in[East];
+  assign router_2_2_east_wide_in = router_2_2_wide_in[East];
+  floo_vec_req_t  router_2_2_south_req_in;
+  floo_vec_rsp_t  router_2_2_south_rsp_out;
+  floo_vec_req_t  router_2_2_south_req_out;
+  floo_vec_rsp_t  router_2_2_south_rsp_in;
+  floo_vec_wide_t router_2_2_south_wide_in;
+  floo_vec_wide_t router_2_2_south_wide_out;
+  assign router_2_2_req_out[South] = router_2_2_south_req_out;
+  assign router_2_2_rsp_out[South] = router_2_2_south_rsp_out;
+  assign router_2_2_wide_out[South] = router_2_2_south_wide_out;
+  assign router_2_2_south_req_in = router_2_2_req_in[South];
+  assign router_2_2_south_rsp_in = router_2_2_rsp_in[South];
+  assign router_2_2_south_wide_in = router_2_2_wide_in[South];
+  floo_vec_req_t  router_2_2_west_req_in;
+  floo_vec_rsp_t  router_2_2_west_rsp_out;
+  floo_vec_req_t  router_2_2_west_req_out;
+  floo_vec_rsp_t  router_2_2_west_rsp_in;
+  floo_vec_wide_t router_2_2_west_wide_in;
+  floo_vec_wide_t router_2_2_west_wide_out;
+  assign router_2_2_req_out[West] = router_2_2_west_req_out;
+  assign router_2_2_rsp_out[West] = router_2_2_west_rsp_out;
+  assign router_2_2_wide_out[West] = router_2_2_west_wide_out;
+  assign router_2_2_west_req_in = router_2_2_req_in[West];
+  assign router_2_2_west_rsp_in = router_2_2_rsp_in[West];
+  assign router_2_2_west_wide_in = router_2_2_wide_in[West];
+
 localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -1972,16 +2691,34 @@ localparam id_t compute_tile_2_2_id = '{x: 3, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd10),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[187:171]),
-  .msip_i (msip_i[187:171]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[143:131]),
+  .msip_i (msip_i[143:131]),
   .id_i (compute_tile_2_2_id),
-  .floo_req_i (router_2_2_req_in),
-  .floo_rsp_o (router_2_2_rsp_out),
-  .floo_req_o (router_2_2_req_out),
-  .floo_rsp_i (router_2_2_rsp_in),
-  .floo_wide_i (router_2_2_wide_in),
-  .floo_wide_o (router_2_2_wide_out)
+  .floo_north_req_i (router_2_2_north_req_in),
+  .floo_north_rsp_o (router_2_2_north_rsp_out),
+  .floo_north_req_o (router_2_2_north_req_out),
+  .floo_north_rsp_i (router_2_2_north_rsp_in),
+  .floo_north_wide_i (router_2_2_north_wide_in),
+  .floo_north_wide_o (router_2_2_north_wide_out),
+  .floo_east_req_i (router_2_2_east_req_in),
+  .floo_east_rsp_o (router_2_2_east_rsp_out),
+  .floo_east_req_o (router_2_2_east_req_out),
+  .floo_east_rsp_i (router_2_2_east_rsp_in),
+  .floo_east_wide_i (router_2_2_east_wide_in),
+  .floo_east_wide_o (router_2_2_east_wide_out),
+  .floo_south_req_i (router_2_2_south_req_in),
+  .floo_south_rsp_o (router_2_2_south_rsp_out),
+  .floo_south_req_o (router_2_2_south_req_out),
+  .floo_south_rsp_i (router_2_2_south_rsp_in),
+  .floo_south_wide_i (router_2_2_south_wide_in),
+  .floo_south_wide_o (router_2_2_south_wide_out),
+  .floo_west_req_i (router_2_2_west_req_in),
+  .floo_west_rsp_o (router_2_2_west_rsp_out),
+  .floo_west_req_o (router_2_2_west_req_out),
+  .floo_west_rsp_i (router_2_2_west_rsp_in),
+  .floo_west_wide_i (router_2_2_west_wide_in),
+  .floo_west_wide_o (router_2_2_west_wide_out)
 );
 
 
@@ -2022,6 +2759,55 @@ floo_wide_t [West:North] router_2_3_wide_out;
   assign router_2_3_to_router_2_2_wide = router_2_3_wide_out[South];
   assign router_2_3_to_router_1_3_wide = router_2_3_wide_out[West];
 
+  floo_vec_req_t  router_2_3_north_req_in;
+  floo_vec_rsp_t  router_2_3_north_rsp_out;
+  floo_vec_req_t  router_2_3_north_req_out;
+  floo_vec_rsp_t  router_2_3_north_rsp_in;
+  floo_vec_wide_t router_2_3_north_wide_in;
+  floo_vec_wide_t router_2_3_north_wide_out;
+  assign router_2_3_req_out[North] = router_2_3_north_req_out;
+  assign router_2_3_rsp_out[North] = router_2_3_north_rsp_out;
+  assign router_2_3_wide_out[North] = router_2_3_north_wide_out;
+  assign router_2_3_north_req_in = router_2_3_req_in[North];
+  assign router_2_3_north_rsp_in = router_2_3_rsp_in[North];
+  assign router_2_3_north_wide_in = router_2_3_wide_in[North];
+  floo_vec_req_t  router_2_3_east_req_in;
+  floo_vec_rsp_t  router_2_3_east_rsp_out;
+  floo_vec_req_t  router_2_3_east_req_out;
+  floo_vec_rsp_t  router_2_3_east_rsp_in;
+  floo_vec_wide_t router_2_3_east_wide_in;
+  floo_vec_wide_t router_2_3_east_wide_out;
+  assign router_2_3_req_out[East] = router_2_3_east_req_out;
+  assign router_2_3_rsp_out[East] = router_2_3_east_rsp_out;
+  assign router_2_3_wide_out[East] = router_2_3_east_wide_out;
+  assign router_2_3_east_req_in = router_2_3_req_in[East];
+  assign router_2_3_east_rsp_in = router_2_3_rsp_in[East];
+  assign router_2_3_east_wide_in = router_2_3_wide_in[East];
+  floo_vec_req_t  router_2_3_south_req_in;
+  floo_vec_rsp_t  router_2_3_south_rsp_out;
+  floo_vec_req_t  router_2_3_south_req_out;
+  floo_vec_rsp_t  router_2_3_south_rsp_in;
+  floo_vec_wide_t router_2_3_south_wide_in;
+  floo_vec_wide_t router_2_3_south_wide_out;
+  assign router_2_3_req_out[South] = router_2_3_south_req_out;
+  assign router_2_3_rsp_out[South] = router_2_3_south_rsp_out;
+  assign router_2_3_wide_out[South] = router_2_3_south_wide_out;
+  assign router_2_3_south_req_in = router_2_3_req_in[South];
+  assign router_2_3_south_rsp_in = router_2_3_rsp_in[South];
+  assign router_2_3_south_wide_in = router_2_3_wide_in[South];
+  floo_vec_req_t  router_2_3_west_req_in;
+  floo_vec_rsp_t  router_2_3_west_rsp_out;
+  floo_vec_req_t  router_2_3_west_req_out;
+  floo_vec_rsp_t  router_2_3_west_rsp_in;
+  floo_vec_wide_t router_2_3_west_wide_in;
+  floo_vec_wide_t router_2_3_west_wide_out;
+  assign router_2_3_req_out[West] = router_2_3_west_req_out;
+  assign router_2_3_rsp_out[West] = router_2_3_west_rsp_out;
+  assign router_2_3_wide_out[West] = router_2_3_west_wide_out;
+  assign router_2_3_west_req_in = router_2_3_req_in[West];
+  assign router_2_3_west_rsp_in = router_2_3_rsp_in[West];
+  assign router_2_3_west_wide_in = router_2_3_wide_in[West];
+
 localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2035,16 +2821,34 @@ localparam id_t compute_tile_2_3_id = '{x: 3, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd11),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[204:188]),
-  .msip_i (msip_i[204:188]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[156:144]),
+  .msip_i (msip_i[156:144]),
   .id_i (compute_tile_2_3_id),
-  .floo_req_i (router_2_3_req_in),
-  .floo_rsp_o (router_2_3_rsp_out),
-  .floo_req_o (router_2_3_req_out),
-  .floo_rsp_i (router_2_3_rsp_in),
-  .floo_wide_i (router_2_3_wide_in),
-  .floo_wide_o (router_2_3_wide_out)
+  .floo_north_req_i (router_2_3_north_req_in),
+  .floo_north_rsp_o (router_2_3_north_rsp_out),
+  .floo_north_req_o (router_2_3_north_req_out),
+  .floo_north_rsp_i (router_2_3_north_rsp_in),
+  .floo_north_wide_i (router_2_3_north_wide_in),
+  .floo_north_wide_o (router_2_3_north_wide_out),
+  .floo_east_req_i (router_2_3_east_req_in),
+  .floo_east_rsp_o (router_2_3_east_rsp_out),
+  .floo_east_req_o (router_2_3_east_req_out),
+  .floo_east_rsp_i (router_2_3_east_rsp_in),
+  .floo_east_wide_i (router_2_3_east_wide_in),
+  .floo_east_wide_o (router_2_3_east_wide_out),
+  .floo_south_req_i (router_2_3_south_req_in),
+  .floo_south_rsp_o (router_2_3_south_rsp_out),
+  .floo_south_req_o (router_2_3_south_req_out),
+  .floo_south_rsp_i (router_2_3_south_rsp_in),
+  .floo_south_wide_i (router_2_3_south_wide_in),
+  .floo_south_wide_o (router_2_3_south_wide_out),
+  .floo_west_req_i (router_2_3_west_req_in),
+  .floo_west_rsp_o (router_2_3_west_rsp_out),
+  .floo_west_req_o (router_2_3_west_req_out),
+  .floo_west_rsp_i (router_2_3_west_rsp_in),
+  .floo_west_wide_i (router_2_3_west_wide_in),
+  .floo_west_wide_o (router_2_3_west_wide_out)
 );
 
 
@@ -2357,6 +3161,55 @@ floo_wide_t [West:North] router_4_0_wide_out;
   assign router_4_0_to_hbm_south_2_ni_0_0_wide = router_4_0_wide_out[South];
   assign router_4_0_to_router_3_0_wide = router_4_0_wide_out[West];
 
+  floo_vec_req_t  router_4_0_north_req_in;
+  floo_vec_rsp_t  router_4_0_north_rsp_out;
+  floo_vec_req_t  router_4_0_north_req_out;
+  floo_vec_rsp_t  router_4_0_north_rsp_in;
+  floo_vec_wide_t router_4_0_north_wide_in;
+  floo_vec_wide_t router_4_0_north_wide_out;
+  assign router_4_0_req_out[North] = router_4_0_north_req_out;
+  assign router_4_0_rsp_out[North] = router_4_0_north_rsp_out;
+  assign router_4_0_wide_out[North] = router_4_0_north_wide_out;
+  assign router_4_0_north_req_in = router_4_0_req_in[North];
+  assign router_4_0_north_rsp_in = router_4_0_rsp_in[North];
+  assign router_4_0_north_wide_in = router_4_0_wide_in[North];
+  floo_vec_req_t  router_4_0_east_req_in;
+  floo_vec_rsp_t  router_4_0_east_rsp_out;
+  floo_vec_req_t  router_4_0_east_req_out;
+  floo_vec_rsp_t  router_4_0_east_rsp_in;
+  floo_vec_wide_t router_4_0_east_wide_in;
+  floo_vec_wide_t router_4_0_east_wide_out;
+  assign router_4_0_req_out[East] = router_4_0_east_req_out;
+  assign router_4_0_rsp_out[East] = router_4_0_east_rsp_out;
+  assign router_4_0_wide_out[East] = router_4_0_east_wide_out;
+  assign router_4_0_east_req_in = router_4_0_req_in[East];
+  assign router_4_0_east_rsp_in = router_4_0_rsp_in[East];
+  assign router_4_0_east_wide_in = router_4_0_wide_in[East];
+  floo_vec_req_t  router_4_0_south_req_in;
+  floo_vec_rsp_t  router_4_0_south_rsp_out;
+  floo_vec_req_t  router_4_0_south_req_out;
+  floo_vec_rsp_t  router_4_0_south_rsp_in;
+  floo_vec_wide_t router_4_0_south_wide_in;
+  floo_vec_wide_t router_4_0_south_wide_out;
+  assign router_4_0_req_out[South] = router_4_0_south_req_out;
+  assign router_4_0_rsp_out[South] = router_4_0_south_rsp_out;
+  assign router_4_0_wide_out[South] = router_4_0_south_wide_out;
+  assign router_4_0_south_req_in = router_4_0_req_in[South];
+  assign router_4_0_south_rsp_in = router_4_0_rsp_in[South];
+  assign router_4_0_south_wide_in = router_4_0_wide_in[South];
+  floo_vec_req_t  router_4_0_west_req_in;
+  floo_vec_rsp_t  router_4_0_west_rsp_out;
+  floo_vec_req_t  router_4_0_west_req_out;
+  floo_vec_rsp_t  router_4_0_west_rsp_in;
+  floo_vec_wide_t router_4_0_west_wide_in;
+  floo_vec_wide_t router_4_0_west_wide_out;
+  assign router_4_0_req_out[West] = router_4_0_west_req_out;
+  assign router_4_0_rsp_out[West] = router_4_0_west_rsp_out;
+  assign router_4_0_wide_out[West] = router_4_0_west_wide_out;
+  assign router_4_0_west_req_in = router_4_0_req_in[West];
+  assign router_4_0_west_rsp_in = router_4_0_rsp_in[West];
+  assign router_4_0_west_wide_in = router_4_0_wide_in[West];
+
 localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2370,16 +3223,34 @@ localparam id_t compute_tile_4_0_id = '{x: 5, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd12),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[221:205]),
-  .msip_i (msip_i[221:205]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[169:157]),
+  .msip_i (msip_i[169:157]),
   .id_i (compute_tile_4_0_id),
-  .floo_req_i (router_4_0_req_in),
-  .floo_rsp_o (router_4_0_rsp_out),
-  .floo_req_o (router_4_0_req_out),
-  .floo_rsp_i (router_4_0_rsp_in),
-  .floo_wide_i (router_4_0_wide_in),
-  .floo_wide_o (router_4_0_wide_out)
+  .floo_north_req_i (router_4_0_north_req_in),
+  .floo_north_rsp_o (router_4_0_north_rsp_out),
+  .floo_north_req_o (router_4_0_north_req_out),
+  .floo_north_rsp_i (router_4_0_north_rsp_in),
+  .floo_north_wide_i (router_4_0_north_wide_in),
+  .floo_north_wide_o (router_4_0_north_wide_out),
+  .floo_east_req_i (router_4_0_east_req_in),
+  .floo_east_rsp_o (router_4_0_east_rsp_out),
+  .floo_east_req_o (router_4_0_east_req_out),
+  .floo_east_rsp_i (router_4_0_east_rsp_in),
+  .floo_east_wide_i (router_4_0_east_wide_in),
+  .floo_east_wide_o (router_4_0_east_wide_out),
+  .floo_south_req_i (router_4_0_south_req_in),
+  .floo_south_rsp_o (router_4_0_south_rsp_out),
+  .floo_south_req_o (router_4_0_south_req_out),
+  .floo_south_rsp_i (router_4_0_south_rsp_in),
+  .floo_south_wide_i (router_4_0_south_wide_in),
+  .floo_south_wide_o (router_4_0_south_wide_out),
+  .floo_west_req_i (router_4_0_west_req_in),
+  .floo_west_rsp_o (router_4_0_west_rsp_out),
+  .floo_west_req_o (router_4_0_west_req_out),
+  .floo_west_rsp_i (router_4_0_west_rsp_in),
+  .floo_west_wide_i (router_4_0_west_wide_in),
+  .floo_west_wide_o (router_4_0_west_wide_out)
 );
 
 
@@ -2420,6 +3291,55 @@ floo_wide_t [West:North] router_4_1_wide_out;
   assign router_4_1_to_router_4_0_wide = router_4_1_wide_out[South];
   assign router_4_1_to_router_3_1_wide = router_4_1_wide_out[West];
 
+  floo_vec_req_t  router_4_1_north_req_in;
+  floo_vec_rsp_t  router_4_1_north_rsp_out;
+  floo_vec_req_t  router_4_1_north_req_out;
+  floo_vec_rsp_t  router_4_1_north_rsp_in;
+  floo_vec_wide_t router_4_1_north_wide_in;
+  floo_vec_wide_t router_4_1_north_wide_out;
+  assign router_4_1_req_out[North] = router_4_1_north_req_out;
+  assign router_4_1_rsp_out[North] = router_4_1_north_rsp_out;
+  assign router_4_1_wide_out[North] = router_4_1_north_wide_out;
+  assign router_4_1_north_req_in = router_4_1_req_in[North];
+  assign router_4_1_north_rsp_in = router_4_1_rsp_in[North];
+  assign router_4_1_north_wide_in = router_4_1_wide_in[North];
+  floo_vec_req_t  router_4_1_east_req_in;
+  floo_vec_rsp_t  router_4_1_east_rsp_out;
+  floo_vec_req_t  router_4_1_east_req_out;
+  floo_vec_rsp_t  router_4_1_east_rsp_in;
+  floo_vec_wide_t router_4_1_east_wide_in;
+  floo_vec_wide_t router_4_1_east_wide_out;
+  assign router_4_1_req_out[East] = router_4_1_east_req_out;
+  assign router_4_1_rsp_out[East] = router_4_1_east_rsp_out;
+  assign router_4_1_wide_out[East] = router_4_1_east_wide_out;
+  assign router_4_1_east_req_in = router_4_1_req_in[East];
+  assign router_4_1_east_rsp_in = router_4_1_rsp_in[East];
+  assign router_4_1_east_wide_in = router_4_1_wide_in[East];
+  floo_vec_req_t  router_4_1_south_req_in;
+  floo_vec_rsp_t  router_4_1_south_rsp_out;
+  floo_vec_req_t  router_4_1_south_req_out;
+  floo_vec_rsp_t  router_4_1_south_rsp_in;
+  floo_vec_wide_t router_4_1_south_wide_in;
+  floo_vec_wide_t router_4_1_south_wide_out;
+  assign router_4_1_req_out[South] = router_4_1_south_req_out;
+  assign router_4_1_rsp_out[South] = router_4_1_south_rsp_out;
+  assign router_4_1_wide_out[South] = router_4_1_south_wide_out;
+  assign router_4_1_south_req_in = router_4_1_req_in[South];
+  assign router_4_1_south_rsp_in = router_4_1_rsp_in[South];
+  assign router_4_1_south_wide_in = router_4_1_wide_in[South];
+  floo_vec_req_t  router_4_1_west_req_in;
+  floo_vec_rsp_t  router_4_1_west_rsp_out;
+  floo_vec_req_t  router_4_1_west_req_out;
+  floo_vec_rsp_t  router_4_1_west_rsp_in;
+  floo_vec_wide_t router_4_1_west_wide_in;
+  floo_vec_wide_t router_4_1_west_wide_out;
+  assign router_4_1_req_out[West] = router_4_1_west_req_out;
+  assign router_4_1_rsp_out[West] = router_4_1_west_rsp_out;
+  assign router_4_1_wide_out[West] = router_4_1_west_wide_out;
+  assign router_4_1_west_req_in = router_4_1_req_in[West];
+  assign router_4_1_west_rsp_in = router_4_1_rsp_in[West];
+  assign router_4_1_west_wide_in = router_4_1_wide_in[West];
+
 localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2433,16 +3353,34 @@ localparam id_t compute_tile_4_1_id = '{x: 5, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd13),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[238:222]),
-  .msip_i (msip_i[238:222]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[182:170]),
+  .msip_i (msip_i[182:170]),
   .id_i (compute_tile_4_1_id),
-  .floo_req_i (router_4_1_req_in),
-  .floo_rsp_o (router_4_1_rsp_out),
-  .floo_req_o (router_4_1_req_out),
-  .floo_rsp_i (router_4_1_rsp_in),
-  .floo_wide_i (router_4_1_wide_in),
-  .floo_wide_o (router_4_1_wide_out)
+  .floo_north_req_i (router_4_1_north_req_in),
+  .floo_north_rsp_o (router_4_1_north_rsp_out),
+  .floo_north_req_o (router_4_1_north_req_out),
+  .floo_north_rsp_i (router_4_1_north_rsp_in),
+  .floo_north_wide_i (router_4_1_north_wide_in),
+  .floo_north_wide_o (router_4_1_north_wide_out),
+  .floo_east_req_i (router_4_1_east_req_in),
+  .floo_east_rsp_o (router_4_1_east_rsp_out),
+  .floo_east_req_o (router_4_1_east_req_out),
+  .floo_east_rsp_i (router_4_1_east_rsp_in),
+  .floo_east_wide_i (router_4_1_east_wide_in),
+  .floo_east_wide_o (router_4_1_east_wide_out),
+  .floo_south_req_i (router_4_1_south_req_in),
+  .floo_south_rsp_o (router_4_1_south_rsp_out),
+  .floo_south_req_o (router_4_1_south_req_out),
+  .floo_south_rsp_i (router_4_1_south_rsp_in),
+  .floo_south_wide_i (router_4_1_south_wide_in),
+  .floo_south_wide_o (router_4_1_south_wide_out),
+  .floo_west_req_i (router_4_1_west_req_in),
+  .floo_west_rsp_o (router_4_1_west_rsp_out),
+  .floo_west_req_o (router_4_1_west_req_out),
+  .floo_west_rsp_i (router_4_1_west_rsp_in),
+  .floo_west_wide_i (router_4_1_west_wide_in),
+  .floo_west_wide_o (router_4_1_west_wide_out)
 );
 
 
@@ -2483,6 +3421,55 @@ floo_wide_t [West:North] router_4_2_wide_out;
   assign router_4_2_to_router_4_1_wide = router_4_2_wide_out[South];
   assign router_4_2_to_router_3_2_wide = router_4_2_wide_out[West];
 
+  floo_vec_req_t  router_4_2_north_req_in;
+  floo_vec_rsp_t  router_4_2_north_rsp_out;
+  floo_vec_req_t  router_4_2_north_req_out;
+  floo_vec_rsp_t  router_4_2_north_rsp_in;
+  floo_vec_wide_t router_4_2_north_wide_in;
+  floo_vec_wide_t router_4_2_north_wide_out;
+  assign router_4_2_req_out[North] = router_4_2_north_req_out;
+  assign router_4_2_rsp_out[North] = router_4_2_north_rsp_out;
+  assign router_4_2_wide_out[North] = router_4_2_north_wide_out;
+  assign router_4_2_north_req_in = router_4_2_req_in[North];
+  assign router_4_2_north_rsp_in = router_4_2_rsp_in[North];
+  assign router_4_2_north_wide_in = router_4_2_wide_in[North];
+  floo_vec_req_t  router_4_2_east_req_in;
+  floo_vec_rsp_t  router_4_2_east_rsp_out;
+  floo_vec_req_t  router_4_2_east_req_out;
+  floo_vec_rsp_t  router_4_2_east_rsp_in;
+  floo_vec_wide_t router_4_2_east_wide_in;
+  floo_vec_wide_t router_4_2_east_wide_out;
+  assign router_4_2_req_out[East] = router_4_2_east_req_out;
+  assign router_4_2_rsp_out[East] = router_4_2_east_rsp_out;
+  assign router_4_2_wide_out[East] = router_4_2_east_wide_out;
+  assign router_4_2_east_req_in = router_4_2_req_in[East];
+  assign router_4_2_east_rsp_in = router_4_2_rsp_in[East];
+  assign router_4_2_east_wide_in = router_4_2_wide_in[East];
+  floo_vec_req_t  router_4_2_south_req_in;
+  floo_vec_rsp_t  router_4_2_south_rsp_out;
+  floo_vec_req_t  router_4_2_south_req_out;
+  floo_vec_rsp_t  router_4_2_south_rsp_in;
+  floo_vec_wide_t router_4_2_south_wide_in;
+  floo_vec_wide_t router_4_2_south_wide_out;
+  assign router_4_2_req_out[South] = router_4_2_south_req_out;
+  assign router_4_2_rsp_out[South] = router_4_2_south_rsp_out;
+  assign router_4_2_wide_out[South] = router_4_2_south_wide_out;
+  assign router_4_2_south_req_in = router_4_2_req_in[South];
+  assign router_4_2_south_rsp_in = router_4_2_rsp_in[South];
+  assign router_4_2_south_wide_in = router_4_2_wide_in[South];
+  floo_vec_req_t  router_4_2_west_req_in;
+  floo_vec_rsp_t  router_4_2_west_rsp_out;
+  floo_vec_req_t  router_4_2_west_req_out;
+  floo_vec_rsp_t  router_4_2_west_rsp_in;
+  floo_vec_wide_t router_4_2_west_wide_in;
+  floo_vec_wide_t router_4_2_west_wide_out;
+  assign router_4_2_req_out[West] = router_4_2_west_req_out;
+  assign router_4_2_rsp_out[West] = router_4_2_west_rsp_out;
+  assign router_4_2_wide_out[West] = router_4_2_west_wide_out;
+  assign router_4_2_west_req_in = router_4_2_req_in[West];
+  assign router_4_2_west_rsp_in = router_4_2_rsp_in[West];
+  assign router_4_2_west_wide_in = router_4_2_wide_in[West];
+
 localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2496,16 +3483,34 @@ localparam id_t compute_tile_4_2_id = '{x: 5, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd14),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[255:239]),
-  .msip_i (msip_i[255:239]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[195:183]),
+  .msip_i (msip_i[195:183]),
   .id_i (compute_tile_4_2_id),
-  .floo_req_i (router_4_2_req_in),
-  .floo_rsp_o (router_4_2_rsp_out),
-  .floo_req_o (router_4_2_req_out),
-  .floo_rsp_i (router_4_2_rsp_in),
-  .floo_wide_i (router_4_2_wide_in),
-  .floo_wide_o (router_4_2_wide_out)
+  .floo_north_req_i (router_4_2_north_req_in),
+  .floo_north_rsp_o (router_4_2_north_rsp_out),
+  .floo_north_req_o (router_4_2_north_req_out),
+  .floo_north_rsp_i (router_4_2_north_rsp_in),
+  .floo_north_wide_i (router_4_2_north_wide_in),
+  .floo_north_wide_o (router_4_2_north_wide_out),
+  .floo_east_req_i (router_4_2_east_req_in),
+  .floo_east_rsp_o (router_4_2_east_rsp_out),
+  .floo_east_req_o (router_4_2_east_req_out),
+  .floo_east_rsp_i (router_4_2_east_rsp_in),
+  .floo_east_wide_i (router_4_2_east_wide_in),
+  .floo_east_wide_o (router_4_2_east_wide_out),
+  .floo_south_req_i (router_4_2_south_req_in),
+  .floo_south_rsp_o (router_4_2_south_rsp_out),
+  .floo_south_req_o (router_4_2_south_req_out),
+  .floo_south_rsp_i (router_4_2_south_rsp_in),
+  .floo_south_wide_i (router_4_2_south_wide_in),
+  .floo_south_wide_o (router_4_2_south_wide_out),
+  .floo_west_req_i (router_4_2_west_req_in),
+  .floo_west_rsp_o (router_4_2_west_rsp_out),
+  .floo_west_req_o (router_4_2_west_req_out),
+  .floo_west_rsp_i (router_4_2_west_rsp_in),
+  .floo_west_wide_i (router_4_2_west_wide_in),
+  .floo_west_wide_o (router_4_2_west_wide_out)
 );
 
 
@@ -2546,6 +3551,55 @@ floo_wide_t [West:North] router_4_3_wide_out;
   assign router_4_3_to_router_4_2_wide = router_4_3_wide_out[South];
   assign router_4_3_to_router_3_3_wide = router_4_3_wide_out[West];
 
+  floo_vec_req_t  router_4_3_north_req_in;
+  floo_vec_rsp_t  router_4_3_north_rsp_out;
+  floo_vec_req_t  router_4_3_north_req_out;
+  floo_vec_rsp_t  router_4_3_north_rsp_in;
+  floo_vec_wide_t router_4_3_north_wide_in;
+  floo_vec_wide_t router_4_3_north_wide_out;
+  assign router_4_3_req_out[North] = router_4_3_north_req_out;
+  assign router_4_3_rsp_out[North] = router_4_3_north_rsp_out;
+  assign router_4_3_wide_out[North] = router_4_3_north_wide_out;
+  assign router_4_3_north_req_in = router_4_3_req_in[North];
+  assign router_4_3_north_rsp_in = router_4_3_rsp_in[North];
+  assign router_4_3_north_wide_in = router_4_3_wide_in[North];
+  floo_vec_req_t  router_4_3_east_req_in;
+  floo_vec_rsp_t  router_4_3_east_rsp_out;
+  floo_vec_req_t  router_4_3_east_req_out;
+  floo_vec_rsp_t  router_4_3_east_rsp_in;
+  floo_vec_wide_t router_4_3_east_wide_in;
+  floo_vec_wide_t router_4_3_east_wide_out;
+  assign router_4_3_req_out[East] = router_4_3_east_req_out;
+  assign router_4_3_rsp_out[East] = router_4_3_east_rsp_out;
+  assign router_4_3_wide_out[East] = router_4_3_east_wide_out;
+  assign router_4_3_east_req_in = router_4_3_req_in[East];
+  assign router_4_3_east_rsp_in = router_4_3_rsp_in[East];
+  assign router_4_3_east_wide_in = router_4_3_wide_in[East];
+  floo_vec_req_t  router_4_3_south_req_in;
+  floo_vec_rsp_t  router_4_3_south_rsp_out;
+  floo_vec_req_t  router_4_3_south_req_out;
+  floo_vec_rsp_t  router_4_3_south_rsp_in;
+  floo_vec_wide_t router_4_3_south_wide_in;
+  floo_vec_wide_t router_4_3_south_wide_out;
+  assign router_4_3_req_out[South] = router_4_3_south_req_out;
+  assign router_4_3_rsp_out[South] = router_4_3_south_rsp_out;
+  assign router_4_3_wide_out[South] = router_4_3_south_wide_out;
+  assign router_4_3_south_req_in = router_4_3_req_in[South];
+  assign router_4_3_south_rsp_in = router_4_3_rsp_in[South];
+  assign router_4_3_south_wide_in = router_4_3_wide_in[South];
+  floo_vec_req_t  router_4_3_west_req_in;
+  floo_vec_rsp_t  router_4_3_west_rsp_out;
+  floo_vec_req_t  router_4_3_west_req_out;
+  floo_vec_rsp_t  router_4_3_west_rsp_in;
+  floo_vec_wide_t router_4_3_west_wide_in;
+  floo_vec_wide_t router_4_3_west_wide_out;
+  assign router_4_3_req_out[West] = router_4_3_west_req_out;
+  assign router_4_3_rsp_out[West] = router_4_3_west_rsp_out;
+  assign router_4_3_wide_out[West] = router_4_3_west_wide_out;
+  assign router_4_3_west_req_in = router_4_3_req_in[West];
+  assign router_4_3_west_rsp_in = router_4_3_rsp_in[West];
+  assign router_4_3_west_wide_in = router_4_3_wide_in[West];
+
 localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2559,16 +3613,34 @@ localparam id_t compute_tile_4_3_id = '{x: 5, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd15),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[272:256]),
-  .msip_i (msip_i[272:256]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[208:196]),
+  .msip_i (msip_i[208:196]),
   .id_i (compute_tile_4_3_id),
-  .floo_req_i (router_4_3_req_in),
-  .floo_rsp_o (router_4_3_rsp_out),
-  .floo_req_o (router_4_3_req_out),
-  .floo_rsp_i (router_4_3_rsp_in),
-  .floo_wide_i (router_4_3_wide_in),
-  .floo_wide_o (router_4_3_wide_out)
+  .floo_north_req_i (router_4_3_north_req_in),
+  .floo_north_rsp_o (router_4_3_north_rsp_out),
+  .floo_north_req_o (router_4_3_north_req_out),
+  .floo_north_rsp_i (router_4_3_north_rsp_in),
+  .floo_north_wide_i (router_4_3_north_wide_in),
+  .floo_north_wide_o (router_4_3_north_wide_out),
+  .floo_east_req_i (router_4_3_east_req_in),
+  .floo_east_rsp_o (router_4_3_east_rsp_out),
+  .floo_east_req_o (router_4_3_east_req_out),
+  .floo_east_rsp_i (router_4_3_east_rsp_in),
+  .floo_east_wide_i (router_4_3_east_wide_in),
+  .floo_east_wide_o (router_4_3_east_wide_out),
+  .floo_south_req_i (router_4_3_south_req_in),
+  .floo_south_rsp_o (router_4_3_south_rsp_out),
+  .floo_south_req_o (router_4_3_south_req_out),
+  .floo_south_rsp_i (router_4_3_south_rsp_in),
+  .floo_south_wide_i (router_4_3_south_wide_in),
+  .floo_south_wide_o (router_4_3_south_wide_out),
+  .floo_west_req_i (router_4_3_west_req_in),
+  .floo_west_rsp_o (router_4_3_west_rsp_out),
+  .floo_west_req_o (router_4_3_west_req_out),
+  .floo_west_rsp_i (router_4_3_west_rsp_in),
+  .floo_west_wide_i (router_4_3_west_wide_in),
+  .floo_west_wide_o (router_4_3_west_wide_out)
 );
 
 
@@ -2609,6 +3681,55 @@ floo_wide_t [West:North] router_5_0_wide_out;
   assign router_5_0_to_hbm_south_2_ni_1_0_wide = router_5_0_wide_out[South];
   assign router_5_0_to_router_4_0_wide = router_5_0_wide_out[West];
 
+  floo_vec_req_t  router_5_0_north_req_in;
+  floo_vec_rsp_t  router_5_0_north_rsp_out;
+  floo_vec_req_t  router_5_0_north_req_out;
+  floo_vec_rsp_t  router_5_0_north_rsp_in;
+  floo_vec_wide_t router_5_0_north_wide_in;
+  floo_vec_wide_t router_5_0_north_wide_out;
+  assign router_5_0_req_out[North] = router_5_0_north_req_out;
+  assign router_5_0_rsp_out[North] = router_5_0_north_rsp_out;
+  assign router_5_0_wide_out[North] = router_5_0_north_wide_out;
+  assign router_5_0_north_req_in = router_5_0_req_in[North];
+  assign router_5_0_north_rsp_in = router_5_0_rsp_in[North];
+  assign router_5_0_north_wide_in = router_5_0_wide_in[North];
+  floo_vec_req_t  router_5_0_east_req_in;
+  floo_vec_rsp_t  router_5_0_east_rsp_out;
+  floo_vec_req_t  router_5_0_east_req_out;
+  floo_vec_rsp_t  router_5_0_east_rsp_in;
+  floo_vec_wide_t router_5_0_east_wide_in;
+  floo_vec_wide_t router_5_0_east_wide_out;
+  assign router_5_0_req_out[East] = router_5_0_east_req_out;
+  assign router_5_0_rsp_out[East] = router_5_0_east_rsp_out;
+  assign router_5_0_wide_out[East] = router_5_0_east_wide_out;
+  assign router_5_0_east_req_in = router_5_0_req_in[East];
+  assign router_5_0_east_rsp_in = router_5_0_rsp_in[East];
+  assign router_5_0_east_wide_in = router_5_0_wide_in[East];
+  floo_vec_req_t  router_5_0_south_req_in;
+  floo_vec_rsp_t  router_5_0_south_rsp_out;
+  floo_vec_req_t  router_5_0_south_req_out;
+  floo_vec_rsp_t  router_5_0_south_rsp_in;
+  floo_vec_wide_t router_5_0_south_wide_in;
+  floo_vec_wide_t router_5_0_south_wide_out;
+  assign router_5_0_req_out[South] = router_5_0_south_req_out;
+  assign router_5_0_rsp_out[South] = router_5_0_south_rsp_out;
+  assign router_5_0_wide_out[South] = router_5_0_south_wide_out;
+  assign router_5_0_south_req_in = router_5_0_req_in[South];
+  assign router_5_0_south_rsp_in = router_5_0_rsp_in[South];
+  assign router_5_0_south_wide_in = router_5_0_wide_in[South];
+  floo_vec_req_t  router_5_0_west_req_in;
+  floo_vec_rsp_t  router_5_0_west_rsp_out;
+  floo_vec_req_t  router_5_0_west_req_out;
+  floo_vec_rsp_t  router_5_0_west_rsp_in;
+  floo_vec_wide_t router_5_0_west_wide_in;
+  floo_vec_wide_t router_5_0_west_wide_out;
+  assign router_5_0_req_out[West] = router_5_0_west_req_out;
+  assign router_5_0_rsp_out[West] = router_5_0_west_rsp_out;
+  assign router_5_0_wide_out[West] = router_5_0_west_wide_out;
+  assign router_5_0_west_req_in = router_5_0_req_in[West];
+  assign router_5_0_west_rsp_in = router_5_0_rsp_in[West];
+  assign router_5_0_west_wide_in = router_5_0_wide_in[West];
+
 localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2622,16 +3743,34 @@ localparam id_t compute_tile_5_0_id = '{x: 6, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd16),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[289:273]),
-  .msip_i (msip_i[289:273]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[221:209]),
+  .msip_i (msip_i[221:209]),
   .id_i (compute_tile_5_0_id),
-  .floo_req_i (router_5_0_req_in),
-  .floo_rsp_o (router_5_0_rsp_out),
-  .floo_req_o (router_5_0_req_out),
-  .floo_rsp_i (router_5_0_rsp_in),
-  .floo_wide_i (router_5_0_wide_in),
-  .floo_wide_o (router_5_0_wide_out)
+  .floo_north_req_i (router_5_0_north_req_in),
+  .floo_north_rsp_o (router_5_0_north_rsp_out),
+  .floo_north_req_o (router_5_0_north_req_out),
+  .floo_north_rsp_i (router_5_0_north_rsp_in),
+  .floo_north_wide_i (router_5_0_north_wide_in),
+  .floo_north_wide_o (router_5_0_north_wide_out),
+  .floo_east_req_i (router_5_0_east_req_in),
+  .floo_east_rsp_o (router_5_0_east_rsp_out),
+  .floo_east_req_o (router_5_0_east_req_out),
+  .floo_east_rsp_i (router_5_0_east_rsp_in),
+  .floo_east_wide_i (router_5_0_east_wide_in),
+  .floo_east_wide_o (router_5_0_east_wide_out),
+  .floo_south_req_i (router_5_0_south_req_in),
+  .floo_south_rsp_o (router_5_0_south_rsp_out),
+  .floo_south_req_o (router_5_0_south_req_out),
+  .floo_south_rsp_i (router_5_0_south_rsp_in),
+  .floo_south_wide_i (router_5_0_south_wide_in),
+  .floo_south_wide_o (router_5_0_south_wide_out),
+  .floo_west_req_i (router_5_0_west_req_in),
+  .floo_west_rsp_o (router_5_0_west_rsp_out),
+  .floo_west_req_o (router_5_0_west_req_out),
+  .floo_west_rsp_i (router_5_0_west_rsp_in),
+  .floo_west_wide_i (router_5_0_west_wide_in),
+  .floo_west_wide_o (router_5_0_west_wide_out)
 );
 
 
@@ -2672,6 +3811,55 @@ floo_wide_t [West:North] router_5_1_wide_out;
   assign router_5_1_to_router_5_0_wide = router_5_1_wide_out[South];
   assign router_5_1_to_router_4_1_wide = router_5_1_wide_out[West];
 
+  floo_vec_req_t  router_5_1_north_req_in;
+  floo_vec_rsp_t  router_5_1_north_rsp_out;
+  floo_vec_req_t  router_5_1_north_req_out;
+  floo_vec_rsp_t  router_5_1_north_rsp_in;
+  floo_vec_wide_t router_5_1_north_wide_in;
+  floo_vec_wide_t router_5_1_north_wide_out;
+  assign router_5_1_req_out[North] = router_5_1_north_req_out;
+  assign router_5_1_rsp_out[North] = router_5_1_north_rsp_out;
+  assign router_5_1_wide_out[North] = router_5_1_north_wide_out;
+  assign router_5_1_north_req_in = router_5_1_req_in[North];
+  assign router_5_1_north_rsp_in = router_5_1_rsp_in[North];
+  assign router_5_1_north_wide_in = router_5_1_wide_in[North];
+  floo_vec_req_t  router_5_1_east_req_in;
+  floo_vec_rsp_t  router_5_1_east_rsp_out;
+  floo_vec_req_t  router_5_1_east_req_out;
+  floo_vec_rsp_t  router_5_1_east_rsp_in;
+  floo_vec_wide_t router_5_1_east_wide_in;
+  floo_vec_wide_t router_5_1_east_wide_out;
+  assign router_5_1_req_out[East] = router_5_1_east_req_out;
+  assign router_5_1_rsp_out[East] = router_5_1_east_rsp_out;
+  assign router_5_1_wide_out[East] = router_5_1_east_wide_out;
+  assign router_5_1_east_req_in = router_5_1_req_in[East];
+  assign router_5_1_east_rsp_in = router_5_1_rsp_in[East];
+  assign router_5_1_east_wide_in = router_5_1_wide_in[East];
+  floo_vec_req_t  router_5_1_south_req_in;
+  floo_vec_rsp_t  router_5_1_south_rsp_out;
+  floo_vec_req_t  router_5_1_south_req_out;
+  floo_vec_rsp_t  router_5_1_south_rsp_in;
+  floo_vec_wide_t router_5_1_south_wide_in;
+  floo_vec_wide_t router_5_1_south_wide_out;
+  assign router_5_1_req_out[South] = router_5_1_south_req_out;
+  assign router_5_1_rsp_out[South] = router_5_1_south_rsp_out;
+  assign router_5_1_wide_out[South] = router_5_1_south_wide_out;
+  assign router_5_1_south_req_in = router_5_1_req_in[South];
+  assign router_5_1_south_rsp_in = router_5_1_rsp_in[South];
+  assign router_5_1_south_wide_in = router_5_1_wide_in[South];
+  floo_vec_req_t  router_5_1_west_req_in;
+  floo_vec_rsp_t  router_5_1_west_rsp_out;
+  floo_vec_req_t  router_5_1_west_req_out;
+  floo_vec_rsp_t  router_5_1_west_rsp_in;
+  floo_vec_wide_t router_5_1_west_wide_in;
+  floo_vec_wide_t router_5_1_west_wide_out;
+  assign router_5_1_req_out[West] = router_5_1_west_req_out;
+  assign router_5_1_rsp_out[West] = router_5_1_west_rsp_out;
+  assign router_5_1_wide_out[West] = router_5_1_west_wide_out;
+  assign router_5_1_west_req_in = router_5_1_req_in[West];
+  assign router_5_1_west_rsp_in = router_5_1_rsp_in[West];
+  assign router_5_1_west_wide_in = router_5_1_wide_in[West];
+
 localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2685,16 +3873,34 @@ localparam id_t compute_tile_5_1_id = '{x: 6, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd17),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[306:290]),
-  .msip_i (msip_i[306:290]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[234:222]),
+  .msip_i (msip_i[234:222]),
   .id_i (compute_tile_5_1_id),
-  .floo_req_i (router_5_1_req_in),
-  .floo_rsp_o (router_5_1_rsp_out),
-  .floo_req_o (router_5_1_req_out),
-  .floo_rsp_i (router_5_1_rsp_in),
-  .floo_wide_i (router_5_1_wide_in),
-  .floo_wide_o (router_5_1_wide_out)
+  .floo_north_req_i (router_5_1_north_req_in),
+  .floo_north_rsp_o (router_5_1_north_rsp_out),
+  .floo_north_req_o (router_5_1_north_req_out),
+  .floo_north_rsp_i (router_5_1_north_rsp_in),
+  .floo_north_wide_i (router_5_1_north_wide_in),
+  .floo_north_wide_o (router_5_1_north_wide_out),
+  .floo_east_req_i (router_5_1_east_req_in),
+  .floo_east_rsp_o (router_5_1_east_rsp_out),
+  .floo_east_req_o (router_5_1_east_req_out),
+  .floo_east_rsp_i (router_5_1_east_rsp_in),
+  .floo_east_wide_i (router_5_1_east_wide_in),
+  .floo_east_wide_o (router_5_1_east_wide_out),
+  .floo_south_req_i (router_5_1_south_req_in),
+  .floo_south_rsp_o (router_5_1_south_rsp_out),
+  .floo_south_req_o (router_5_1_south_req_out),
+  .floo_south_rsp_i (router_5_1_south_rsp_in),
+  .floo_south_wide_i (router_5_1_south_wide_in),
+  .floo_south_wide_o (router_5_1_south_wide_out),
+  .floo_west_req_i (router_5_1_west_req_in),
+  .floo_west_rsp_o (router_5_1_west_rsp_out),
+  .floo_west_req_o (router_5_1_west_req_out),
+  .floo_west_rsp_i (router_5_1_west_rsp_in),
+  .floo_west_wide_i (router_5_1_west_wide_in),
+  .floo_west_wide_o (router_5_1_west_wide_out)
 );
 
 
@@ -2735,6 +3941,55 @@ floo_wide_t [West:North] router_5_2_wide_out;
   assign router_5_2_to_router_5_1_wide = router_5_2_wide_out[South];
   assign router_5_2_to_router_4_2_wide = router_5_2_wide_out[West];
 
+  floo_vec_req_t  router_5_2_north_req_in;
+  floo_vec_rsp_t  router_5_2_north_rsp_out;
+  floo_vec_req_t  router_5_2_north_req_out;
+  floo_vec_rsp_t  router_5_2_north_rsp_in;
+  floo_vec_wide_t router_5_2_north_wide_in;
+  floo_vec_wide_t router_5_2_north_wide_out;
+  assign router_5_2_req_out[North] = router_5_2_north_req_out;
+  assign router_5_2_rsp_out[North] = router_5_2_north_rsp_out;
+  assign router_5_2_wide_out[North] = router_5_2_north_wide_out;
+  assign router_5_2_north_req_in = router_5_2_req_in[North];
+  assign router_5_2_north_rsp_in = router_5_2_rsp_in[North];
+  assign router_5_2_north_wide_in = router_5_2_wide_in[North];
+  floo_vec_req_t  router_5_2_east_req_in;
+  floo_vec_rsp_t  router_5_2_east_rsp_out;
+  floo_vec_req_t  router_5_2_east_req_out;
+  floo_vec_rsp_t  router_5_2_east_rsp_in;
+  floo_vec_wide_t router_5_2_east_wide_in;
+  floo_vec_wide_t router_5_2_east_wide_out;
+  assign router_5_2_req_out[East] = router_5_2_east_req_out;
+  assign router_5_2_rsp_out[East] = router_5_2_east_rsp_out;
+  assign router_5_2_wide_out[East] = router_5_2_east_wide_out;
+  assign router_5_2_east_req_in = router_5_2_req_in[East];
+  assign router_5_2_east_rsp_in = router_5_2_rsp_in[East];
+  assign router_5_2_east_wide_in = router_5_2_wide_in[East];
+  floo_vec_req_t  router_5_2_south_req_in;
+  floo_vec_rsp_t  router_5_2_south_rsp_out;
+  floo_vec_req_t  router_5_2_south_req_out;
+  floo_vec_rsp_t  router_5_2_south_rsp_in;
+  floo_vec_wide_t router_5_2_south_wide_in;
+  floo_vec_wide_t router_5_2_south_wide_out;
+  assign router_5_2_req_out[South] = router_5_2_south_req_out;
+  assign router_5_2_rsp_out[South] = router_5_2_south_rsp_out;
+  assign router_5_2_wide_out[South] = router_5_2_south_wide_out;
+  assign router_5_2_south_req_in = router_5_2_req_in[South];
+  assign router_5_2_south_rsp_in = router_5_2_rsp_in[South];
+  assign router_5_2_south_wide_in = router_5_2_wide_in[South];
+  floo_vec_req_t  router_5_2_west_req_in;
+  floo_vec_rsp_t  router_5_2_west_rsp_out;
+  floo_vec_req_t  router_5_2_west_req_out;
+  floo_vec_rsp_t  router_5_2_west_rsp_in;
+  floo_vec_wide_t router_5_2_west_wide_in;
+  floo_vec_wide_t router_5_2_west_wide_out;
+  assign router_5_2_req_out[West] = router_5_2_west_req_out;
+  assign router_5_2_rsp_out[West] = router_5_2_west_rsp_out;
+  assign router_5_2_wide_out[West] = router_5_2_west_wide_out;
+  assign router_5_2_west_req_in = router_5_2_req_in[West];
+  assign router_5_2_west_rsp_in = router_5_2_rsp_in[West];
+  assign router_5_2_west_wide_in = router_5_2_wide_in[West];
+
 localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2748,16 +4003,34 @@ localparam id_t compute_tile_5_2_id = '{x: 6, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd18),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[323:307]),
-  .msip_i (msip_i[323:307]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[247:235]),
+  .msip_i (msip_i[247:235]),
   .id_i (compute_tile_5_2_id),
-  .floo_req_i (router_5_2_req_in),
-  .floo_rsp_o (router_5_2_rsp_out),
-  .floo_req_o (router_5_2_req_out),
-  .floo_rsp_i (router_5_2_rsp_in),
-  .floo_wide_i (router_5_2_wide_in),
-  .floo_wide_o (router_5_2_wide_out)
+  .floo_north_req_i (router_5_2_north_req_in),
+  .floo_north_rsp_o (router_5_2_north_rsp_out),
+  .floo_north_req_o (router_5_2_north_req_out),
+  .floo_north_rsp_i (router_5_2_north_rsp_in),
+  .floo_north_wide_i (router_5_2_north_wide_in),
+  .floo_north_wide_o (router_5_2_north_wide_out),
+  .floo_east_req_i (router_5_2_east_req_in),
+  .floo_east_rsp_o (router_5_2_east_rsp_out),
+  .floo_east_req_o (router_5_2_east_req_out),
+  .floo_east_rsp_i (router_5_2_east_rsp_in),
+  .floo_east_wide_i (router_5_2_east_wide_in),
+  .floo_east_wide_o (router_5_2_east_wide_out),
+  .floo_south_req_i (router_5_2_south_req_in),
+  .floo_south_rsp_o (router_5_2_south_rsp_out),
+  .floo_south_req_o (router_5_2_south_req_out),
+  .floo_south_rsp_i (router_5_2_south_rsp_in),
+  .floo_south_wide_i (router_5_2_south_wide_in),
+  .floo_south_wide_o (router_5_2_south_wide_out),
+  .floo_west_req_i (router_5_2_west_req_in),
+  .floo_west_rsp_o (router_5_2_west_rsp_out),
+  .floo_west_req_o (router_5_2_west_req_out),
+  .floo_west_rsp_i (router_5_2_west_rsp_in),
+  .floo_west_wide_i (router_5_2_west_wide_in),
+  .floo_west_wide_o (router_5_2_west_wide_out)
 );
 
 
@@ -2798,6 +4071,55 @@ floo_wide_t [West:North] router_5_3_wide_out;
   assign router_5_3_to_router_5_2_wide = router_5_3_wide_out[South];
   assign router_5_3_to_router_4_3_wide = router_5_3_wide_out[West];
 
+  floo_vec_req_t  router_5_3_north_req_in;
+  floo_vec_rsp_t  router_5_3_north_rsp_out;
+  floo_vec_req_t  router_5_3_north_req_out;
+  floo_vec_rsp_t  router_5_3_north_rsp_in;
+  floo_vec_wide_t router_5_3_north_wide_in;
+  floo_vec_wide_t router_5_3_north_wide_out;
+  assign router_5_3_req_out[North] = router_5_3_north_req_out;
+  assign router_5_3_rsp_out[North] = router_5_3_north_rsp_out;
+  assign router_5_3_wide_out[North] = router_5_3_north_wide_out;
+  assign router_5_3_north_req_in = router_5_3_req_in[North];
+  assign router_5_3_north_rsp_in = router_5_3_rsp_in[North];
+  assign router_5_3_north_wide_in = router_5_3_wide_in[North];
+  floo_vec_req_t  router_5_3_east_req_in;
+  floo_vec_rsp_t  router_5_3_east_rsp_out;
+  floo_vec_req_t  router_5_3_east_req_out;
+  floo_vec_rsp_t  router_5_3_east_rsp_in;
+  floo_vec_wide_t router_5_3_east_wide_in;
+  floo_vec_wide_t router_5_3_east_wide_out;
+  assign router_5_3_req_out[East] = router_5_3_east_req_out;
+  assign router_5_3_rsp_out[East] = router_5_3_east_rsp_out;
+  assign router_5_3_wide_out[East] = router_5_3_east_wide_out;
+  assign router_5_3_east_req_in = router_5_3_req_in[East];
+  assign router_5_3_east_rsp_in = router_5_3_rsp_in[East];
+  assign router_5_3_east_wide_in = router_5_3_wide_in[East];
+  floo_vec_req_t  router_5_3_south_req_in;
+  floo_vec_rsp_t  router_5_3_south_rsp_out;
+  floo_vec_req_t  router_5_3_south_req_out;
+  floo_vec_rsp_t  router_5_3_south_rsp_in;
+  floo_vec_wide_t router_5_3_south_wide_in;
+  floo_vec_wide_t router_5_3_south_wide_out;
+  assign router_5_3_req_out[South] = router_5_3_south_req_out;
+  assign router_5_3_rsp_out[South] = router_5_3_south_rsp_out;
+  assign router_5_3_wide_out[South] = router_5_3_south_wide_out;
+  assign router_5_3_south_req_in = router_5_3_req_in[South];
+  assign router_5_3_south_rsp_in = router_5_3_rsp_in[South];
+  assign router_5_3_south_wide_in = router_5_3_wide_in[South];
+  floo_vec_req_t  router_5_3_west_req_in;
+  floo_vec_rsp_t  router_5_3_west_rsp_out;
+  floo_vec_req_t  router_5_3_west_req_out;
+  floo_vec_rsp_t  router_5_3_west_rsp_in;
+  floo_vec_wide_t router_5_3_west_wide_in;
+  floo_vec_wide_t router_5_3_west_wide_out;
+  assign router_5_3_req_out[West] = router_5_3_west_req_out;
+  assign router_5_3_rsp_out[West] = router_5_3_west_rsp_out;
+  assign router_5_3_wide_out[West] = router_5_3_west_wide_out;
+  assign router_5_3_west_req_in = router_5_3_req_in[West];
+  assign router_5_3_west_rsp_in = router_5_3_rsp_in[West];
+  assign router_5_3_west_wide_in = router_5_3_wide_in[West];
+
 localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2811,16 +4133,34 @@ localparam id_t compute_tile_5_3_id = '{x: 6, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd19),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[340:324]),
-  .msip_i (msip_i[340:324]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[260:248]),
+  .msip_i (msip_i[260:248]),
   .id_i (compute_tile_5_3_id),
-  .floo_req_i (router_5_3_req_in),
-  .floo_rsp_o (router_5_3_rsp_out),
-  .floo_req_o (router_5_3_req_out),
-  .floo_rsp_i (router_5_3_rsp_in),
-  .floo_wide_i (router_5_3_wide_in),
-  .floo_wide_o (router_5_3_wide_out)
+  .floo_north_req_i (router_5_3_north_req_in),
+  .floo_north_rsp_o (router_5_3_north_rsp_out),
+  .floo_north_req_o (router_5_3_north_req_out),
+  .floo_north_rsp_i (router_5_3_north_rsp_in),
+  .floo_north_wide_i (router_5_3_north_wide_in),
+  .floo_north_wide_o (router_5_3_north_wide_out),
+  .floo_east_req_i (router_5_3_east_req_in),
+  .floo_east_rsp_o (router_5_3_east_rsp_out),
+  .floo_east_req_o (router_5_3_east_req_out),
+  .floo_east_rsp_i (router_5_3_east_rsp_in),
+  .floo_east_wide_i (router_5_3_east_wide_in),
+  .floo_east_wide_o (router_5_3_east_wide_out),
+  .floo_south_req_i (router_5_3_south_req_in),
+  .floo_south_rsp_o (router_5_3_south_rsp_out),
+  .floo_south_req_o (router_5_3_south_req_out),
+  .floo_south_rsp_i (router_5_3_south_rsp_in),
+  .floo_south_wide_i (router_5_3_south_wide_in),
+  .floo_south_wide_o (router_5_3_south_wide_out),
+  .floo_west_req_i (router_5_3_west_req_in),
+  .floo_west_rsp_o (router_5_3_west_rsp_out),
+  .floo_west_req_o (router_5_3_west_req_out),
+  .floo_west_rsp_i (router_5_3_west_rsp_in),
+  .floo_west_wide_i (router_5_3_west_wide_in),
+  .floo_west_wide_o (router_5_3_west_wide_out)
 );
 
 
@@ -2858,6 +4198,55 @@ floo_wide_t [West:North] router_6_0_wide_out;
   assign router_6_0_to_router_6_1_wide = router_6_0_wide_out[North];
   assign router_6_0_to_router_5_0_wide = router_6_0_wide_out[West];
 
+  floo_vec_req_t  router_6_0_north_req_in;
+  floo_vec_rsp_t  router_6_0_north_rsp_out;
+  floo_vec_req_t  router_6_0_north_req_out;
+  floo_vec_rsp_t  router_6_0_north_rsp_in;
+  floo_vec_wide_t router_6_0_north_wide_in;
+  floo_vec_wide_t router_6_0_north_wide_out;
+  assign router_6_0_req_out[North] = router_6_0_north_req_out;
+  assign router_6_0_rsp_out[North] = router_6_0_north_rsp_out;
+  assign router_6_0_wide_out[North] = router_6_0_north_wide_out;
+  assign router_6_0_north_req_in = router_6_0_req_in[North];
+  assign router_6_0_north_rsp_in = router_6_0_rsp_in[North];
+  assign router_6_0_north_wide_in = router_6_0_wide_in[North];
+  floo_vec_req_t  router_6_0_east_req_in;
+  floo_vec_rsp_t  router_6_0_east_rsp_out;
+  floo_vec_req_t  router_6_0_east_req_out;
+  floo_vec_rsp_t  router_6_0_east_rsp_in;
+  floo_vec_wide_t router_6_0_east_wide_in;
+  floo_vec_wide_t router_6_0_east_wide_out;
+  assign router_6_0_req_out[East] = router_6_0_east_req_out;
+  assign router_6_0_rsp_out[East] = router_6_0_east_rsp_out;
+  assign router_6_0_wide_out[East] = router_6_0_east_wide_out;
+  assign router_6_0_east_req_in = router_6_0_req_in[East];
+  assign router_6_0_east_rsp_in = router_6_0_rsp_in[East];
+  assign router_6_0_east_wide_in = router_6_0_wide_in[East];
+  floo_vec_req_t  router_6_0_south_req_in;
+  floo_vec_rsp_t  router_6_0_south_rsp_out;
+  floo_vec_req_t  router_6_0_south_req_out;
+  floo_vec_rsp_t  router_6_0_south_rsp_in;
+  floo_vec_wide_t router_6_0_south_wide_in;
+  floo_vec_wide_t router_6_0_south_wide_out;
+  assign router_6_0_req_out[South] = router_6_0_south_req_out;
+  assign router_6_0_rsp_out[South] = router_6_0_south_rsp_out;
+  assign router_6_0_wide_out[South] = router_6_0_south_wide_out;
+  assign router_6_0_south_req_in = router_6_0_req_in[South];
+  assign router_6_0_south_rsp_in = router_6_0_rsp_in[South];
+  assign router_6_0_south_wide_in = router_6_0_wide_in[South];
+  floo_vec_req_t  router_6_0_west_req_in;
+  floo_vec_rsp_t  router_6_0_west_rsp_out;
+  floo_vec_req_t  router_6_0_west_req_out;
+  floo_vec_rsp_t  router_6_0_west_rsp_in;
+  floo_vec_wide_t router_6_0_west_wide_in;
+  floo_vec_wide_t router_6_0_west_wide_out;
+  assign router_6_0_req_out[West] = router_6_0_west_req_out;
+  assign router_6_0_rsp_out[West] = router_6_0_west_rsp_out;
+  assign router_6_0_wide_out[West] = router_6_0_west_wide_out;
+  assign router_6_0_west_req_in = router_6_0_req_in[West];
+  assign router_6_0_west_rsp_in = router_6_0_rsp_in[West];
+  assign router_6_0_west_wide_in = router_6_0_wide_in[West];
+
 localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2871,16 +4260,34 @@ localparam id_t compute_tile_6_0_id = '{x: 7, y: 1};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd20),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[357:341]),
-  .msip_i (msip_i[357:341]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[273:261]),
+  .msip_i (msip_i[273:261]),
   .id_i (compute_tile_6_0_id),
-  .floo_req_i (router_6_0_req_in),
-  .floo_rsp_o (router_6_0_rsp_out),
-  .floo_req_o (router_6_0_req_out),
-  .floo_rsp_i (router_6_0_rsp_in),
-  .floo_wide_i (router_6_0_wide_in),
-  .floo_wide_o (router_6_0_wide_out)
+  .floo_north_req_i (router_6_0_north_req_in),
+  .floo_north_rsp_o (router_6_0_north_rsp_out),
+  .floo_north_req_o (router_6_0_north_req_out),
+  .floo_north_rsp_i (router_6_0_north_rsp_in),
+  .floo_north_wide_i (router_6_0_north_wide_in),
+  .floo_north_wide_o (router_6_0_north_wide_out),
+  .floo_east_req_i (router_6_0_east_req_in),
+  .floo_east_rsp_o (router_6_0_east_rsp_out),
+  .floo_east_req_o (router_6_0_east_req_out),
+  .floo_east_rsp_i (router_6_0_east_rsp_in),
+  .floo_east_wide_i (router_6_0_east_wide_in),
+  .floo_east_wide_o (router_6_0_east_wide_out),
+  .floo_south_req_i (router_6_0_south_req_in),
+  .floo_south_rsp_o (router_6_0_south_rsp_out),
+  .floo_south_req_o (router_6_0_south_req_out),
+  .floo_south_rsp_i (router_6_0_south_rsp_in),
+  .floo_south_wide_i (router_6_0_south_wide_in),
+  .floo_south_wide_o (router_6_0_south_wide_out),
+  .floo_west_req_i (router_6_0_west_req_in),
+  .floo_west_rsp_o (router_6_0_west_rsp_out),
+  .floo_west_req_o (router_6_0_west_req_out),
+  .floo_west_rsp_i (router_6_0_west_rsp_in),
+  .floo_west_wide_i (router_6_0_west_wide_in),
+  .floo_west_wide_o (router_6_0_west_wide_out)
 );
 
 
@@ -2921,6 +4328,55 @@ floo_wide_t [West:North] router_6_1_wide_out;
   assign router_6_1_to_router_6_0_wide = router_6_1_wide_out[South];
   assign router_6_1_to_router_5_1_wide = router_6_1_wide_out[West];
 
+  floo_vec_req_t  router_6_1_north_req_in;
+  floo_vec_rsp_t  router_6_1_north_rsp_out;
+  floo_vec_req_t  router_6_1_north_req_out;
+  floo_vec_rsp_t  router_6_1_north_rsp_in;
+  floo_vec_wide_t router_6_1_north_wide_in;
+  floo_vec_wide_t router_6_1_north_wide_out;
+  assign router_6_1_req_out[North] = router_6_1_north_req_out;
+  assign router_6_1_rsp_out[North] = router_6_1_north_rsp_out;
+  assign router_6_1_wide_out[North] = router_6_1_north_wide_out;
+  assign router_6_1_north_req_in = router_6_1_req_in[North];
+  assign router_6_1_north_rsp_in = router_6_1_rsp_in[North];
+  assign router_6_1_north_wide_in = router_6_1_wide_in[North];
+  floo_vec_req_t  router_6_1_east_req_in;
+  floo_vec_rsp_t  router_6_1_east_rsp_out;
+  floo_vec_req_t  router_6_1_east_req_out;
+  floo_vec_rsp_t  router_6_1_east_rsp_in;
+  floo_vec_wide_t router_6_1_east_wide_in;
+  floo_vec_wide_t router_6_1_east_wide_out;
+  assign router_6_1_req_out[East] = router_6_1_east_req_out;
+  assign router_6_1_rsp_out[East] = router_6_1_east_rsp_out;
+  assign router_6_1_wide_out[East] = router_6_1_east_wide_out;
+  assign router_6_1_east_req_in = router_6_1_req_in[East];
+  assign router_6_1_east_rsp_in = router_6_1_rsp_in[East];
+  assign router_6_1_east_wide_in = router_6_1_wide_in[East];
+  floo_vec_req_t  router_6_1_south_req_in;
+  floo_vec_rsp_t  router_6_1_south_rsp_out;
+  floo_vec_req_t  router_6_1_south_req_out;
+  floo_vec_rsp_t  router_6_1_south_rsp_in;
+  floo_vec_wide_t router_6_1_south_wide_in;
+  floo_vec_wide_t router_6_1_south_wide_out;
+  assign router_6_1_req_out[South] = router_6_1_south_req_out;
+  assign router_6_1_rsp_out[South] = router_6_1_south_rsp_out;
+  assign router_6_1_wide_out[South] = router_6_1_south_wide_out;
+  assign router_6_1_south_req_in = router_6_1_req_in[South];
+  assign router_6_1_south_rsp_in = router_6_1_rsp_in[South];
+  assign router_6_1_south_wide_in = router_6_1_wide_in[South];
+  floo_vec_req_t  router_6_1_west_req_in;
+  floo_vec_rsp_t  router_6_1_west_rsp_out;
+  floo_vec_req_t  router_6_1_west_req_out;
+  floo_vec_rsp_t  router_6_1_west_rsp_in;
+  floo_vec_wide_t router_6_1_west_wide_in;
+  floo_vec_wide_t router_6_1_west_wide_out;
+  assign router_6_1_req_out[West] = router_6_1_west_req_out;
+  assign router_6_1_rsp_out[West] = router_6_1_west_rsp_out;
+  assign router_6_1_wide_out[West] = router_6_1_west_wide_out;
+  assign router_6_1_west_req_in = router_6_1_req_in[West];
+  assign router_6_1_west_rsp_in = router_6_1_rsp_in[West];
+  assign router_6_1_west_wide_in = router_6_1_wide_in[West];
+
 localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2934,16 +4390,34 @@ localparam id_t compute_tile_6_1_id = '{x: 7, y: 2};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd21),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[374:358]),
-  .msip_i (msip_i[374:358]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[286:274]),
+  .msip_i (msip_i[286:274]),
   .id_i (compute_tile_6_1_id),
-  .floo_req_i (router_6_1_req_in),
-  .floo_rsp_o (router_6_1_rsp_out),
-  .floo_req_o (router_6_1_req_out),
-  .floo_rsp_i (router_6_1_rsp_in),
-  .floo_wide_i (router_6_1_wide_in),
-  .floo_wide_o (router_6_1_wide_out)
+  .floo_north_req_i (router_6_1_north_req_in),
+  .floo_north_rsp_o (router_6_1_north_rsp_out),
+  .floo_north_req_o (router_6_1_north_req_out),
+  .floo_north_rsp_i (router_6_1_north_rsp_in),
+  .floo_north_wide_i (router_6_1_north_wide_in),
+  .floo_north_wide_o (router_6_1_north_wide_out),
+  .floo_east_req_i (router_6_1_east_req_in),
+  .floo_east_rsp_o (router_6_1_east_rsp_out),
+  .floo_east_req_o (router_6_1_east_req_out),
+  .floo_east_rsp_i (router_6_1_east_rsp_in),
+  .floo_east_wide_i (router_6_1_east_wide_in),
+  .floo_east_wide_o (router_6_1_east_wide_out),
+  .floo_south_req_i (router_6_1_south_req_in),
+  .floo_south_rsp_o (router_6_1_south_rsp_out),
+  .floo_south_req_o (router_6_1_south_req_out),
+  .floo_south_rsp_i (router_6_1_south_rsp_in),
+  .floo_south_wide_i (router_6_1_south_wide_in),
+  .floo_south_wide_o (router_6_1_south_wide_out),
+  .floo_west_req_i (router_6_1_west_req_in),
+  .floo_west_rsp_o (router_6_1_west_rsp_out),
+  .floo_west_req_o (router_6_1_west_req_out),
+  .floo_west_rsp_i (router_6_1_west_rsp_in),
+  .floo_west_wide_i (router_6_1_west_wide_in),
+  .floo_west_wide_o (router_6_1_west_wide_out)
 );
 
 
@@ -2984,6 +4458,55 @@ floo_wide_t [West:North] router_6_2_wide_out;
   assign router_6_2_to_router_6_1_wide = router_6_2_wide_out[South];
   assign router_6_2_to_router_5_2_wide = router_6_2_wide_out[West];
 
+  floo_vec_req_t  router_6_2_north_req_in;
+  floo_vec_rsp_t  router_6_2_north_rsp_out;
+  floo_vec_req_t  router_6_2_north_req_out;
+  floo_vec_rsp_t  router_6_2_north_rsp_in;
+  floo_vec_wide_t router_6_2_north_wide_in;
+  floo_vec_wide_t router_6_2_north_wide_out;
+  assign router_6_2_req_out[North] = router_6_2_north_req_out;
+  assign router_6_2_rsp_out[North] = router_6_2_north_rsp_out;
+  assign router_6_2_wide_out[North] = router_6_2_north_wide_out;
+  assign router_6_2_north_req_in = router_6_2_req_in[North];
+  assign router_6_2_north_rsp_in = router_6_2_rsp_in[North];
+  assign router_6_2_north_wide_in = router_6_2_wide_in[North];
+  floo_vec_req_t  router_6_2_east_req_in;
+  floo_vec_rsp_t  router_6_2_east_rsp_out;
+  floo_vec_req_t  router_6_2_east_req_out;
+  floo_vec_rsp_t  router_6_2_east_rsp_in;
+  floo_vec_wide_t router_6_2_east_wide_in;
+  floo_vec_wide_t router_6_2_east_wide_out;
+  assign router_6_2_req_out[East] = router_6_2_east_req_out;
+  assign router_6_2_rsp_out[East] = router_6_2_east_rsp_out;
+  assign router_6_2_wide_out[East] = router_6_2_east_wide_out;
+  assign router_6_2_east_req_in = router_6_2_req_in[East];
+  assign router_6_2_east_rsp_in = router_6_2_rsp_in[East];
+  assign router_6_2_east_wide_in = router_6_2_wide_in[East];
+  floo_vec_req_t  router_6_2_south_req_in;
+  floo_vec_rsp_t  router_6_2_south_rsp_out;
+  floo_vec_req_t  router_6_2_south_req_out;
+  floo_vec_rsp_t  router_6_2_south_rsp_in;
+  floo_vec_wide_t router_6_2_south_wide_in;
+  floo_vec_wide_t router_6_2_south_wide_out;
+  assign router_6_2_req_out[South] = router_6_2_south_req_out;
+  assign router_6_2_rsp_out[South] = router_6_2_south_rsp_out;
+  assign router_6_2_wide_out[South] = router_6_2_south_wide_out;
+  assign router_6_2_south_req_in = router_6_2_req_in[South];
+  assign router_6_2_south_rsp_in = router_6_2_rsp_in[South];
+  assign router_6_2_south_wide_in = router_6_2_wide_in[South];
+  floo_vec_req_t  router_6_2_west_req_in;
+  floo_vec_rsp_t  router_6_2_west_rsp_out;
+  floo_vec_req_t  router_6_2_west_req_out;
+  floo_vec_rsp_t  router_6_2_west_rsp_in;
+  floo_vec_wide_t router_6_2_west_wide_in;
+  floo_vec_wide_t router_6_2_west_wide_out;
+  assign router_6_2_req_out[West] = router_6_2_west_req_out;
+  assign router_6_2_rsp_out[West] = router_6_2_west_rsp_out;
+  assign router_6_2_wide_out[West] = router_6_2_west_wide_out;
+  assign router_6_2_west_req_in = router_6_2_req_in[West];
+  assign router_6_2_west_rsp_in = router_6_2_rsp_in[West];
+  assign router_6_2_west_wide_in = router_6_2_wide_in[West];
+
 localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -2997,16 +4520,34 @@ localparam id_t compute_tile_6_2_id = '{x: 7, y: 3};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd22),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[391:375]),
-  .msip_i (msip_i[391:375]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[299:287]),
+  .msip_i (msip_i[299:287]),
   .id_i (compute_tile_6_2_id),
-  .floo_req_i (router_6_2_req_in),
-  .floo_rsp_o (router_6_2_rsp_out),
-  .floo_req_o (router_6_2_req_out),
-  .floo_rsp_i (router_6_2_rsp_in),
-  .floo_wide_i (router_6_2_wide_in),
-  .floo_wide_o (router_6_2_wide_out)
+  .floo_north_req_i (router_6_2_north_req_in),
+  .floo_north_rsp_o (router_6_2_north_rsp_out),
+  .floo_north_req_o (router_6_2_north_req_out),
+  .floo_north_rsp_i (router_6_2_north_rsp_in),
+  .floo_north_wide_i (router_6_2_north_wide_in),
+  .floo_north_wide_o (router_6_2_north_wide_out),
+  .floo_east_req_i (router_6_2_east_req_in),
+  .floo_east_rsp_o (router_6_2_east_rsp_out),
+  .floo_east_req_o (router_6_2_east_req_out),
+  .floo_east_rsp_i (router_6_2_east_rsp_in),
+  .floo_east_wide_i (router_6_2_east_wide_in),
+  .floo_east_wide_o (router_6_2_east_wide_out),
+  .floo_south_req_i (router_6_2_south_req_in),
+  .floo_south_rsp_o (router_6_2_south_rsp_out),
+  .floo_south_req_o (router_6_2_south_req_out),
+  .floo_south_rsp_i (router_6_2_south_rsp_in),
+  .floo_south_wide_i (router_6_2_south_wide_in),
+  .floo_south_wide_o (router_6_2_south_wide_out),
+  .floo_west_req_i (router_6_2_west_req_in),
+  .floo_west_rsp_o (router_6_2_west_rsp_out),
+  .floo_west_req_o (router_6_2_west_req_out),
+  .floo_west_rsp_i (router_6_2_west_rsp_in),
+  .floo_west_wide_i (router_6_2_west_wide_in),
+  .floo_west_wide_o (router_6_2_west_wide_out)
 );
 
 
@@ -3044,6 +4585,55 @@ floo_wide_t [West:North] router_6_3_wide_out;
   assign router_6_3_to_router_6_2_wide = router_6_3_wide_out[South];
   assign router_6_3_to_router_5_3_wide = router_6_3_wide_out[West];
 
+  floo_vec_req_t  router_6_3_north_req_in;
+  floo_vec_rsp_t  router_6_3_north_rsp_out;
+  floo_vec_req_t  router_6_3_north_req_out;
+  floo_vec_rsp_t  router_6_3_north_rsp_in;
+  floo_vec_wide_t router_6_3_north_wide_in;
+  floo_vec_wide_t router_6_3_north_wide_out;
+  assign router_6_3_req_out[North] = router_6_3_north_req_out;
+  assign router_6_3_rsp_out[North] = router_6_3_north_rsp_out;
+  assign router_6_3_wide_out[North] = router_6_3_north_wide_out;
+  assign router_6_3_north_req_in = router_6_3_req_in[North];
+  assign router_6_3_north_rsp_in = router_6_3_rsp_in[North];
+  assign router_6_3_north_wide_in = router_6_3_wide_in[North];
+  floo_vec_req_t  router_6_3_east_req_in;
+  floo_vec_rsp_t  router_6_3_east_rsp_out;
+  floo_vec_req_t  router_6_3_east_req_out;
+  floo_vec_rsp_t  router_6_3_east_rsp_in;
+  floo_vec_wide_t router_6_3_east_wide_in;
+  floo_vec_wide_t router_6_3_east_wide_out;
+  assign router_6_3_req_out[East] = router_6_3_east_req_out;
+  assign router_6_3_rsp_out[East] = router_6_3_east_rsp_out;
+  assign router_6_3_wide_out[East] = router_6_3_east_wide_out;
+  assign router_6_3_east_req_in = router_6_3_req_in[East];
+  assign router_6_3_east_rsp_in = router_6_3_rsp_in[East];
+  assign router_6_3_east_wide_in = router_6_3_wide_in[East];
+  floo_vec_req_t  router_6_3_south_req_in;
+  floo_vec_rsp_t  router_6_3_south_rsp_out;
+  floo_vec_req_t  router_6_3_south_req_out;
+  floo_vec_rsp_t  router_6_3_south_rsp_in;
+  floo_vec_wide_t router_6_3_south_wide_in;
+  floo_vec_wide_t router_6_3_south_wide_out;
+  assign router_6_3_req_out[South] = router_6_3_south_req_out;
+  assign router_6_3_rsp_out[South] = router_6_3_south_rsp_out;
+  assign router_6_3_wide_out[South] = router_6_3_south_wide_out;
+  assign router_6_3_south_req_in = router_6_3_req_in[South];
+  assign router_6_3_south_rsp_in = router_6_3_rsp_in[South];
+  assign router_6_3_south_wide_in = router_6_3_wide_in[South];
+  floo_vec_req_t  router_6_3_west_req_in;
+  floo_vec_rsp_t  router_6_3_west_rsp_out;
+  floo_vec_req_t  router_6_3_west_req_out;
+  floo_vec_rsp_t  router_6_3_west_rsp_in;
+  floo_vec_wide_t router_6_3_west_wide_in;
+  floo_vec_wide_t router_6_3_west_wide_out;
+  assign router_6_3_req_out[West] = router_6_3_west_req_out;
+  assign router_6_3_rsp_out[West] = router_6_3_west_rsp_out;
+  assign router_6_3_wide_out[West] = router_6_3_west_wide_out;
+  assign router_6_3_west_req_in = router_6_3_req_in[West];
+  assign router_6_3_west_rsp_in = router_6_3_rsp_in[West];
+  assign router_6_3_west_wide_in = router_6_3_wide_in[West];
+
 localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
   compute_tile 
 `ifdef TARGET_DMA_TEST
@@ -3057,16 +4647,34 @@ localparam id_t compute_tile_6_3_id = '{x: 7, y: 4};
   .rst_ni (rst_ni),
   .test_enable_i (test_enable_i),
   .tile_id_i (5'd23),
-  .meip_i (17'b0),
-  .mtip_i (mtip_i[408:392]),
-  .msip_i (msip_i[408:392]),
+  .meip_i (13'b0),
+  .mtip_i (mtip_i[312:300]),
+  .msip_i (msip_i[312:300]),
   .id_i (compute_tile_6_3_id),
-  .floo_req_i (router_6_3_req_in),
-  .floo_rsp_o (router_6_3_rsp_out),
-  .floo_req_o (router_6_3_req_out),
-  .floo_rsp_i (router_6_3_rsp_in),
-  .floo_wide_i (router_6_3_wide_in),
-  .floo_wide_o (router_6_3_wide_out)
+  .floo_north_req_i (router_6_3_north_req_in),
+  .floo_north_rsp_o (router_6_3_north_rsp_out),
+  .floo_north_req_o (router_6_3_north_req_out),
+  .floo_north_rsp_i (router_6_3_north_rsp_in),
+  .floo_north_wide_i (router_6_3_north_wide_in),
+  .floo_north_wide_o (router_6_3_north_wide_out),
+  .floo_east_req_i (router_6_3_east_req_in),
+  .floo_east_rsp_o (router_6_3_east_rsp_out),
+  .floo_east_req_o (router_6_3_east_req_out),
+  .floo_east_rsp_i (router_6_3_east_rsp_in),
+  .floo_east_wide_i (router_6_3_east_wide_in),
+  .floo_east_wide_o (router_6_3_east_wide_out),
+  .floo_south_req_i (router_6_3_south_req_in),
+  .floo_south_rsp_o (router_6_3_south_rsp_out),
+  .floo_south_req_o (router_6_3_south_req_out),
+  .floo_south_rsp_i (router_6_3_south_rsp_in),
+  .floo_south_wide_i (router_6_3_south_wide_in),
+  .floo_south_wide_o (router_6_3_south_wide_out),
+  .floo_west_req_i (router_6_3_west_req_in),
+  .floo_west_rsp_o (router_6_3_west_rsp_out),
+  .floo_west_req_o (router_6_3_west_req_out),
+  .floo_west_rsp_i (router_6_3_west_rsp_in),
+  .floo_west_wide_i (router_6_3_west_wide_in),
+  .floo_west_wide_o (router_6_3_west_wide_out)
 );
 
 

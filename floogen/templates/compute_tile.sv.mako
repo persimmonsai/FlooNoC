@@ -1,7 +1,9 @@
 // Copyright 2024 ETH Zurich and University of Bologna.
 // Solderpad Hardware License, Version 0.51, see LICENSE for details.
 // SPDX-License-Identifier: SHL-0.51
-
+<% def camelcase(s):
+     return ''.join(x.capitalize() or '_' for x in s.split('_'))
+%>\
 <%
   import math
 %>\
@@ -33,12 +35,18 @@ module compute_tile
 
     input  id_t                         id_i, // XY ID for router and cluster NI
     // North, East, South, and West floonoc router interface
-    input  floo_req_t  [West:North]     floo_req_i,
-    output floo_rsp_t  [West:North]     floo_rsp_o,
-    output floo_req_t  [West:North]     floo_req_o,
-    input  floo_rsp_t  [West:North]     floo_rsp_i,
-    input  floo_wide_t [West:North]     floo_wide_i,
-    output floo_wide_t [West:North]     floo_wide_o
+% for dir in ["north","east","south","west"]:
+    input  floo_vec_req_t    floo_${dir}_req_i,
+    output floo_vec_rsp_t    floo_${dir}_rsp_o,
+    output floo_vec_req_t    floo_${dir}_req_o,
+    input  floo_vec_rsp_t    floo_${dir}_rsp_i,
+    input  floo_vec_wide_t   floo_${dir}_wide_i,
+% if dir!="west":
+    output floo_vec_wide_t   floo_${dir}_wide_o,
+% else:
+    output floo_vec_wide_t   floo_${dir}_wide_o
+% endif
+% endfor
 );
   // --- Cluster to NI ---
   // in/out direction type that is declared in this scope is respect to NI
@@ -104,6 +112,21 @@ module compute_tile
     .sram_cfg_i ('0)
   );
 `endif
+
+  floo_req_t  [West:North] floo_req_i;
+  floo_rsp_t  [West:North] floo_rsp_o;
+  floo_req_t  [West:North] floo_req_o;
+  floo_rsp_t  [West:North] floo_rsp_i;
+  floo_wide_t [West:North] floo_wide_i;
+  floo_wide_t [West:North] floo_wide_o;
+% for dir in ["north","east","south","west"]:
+  assign floo_req_i[${camelcase(dir)}] = floo_${dir}_req_i;
+  assign floo_rsp_i[${camelcase(dir)}] = floo_${dir}_rsp_i;
+  assign floo_wide_i[${camelcase(dir)}] = floo_${dir}_wide_i;
+  assign floo_${dir}_req_o = floo_req_o[${camelcase(dir)}];
+  assign floo_${dir}_rsp_o = floo_rsp_o[${camelcase(dir)}];
+  assign floo_${dir}_wide_o = floo_wide_o[${camelcase(dir)}];
+% endfor
 
   floo_noc_pd_top i_floo_noc_pd
   (

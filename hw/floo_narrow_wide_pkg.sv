@@ -188,122 +188,122 @@ package floo_narrow_wide_pkg;
       '{
           idx: '{x: 1, y: 1},
           start_addr: 48'h000010000000,
-          end_addr: 48'h000010040000
+          end_addr: 48'h000010080000
       },  // cluster_l_ni_0_0
       '{
           idx: '{x: 1, y: 2},
-          start_addr: 48'h000010040000,
-          end_addr: 48'h000010080000
+          start_addr: 48'h000010080000,
+          end_addr: 48'h000010100000
       },  // cluster_l_ni_0_1
       '{
           idx: '{x: 1, y: 3},
-          start_addr: 48'h000010080000,
-          end_addr: 48'h0000100c0000
+          start_addr: 48'h000010100000,
+          end_addr: 48'h000010180000
       },  // cluster_l_ni_0_2
       '{
           idx: '{x: 1, y: 4},
-          start_addr: 48'h0000100c0000,
-          end_addr: 48'h000010100000
+          start_addr: 48'h000010180000,
+          end_addr: 48'h000010200000
       },  // cluster_l_ni_0_3
       '{
           idx: '{x: 2, y: 1},
-          start_addr: 48'h000010100000,
-          end_addr: 48'h000010140000
+          start_addr: 48'h000010200000,
+          end_addr: 48'h000010280000
       },  // cluster_l_ni_1_0
       '{
           idx: '{x: 2, y: 2},
-          start_addr: 48'h000010140000,
-          end_addr: 48'h000010180000
+          start_addr: 48'h000010280000,
+          end_addr: 48'h000010300000
       },  // cluster_l_ni_1_1
       '{
           idx: '{x: 2, y: 3},
-          start_addr: 48'h000010180000,
-          end_addr: 48'h0000101c0000
+          start_addr: 48'h000010300000,
+          end_addr: 48'h000010380000
       },  // cluster_l_ni_1_2
       '{
           idx: '{x: 2, y: 4},
-          start_addr: 48'h0000101c0000,
-          end_addr: 48'h000010200000
+          start_addr: 48'h000010380000,
+          end_addr: 48'h000010400000
       },  // cluster_l_ni_1_3
       '{
           idx: '{x: 3, y: 1},
-          start_addr: 48'h000010200000,
-          end_addr: 48'h000010240000
+          start_addr: 48'h000010400000,
+          end_addr: 48'h000010480000
       },  // cluster_l_ni_2_0
       '{
           idx: '{x: 3, y: 2},
-          start_addr: 48'h000010240000,
-          end_addr: 48'h000010280000
+          start_addr: 48'h000010480000,
+          end_addr: 48'h000010500000
       },  // cluster_l_ni_2_1
       '{
           idx: '{x: 3, y: 3},
-          start_addr: 48'h000010280000,
-          end_addr: 48'h0000102c0000
+          start_addr: 48'h000010500000,
+          end_addr: 48'h000010580000
       },  // cluster_l_ni_2_2
       '{
           idx: '{x: 3, y: 4},
-          start_addr: 48'h0000102c0000,
-          end_addr: 48'h000010300000
+          start_addr: 48'h000010580000,
+          end_addr: 48'h000010600000
       },  // cluster_l_ni_2_3
       '{
           idx: '{x: 5, y: 1},
-          start_addr: 48'h000010300000,
-          end_addr: 48'h000010340000
+          start_addr: 48'h000010600000,
+          end_addr: 48'h000010680000
       },  // cluster_r_ni_0_0
       '{
           idx: '{x: 5, y: 2},
-          start_addr: 48'h000010340000,
-          end_addr: 48'h000010380000
+          start_addr: 48'h000010680000,
+          end_addr: 48'h000010700000
       },  // cluster_r_ni_0_1
       '{
           idx: '{x: 5, y: 3},
-          start_addr: 48'h000010380000,
-          end_addr: 48'h0000103c0000
+          start_addr: 48'h000010700000,
+          end_addr: 48'h000010780000
       },  // cluster_r_ni_0_2
       '{
           idx: '{x: 5, y: 4},
-          start_addr: 48'h0000103c0000,
-          end_addr: 48'h000010400000
+          start_addr: 48'h000010780000,
+          end_addr: 48'h000010800000
       },  // cluster_r_ni_0_3
       '{
           idx: '{x: 6, y: 1},
-          start_addr: 48'h000010400000,
-          end_addr: 48'h000010440000
+          start_addr: 48'h000010800000,
+          end_addr: 48'h000010880000
       },  // cluster_r_ni_1_0
       '{
           idx: '{x: 6, y: 2},
-          start_addr: 48'h000010440000,
-          end_addr: 48'h000010480000
+          start_addr: 48'h000010880000,
+          end_addr: 48'h000010900000
       },  // cluster_r_ni_1_1
       '{
           idx: '{x: 6, y: 3},
-          start_addr: 48'h000010480000,
-          end_addr: 48'h0000104c0000
+          start_addr: 48'h000010900000,
+          end_addr: 48'h000010980000
       },  // cluster_r_ni_1_2
       '{
           idx: '{x: 6, y: 4},
-          start_addr: 48'h0000104c0000,
-          end_addr: 48'h000010500000
+          start_addr: 48'h000010980000,
+          end_addr: 48'h000010a00000
       },  // cluster_r_ni_1_3
       '{
           idx: '{x: 7, y: 1},
-          start_addr: 48'h000010500000,
-          end_addr: 48'h000010540000
+          start_addr: 48'h000010a00000,
+          end_addr: 48'h000010a80000
       },  // cluster_r_ni_2_0
       '{
           idx: '{x: 7, y: 2},
-          start_addr: 48'h000010540000,
-          end_addr: 48'h000010580000
+          start_addr: 48'h000010a80000,
+          end_addr: 48'h000010b00000
       },  // cluster_r_ni_2_1
       '{
           idx: '{x: 7, y: 3},
-          start_addr: 48'h000010580000,
-          end_addr: 48'h0000105c0000
+          start_addr: 48'h000010b00000,
+          end_addr: 48'h000010b80000
       },  // cluster_r_ni_2_2
       '{
           idx: '{x: 7, y: 4},
-          start_addr: 48'h0000105c0000,
-          end_addr: 48'h000010600000
+          start_addr: 48'h000010b80000,
+          end_addr: 48'h000010c00000
       },  // cluster_r_ni_2_3
       '{
           idx: '{x: 3, y: 5},
@@ -392,8 +392,8 @@ package floo_narrow_wide_pkg;
       },  // idma_ni
       '{
           idx: '{x: 4, y: 4},
-          start_addr: 48'h000071000000,
-          end_addr: 48'h000071100000
+          start_addr: 48'h000070000000,
+          end_addr: 48'h000070100000
       },  // spm_ni
       '{
           idx: '{x: 4, y: 3},
@@ -546,6 +546,16 @@ package floo_narrow_wide_pkg;
     logic ready;
     floo_wide_chan_t wide;
   } floo_wide_t;
+
+
+
+  ///////////////////////
+  //     Bit Vector    //
+  ///////////////////////
+
+  typedef logic [115:0] floo_vec_req_t;
+  typedef logic [99:0] floo_vec_rsp_t;
+  typedef logic [604:0] floo_vec_wide_t;
 
 
 endpackage
