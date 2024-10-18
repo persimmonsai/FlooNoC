@@ -5,7 +5,7 @@
 `include "common_cells/assertions.svh"
 `include "floo_noc/typedef.svh"
 
-module tb_floo_compute_tile_array;
+module tb_floo_compute_tile_array_pd;
 
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
@@ -1451,34 +1451,34 @@ module tb_floo_compute_tile_array;
 
   logic [27:0] endsim_cluster;
   // Get end_of_sim signal inside DUT
-  assign endsim_cluster[0] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_0.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[1] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_1.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[2] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_2.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[3] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_0_3.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[4] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_1_0.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[5] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_1_1.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[6] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_1_2.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[7] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_1_3.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[8] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_2_0.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[9] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_2_1.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[10] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_2_2.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[11] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_2_3.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[12] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_4_0.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[13] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_4_1.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[14] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_4_2.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[15] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_4_3.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[16] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_5_0.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[17] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_5_1.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[18] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_5_2.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[19] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_5_3.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[20] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_6_0.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[21] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_6_1.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[22] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_6_2.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[23] = &tb_floo_compute_tile_array.i_chiplet_floo_noc.compute_tile_6_3.i_snitch_cluster_test_node.end_of_sim;
-  assign endsim_cluster[24] = &tb_floo_compute_tile_array.i_floo_narrow_idma_model.end_of_sim;
-  assign endsim_cluster[25] = &tb_floo_compute_tile_array.i_floo_wide_idma_model.end_of_sim;
-  assign endsim_cluster[26] = &tb_floo_compute_tile_array.i_floo_narrow_cva6_model.end_of_sim;
-  assign endsim_cluster[27] = &tb_floo_compute_tile_array.i_floo_narrow_jtag_model.end_of_sim;
+  assign endsim_cluster[0] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_0_0.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[1] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_0_1.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[2] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_0_2.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[3] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_0_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[4] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_1_0.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[5] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_1_1.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[6] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_1_2.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[7] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_1_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[8] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_2_0.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[9] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_2_1.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[10] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_2_2.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[11] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_2_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[12] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_4_0.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[13] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_4_1.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[14] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_4_2.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[15] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_4_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[16] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_5_0.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[17] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_5_1.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[18] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_5_2.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[19] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_5_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[20] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_6_0.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[21] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_6_1.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[22] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_6_2.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[23] = &tb_floo_compute_tile_array_pd.i_chiplet_soc.i_chiplet_floo_noc.compute_tile_6_3.i_snitch_cluster_test_node.end_of_sim;
+  assign endsim_cluster[24] = &tb_floo_compute_tile_array_pd.i_floo_narrow_idma_model.end_of_sim;
+  assign endsim_cluster[25] = &tb_floo_compute_tile_array_pd.i_floo_wide_idma_model.end_of_sim;
+  assign endsim_cluster[26] = &tb_floo_compute_tile_array_pd.i_floo_narrow_cva6_model.end_of_sim;
+  assign endsim_cluster[27] = &tb_floo_compute_tile_array_pd.i_floo_narrow_jtag_model.end_of_sim;
 
   initial begin
     wait (&endsim_cluster);

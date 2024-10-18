@@ -3,6 +3,7 @@
 `include "axi/assign.svh"
 
 module hbm_1ch_pd_testnode
+  import compute_tile_array_test_pkg::*; // Simulation setting parameter modified through macro for each difference testbench
   import hbm_pd_pkg::*;
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;

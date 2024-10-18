@@ -1,6 +1,5 @@
 
 `include "common_cells/registers.svh"
-`include "register_interface/typedef.svh"
 `include "axi/assign.svh"
 
 module chiplet_soc
@@ -145,47 +144,10 @@ module chiplet_soc
   assign hbm_south_2_floo_req_i = hbm_south_floo_req_i[3:2];
   assign hbm_south_2_floo_rsp_i = hbm_south_floo_rsp_i[3:2];
   assign hbm_south_2_floo_wide_i = hbm_south_floo_wide_i[3:2];
-  // HBM assign combined bus
-  assign hbm_north_floo_req_o[0:0] = hbm_north_dram_0_floo_req_o;
-  assign hbm_north_floo_rsp_o[0:0] = hbm_north_dram_0_floo_rsp_o;
-  assign hbm_north_floo_wide_o[0:0] = hbm_north_dram_0_floo_wide_o;
-  assign hbm_north_dram_0_floo_req_i = hbm_north_floo_req_i[0:0];
-  assign hbm_north_dram_0_floo_rsp_i = hbm_north_floo_rsp_i[0:0];
-  assign hbm_north_dram_0_floo_wide_i = hbm_north_floo_wide_i[0:0];
-  assign hbm_north_floo_req_o[1:1] = hbm_north_dram_1_floo_req_o;
-  assign hbm_north_floo_rsp_o[1:1] = hbm_north_dram_1_floo_rsp_o;
-  assign hbm_north_floo_wide_o[1:1] = hbm_north_dram_1_floo_wide_o;
-  assign hbm_north_dram_1_floo_req_i = hbm_north_floo_req_i[1:1];
-  assign hbm_north_dram_1_floo_rsp_i = hbm_north_floo_rsp_i[1:1];
-  assign hbm_north_dram_1_floo_wide_i = hbm_north_floo_wide_i[1:1];
-  assign hbm_north_floo_req_o[2:2] = hbm_north_2_floo_req_o;
-  assign hbm_north_floo_rsp_o[2:2] = hbm_north_2_floo_rsp_o;
-  assign hbm_north_floo_wide_o[2:2] = hbm_north_2_floo_wide_o;
-  assign hbm_north_2_floo_req_i = hbm_north_floo_req_i[2:2];
-  assign hbm_north_2_floo_rsp_i = hbm_north_floo_rsp_i[2:2];
-  assign hbm_north_2_floo_wide_i = hbm_north_floo_wide_i[2:2];
-  assign hbm_north_floo_req_o[3:3] = hbm_north_3_floo_req_o;
-  assign hbm_north_floo_rsp_o[3:3] = hbm_north_3_floo_rsp_o;
-  assign hbm_north_floo_wide_o[3:3] = hbm_north_3_floo_wide_o;
-  assign hbm_north_3_floo_req_i = hbm_north_floo_req_i[3:3];
-  assign hbm_north_3_floo_rsp_i = hbm_north_floo_rsp_i[3:3];
-  assign hbm_north_3_floo_wide_i = hbm_north_floo_wide_i[3:3];
-  assign hbm_south_floo_req_o[1:0] = hbm_south_0_floo_req_o;
-  assign hbm_south_floo_rsp_o[1:0] = hbm_south_0_floo_rsp_o;
-  assign hbm_south_floo_wide_o[1:0] = hbm_south_0_floo_wide_o;
-  assign hbm_south_0_floo_req_i = hbm_south_floo_req_i[1:0];
-  assign hbm_south_0_floo_rsp_i = hbm_south_floo_rsp_i[1:0];
-  assign hbm_south_0_floo_wide_i = hbm_south_floo_wide_i[1:0];
-  assign hbm_south_floo_req_o[3:2] = hbm_south_2_floo_req_o;
-  assign hbm_south_floo_rsp_o[3:2] = hbm_south_2_floo_rsp_o;
-  assign hbm_south_floo_wide_o[3:2] = hbm_south_2_floo_wide_o;
-  assign hbm_south_2_floo_req_i = hbm_south_floo_req_i[3:2];
-  assign hbm_south_2_floo_rsp_i = hbm_south_floo_rsp_i[3:2];
-  assign hbm_south_2_floo_wide_i = hbm_south_floo_wide_i[3:2];
 
   chiplet_floo_noc i_chiplet_floo_noc (
-      .clk_i(clk),
-      .rst_ni(rst_n),
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
       .test_enable_i(1'b0),
 
       .mtip_i('0),
