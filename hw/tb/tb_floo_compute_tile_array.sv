@@ -23,6 +23,13 @@ module tb_floo_compute_tile_array;
       .rst_no(rst_n)
   );
 
+  initial begin
+    if ($test$plusargs("fsdbon")) begin
+      $fsdbDumpfile("floonoc.fsdb");
+      $fsdbDumpvars(0, "+all");
+    end
+  end
+
   //////////////////////////////////
   //   Endpoint Simulation Model  //
   //////////////////////////////////
