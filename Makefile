@@ -47,6 +47,7 @@ BENDER_FLAGS += -t dma_test # use for local simulation of FlooNoC system
 TB_DUT ?= tb_floo_compute_tile_array
 #SIM_TIME ?= 1500000
 SIM_TIME ?= 3000000
+FSDB ?= OFF
 
 # VSIM
 VLOG_ARGS += -suppress vlog-2583
@@ -72,15 +73,21 @@ VLOGAN_ARGS += -timescale=1ns/1ns
 ifdef DMA_TESTNODE
 	VLOGAN_ARGS += +define+DMA_TESTNODE
 endif
+VLOGAN_ARGS += -debug_access+all
 
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
 VCS_FLAGS += -kdb
-SIMV_FLAGS =
+VCS_FLAGS += -debug_access+all
+#SIMV_FLAGS =
 
 #SIMV_FLAGS += +vcs+dumpvars+test.vcd
 SIMV_FLAGS += +vcs+finish+$(SIM_TIME) # maximum simulation time in ns
+SIMV_FLAGS += +vcs+lic+wait
+ifeq ($(FSDB),ON)
+	SIMV_FLAGS += +fsdbon
+endif
 
 # Set the job name and directory if specified
 ifdef JOB_NAME
@@ -213,9 +220,7 @@ work-vcs/compile_vcs.sh: Bender.yml
 compile-vcs-batch: work-vcs/compile_vcs.sh
 	work-vcs/compile_vcs.sh > work-vcs/compile.log
 
-compile-vcs: VLOGAN_ARGS+=-debug_access+all
 compile-vcs: compile-vcs-batch
-
 
 # run-vcs-common:
 # ifdef DMA_TESTNODE
@@ -237,7 +242,6 @@ compile-vcs: compile-vcs-batch
 # 	./bin/snitch_cluster.vcs $(SNITCH_PATH)/$(SNITCH_SW) $(SIMV_FLAGS)
 # endif
 
-bin/floo_noc_gui.vcs: VCS_FLAGS+=-debug_access+all
 bin/floo_noc_gui.vcs: compile-vcs
 	mkdir -p bin
 	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_gui.vcs $(TB_DUT)
@@ -298,7 +302,7 @@ clean-dma_test:
 
 .PHONY: test-random clean-test-random
 
-test-random:
+test-random: dma_test-bin/floo_noc_batch.vcs
 	util/test_random_compute_tile.sh 2>&1 | tee test_random.log
 
 clean-test-random:

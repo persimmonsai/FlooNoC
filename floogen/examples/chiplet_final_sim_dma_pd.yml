@@ -1,0 +1,495 @@
+# Copyright 2023 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: chiplet
+description: "Top Level Chiplet"
+num_snitch_core: 13 # snitch core 12, dma core 1
+
+routing:
+  route_algo: "XY"
+  use_id_table: true
+  # If true, allow routing from X to Y only
+  xy_route_opt: false
+
+protocols:
+  - name: "narrow"
+    type: "AXI4"
+    direction: "manager"
+    data_width: 64
+    addr_width: 48
+    id_width: 4 # iw_in, equal to iw_out of snitch cluster
+    #user_width: 5 # clog2(total number of clusters)
+    user_width: 1
+  - name: "narrow"
+    type: "AXI4"
+    direction: "subordinate"
+    data_width: 64
+    addr_width: 48
+    # iw_out = iw_in + clog2(number of master to this interconnect, which is equal to number of endpoint)
+    # iw_out = iw_in + clog2(X_NUM*Y_NUM + 2*X_NUM + 2*Y_NUM)
+    # iw_out = 4 + clog2(8*4 + 2*8 + 2*4) = 4 + clog2(56) = 4 + 6 = 10
+    # iw_out should not more than 5 for synthesis reason, so only 32 outstanding transaction is allow on FlooNoC
+    id_width: 5 # iw_out, this ID will be remap before connect with snitch cluster
+    #user_width: 5 # clog2(total number of clusters)
+    user_width: 1
+  - name: "wide"
+    type: "AXI4"
+    direction: "manager"
+    data_width: 512
+    #data_width: 64
+    addr_width: 48
+    # id_width: 4 # iw_in, equal to iw_out of snitch cluster
+    id_width: 5 # iw_in, equal to iw_out of + ro_cache_cfg (ro_cache_cfg + 1 for id width)
+    user_width: 0
+  - name: "wide"
+    type: "AXI4"
+    direction: "subordinate"
+    data_width: 512
+    #data_width: 64
+    addr_width: 48
+    # iw_out = iw_in + clog2(number of master to this interconnect, which is equal to number of endpoint)
+    # iw_out = iw_in + clog2(X_NUM*Y_NUM + 2*X_NUM + 2*Y_NUM)
+    # iw_out = 4 + clog2(8*4 + 2*8 + 2*4) = 4 + clog2(56) = 4 + 6 = 10
+    #id_width: 10 # iw_out, this ID will be remap before connect with snitch cluster
+    #id_width: 11 # iw_out + ro_cache_cfg (ro_cache_cfg + 1 for id width), this ID will be remap before connect with snitch cluster 
+    # iw_out should not more than 6 for synthesis reason, so only 64 outstanding transaction is allow on FlooNoC
+    id_width: 6 # iw_out, this ID will be remap before connect with snitch cluster
+    user_width: 0
+
+# Define endpoint and slave address mapped
+endpoints:
+# Define compute tile array (snitch cluster) in XY mesh
+  # 3x4 left side compute tile network
+  - name: "cluster_l"
+    is_compute_tile: true # Replace this endpoint with compute tile structure
+    start_tile_id: 0
+    array: [3, 4]
+    addr_range:
+      base: 0x0000_1000_0000
+      size: 0x0000_0008_0000 # size per single snitch cluster per compute tile
+    mgr_port_protocol:
+      - "narrow"
+      - "wide"
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 0 # 0 to 2
+      y: 0 # 0 to 3
+  # **** Warning: sub address simulation is not support for the current version
+  # - name: "quadrant_ctrl_l"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [3, 4]
+  #   addr_range:
+  #     base: 0x0000_0F00_0000
+  #     size: 0x0000_0001_0000 # size per single quadrant control per compute tile
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 0 # 0 to 2
+  #     y: 0 # 0 to 3
+  # 3x4 right side compute tile network
+  - name: "cluster_r"
+    is_compute_tile: true # Replace this endpoint with compute tile structure
+    start_tile_id: 12
+    array: [3, 4]
+    addr_range:
+      base: 0x0000_1060_0000
+      size: 0x0000_0008_0000 # size per single snitch cluster per compute tile
+    mgr_port_protocol:
+      - "narrow"
+      - "wide"
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 4 # 4 to 6
+      y: 0 # 0 to 3
+  # - name: "quadrant_ctrl_r"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [3, 4]
+  #   addr_range:
+  #     base: 0x0000_0F0C_0000
+  #     size: 0x0000_0001_0000 # size per single quadrant control per compute tile
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 4 # 4 to 6
+  #     y: 0 # 0 to 3
+# Define endpoint for each border side (North, East, South, and West)
+  ##### North border
+  # HBM memory
+  # Split to allocate within 32-bit address for snitch cluster that is 32-bit processor
+  - name: "hbm_north_dram_0"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    addr_range:
+      base: 0x0000_8000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 2
+      y: 4 # mean border of the north side
+  # - name: "hbm_north_dram_0_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C00_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 2
+  #     y: 4 # mean border of the north side
+  - name: "hbm_north_dram_1"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    addr_range:
+      base: 0x0000_C000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 4
+      y: 4 # mean border of the north side
+  # - name: "hbm_north_dram_1_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C10_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 4
+  #     y: 4 # mean border of the north side
+  - name: "hbm_north_2"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    addr_range:
+      base: 0x0010_0000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 1
+      y: 4 # mean border of the north side
+  # - name: "hbm_north_2_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C20_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 1
+  #     y: 4 # mean border of the north side
+  - name: "hbm_north_3"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    addr_range:
+      base: 0x0010_4000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 5
+      y: 4 # mean border of the north side
+  # - name: "hbm_north_3_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   addr_range:
+  #     base: 0x0000_0C30_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 5
+  #     y: 4 # mean border of the north side
+  ##### South border
+  # HBM memory
+  - name: "hbm_south_0"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    array: [2, 1]
+    addr_range:
+      base: 0x0010_8000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 1 # 1 to 2
+      y: -1 # -1 mean border of the south side
+  # - name: "hbm_south_0_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [2, 1]
+  #   addr_range:
+  #     base: 0x0000_0C80_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 1 # 1 to 2
+  #     y: -1 # -1 mean border of the south side
+  - name: "hbm_south_2"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    array: [2, 1]
+    addr_range:
+      base: 0x0011_0000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 4 # 4 to 5
+      y: -1 # -1 mean border of the south side
+  # - name: "hbm_south_2_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [2, 1]
+  #   addr_range:
+  #     base: 0x0000_0CA0_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 4 # 4 to 5
+  #     y: -1 # -1 mean border of the south side
+  ##### West border
+  - name: "hbm_west"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    array: [1, 4]
+    addr_range:
+      base: 0x0011_8000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: -1
+      y: 0 # 0 to 3
+  # - name: "hbm_west_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [1, 4]
+  #   addr_range:
+  #     base: 0x0000_0D00_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: -1
+  #     y: 0 # 0 to 3
+  ##### East border
+  - name: "hbm_east"
+    export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    array: [1, 4]
+    addr_range:
+      base: 0x0012_8000_0000
+      size: 0x0000_4000_0000 # 1 GiB
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 7
+      y: 0 # 0 to 3
+  # - name: "hbm_east_cfg"
+  #   is_sub_addr : true # must not use this endpoint on "connections" section
+  #   array: [1, 4]
+  #   addr_range:
+  #     base: 0x0000_0D80_0000
+  #     size: 0x0000_0010_0000
+  #   sbr_port_protocol:
+  #     - "narrow"
+  #   id_offset:
+  #     x: 7
+  #     y: 0 # 0 to 3
+  ##### Center
+  # iDMA, narrow configuration and wide transfer data
+  - name: "idma"
+    addr_range:
+      base: 0x0000_1100_0000
+      size: 0x0000_0001_0000 # 64 kiB
+    mgr_port_protocol:
+      - "narrow" # Add for simulation purpose
+      - "wide"
+    sbr_port_protocol:
+      - "narrow" # iDMA frontend configuration
+      - "wide" # Add for simulation purpose
+    id_offset:
+      x: 3
+      y: 4
+  # SPM Wide with floo join for narrow access
+  - name: "spm"
+    addr_range:
+      base: 0x0000_7000_0000
+      size: 0x0000_0010_0000
+    sbr_port_protocol:
+      - "narrow"
+      - "wide"
+    id_offset:
+      x: 3
+      y: 3
+  # CVA6
+  - name: "cva6"
+    # export_ni: true # Set to not declare NI on FlooNoC network for PD purpose
+    # No slave port so no endpoint address assign to its
+    addr_range:
+      base: 0x8000_0000_0000 # Add for simulation purpose
+      size: 0x0000_0010_0000 # Add for simulation purpose
+    # No slave port so no endpoint address assign to its
+    mgr_port_protocol:
+      - "narrow"
+    sbr_port_protocol:
+      - "narrow" # Add for simulation purpose
+    id_offset:
+      x: 3
+      y: 2
+  # Peripherals AXI xbar
+  # This xbar connected to rom, soc_ctrl, pll_system, pll_periph, pll_hbm2e, 
+  # uart, gpio, i2c, chip_ctrl, timer, spim, clint, pcie_cfg, hbm_cfg, plic
+  - name: "peripherals"
+    addr_range:
+      base: 0x0000_0100_0000
+      size: 0x0000_0B00_0000
+    sbr_port_protocol:
+      - "narrow"
+      - "wide" # For snitch cluster to access bootrom via wide interface
+    id_offset:
+      x: 3
+      y: 1
+  # JTAG
+  - name: "jtag"
+    addr_range:
+      base: 0x0000_0000_0000
+      size: 0x0000_0000_1000 # 4 kiB
+    mgr_port_protocol:
+      - "narrow"
+    sbr_port_protocol:
+      - "narrow"
+    id_offset:
+      x: 3
+      y: 0
+  # AXI Zero-Memory
+  - name: "zero_mem"
+    addr_range:
+      base: 0x0001_0000_0000
+      size: 0x0002_0000_0000 # 8 GiB
+    sbr_port_protocol:
+      - "wide"
+    id_offset:
+      x: 3
+      y: -1
+
+routers:
+  - name: "router"
+    array: [7, 4]
+
+connections:
+  # Each compute cluster (snitch cluster) connect to the router
+  - src: "cluster_l"
+    dst: "router"
+    src_range:
+    - [0, 2]
+    - [0, 3]
+    dst_range:
+    - [0, 2]
+    - [0, 3]
+    bidirectional: true
+  - src: "cluster_r"
+    dst: "router"
+    src_range:
+    - [0, 2]
+    - [0, 3]
+    dst_range:
+    - [4, 6]
+    - [0, 3]
+    bidirectional: true
+  ##### North border
+  # HBM memory
+  - src: "hbm_north_dram_0"
+    dst: "router"
+    dst_idx: [2, 3]
+    bidirectional: true
+  - src: "hbm_north_dram_1"
+    dst: "router"
+    dst_idx: [4, 3]
+    bidirectional: true
+  - src: "hbm_north_2"
+    dst: "router"
+    dst_idx: [1, 3]
+    bidirectional: true
+  - src: "hbm_north_3"
+    dst: "router"
+    dst_idx: [5, 3]
+    bidirectional: true
+  ##### South border
+  # HBM memory
+  - src: "hbm_south_0"
+    dst: "router"
+    src_range:
+    - [0, 1]
+    - [0, 0]
+    dst_range: # router index for south border
+    - [1, 2]
+    - [0, 0]
+    bidirectional: true
+  - src: "hbm_south_2"
+    dst: "router"
+    src_range:
+    - [0, 1]
+    - [0, 0]
+    dst_range: # router index for south border
+    - [4, 5]
+    - [0, 0]
+    bidirectional: true
+  ##### West border
+  # HBM memory
+  - src: "hbm_west"
+    dst: "router"
+    src_range:
+    - [0, 0]
+    - [0, 3]
+    dst_range:
+    - [0, 0]
+    - [0, 3]
+    bidirectional: true
+  ##### East border
+  # HBM memory
+  - src: "hbm_east"
+    dst: "router"
+    src_range:
+    - [0, 0]
+    - [0, 3]
+    dst_range:
+    - [6, 6]
+    - [0, 3]
+    bidirectional: true
+  ##### Center
+  # iDMA
+  - src: "idma"
+    dst: "router"
+    dst_idx: [3, 3]
+    bidirectional: true
+  # SPM
+  - src: "spm"
+    dst: "router"
+    dst_idx: [3, 3]
+    bidirectional: true
+  # CVA6
+  - src: "cva6"
+    dst: "router"
+    dst_idx: [3, 2]
+    bidirectional: true
+  # Peripherals
+  - src: "peripherals"
+    dst: "router"
+    dst_idx: [3, 1]
+    bidirectional: true
+  # JTAG
+  - src: "jtag"
+    dst: "router"
+    dst_idx: [3, 0]
+    bidirectional: true
+  # AXI Zero Memory
+  - src: "zero_mem"
+    dst: "router"
+    dst_idx: [3, 0]
+    bidirectional: true

@@ -35,9 +35,12 @@ sources:
       - ../../hw/chiplet_floo_noc.sv # Generated wrapper from floogen for chiplet Top level
       # Level 3
       - ../../hw/test/snitch_cluster_test_node.sv
+      - ../../hw/test/hbm_1ch_pd_testnode.sv
       - ../../hw/test/dma_test_node.sv
+      - ../../hw/test/chiplet_soc.sv
       # Level 4
       - ../../hw/tb/tb_floo_compute_tile_array.sv
+      - ../../hw/tb/tb_floo_compute_tile_array_pd.sv
       - ../../hw/tb/tb_floo_dma_chimney.sv
       - ../../hw/tb/tb_floo_dma_nw_chimney.sv
       - ../../hw/tb/tb_floo_dma_mesh.sv

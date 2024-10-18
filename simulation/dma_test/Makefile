@@ -46,11 +46,13 @@ VLOGAN_ARGS += -kdb
 VLOGAN_ARGS += -assert svaext
 #VLOGAN_ARGS += -assert disable_cover
 VLOGAN_ARGS += -timescale=1ns/1ns
+VLOGAN_ARGS += -debug_access+all
 
 VCS_FLAGS += -full64 # additional compile param because ecad-1 doesn't have all the 32 bit libraries installed
 VCS_FLAGS += -Mlib=work-vcs
 VCS_FLAGS += -Mdir=work-vcs
 VCS_FLAGS += -kdb
+VCS_FLAGS += -debug_access+all
 
 # Automatically open the waveform if a wave.tcl file is present
 VSIM_FLAGS_GUI += -do "log -r /*"
@@ -109,10 +111,8 @@ work-vcs/compile_vcs.sh: Bender.yml
 compile-vcs-batch: work-vcs/compile_vcs.sh
 	work-vcs/compile_vcs.sh > work-vcs/parsing.log
 
-compile-vcs: VLOGAN_ARGS+=-debug_access+all
 compile-vcs: compile-vcs-batch
 
-bin/floo_noc_gui.vcs: VCS_FLAGS+=-debug_access+all
 bin/floo_noc_gui.vcs: compile-vcs
 	mkdir -p bin
 	$(VCS) $(VCS_FLAGS) -o bin/floo_noc_gui.vcs $(TB_DUT) 2>&1 | tee work-vcs/compile.log

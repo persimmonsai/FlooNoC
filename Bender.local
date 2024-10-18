@@ -3,4 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 overrides:
-    axi: { git: "git@github.com:persimmonsai/axi", version: 0.39.1 }
+    axi: {git: https://github.com/persimmonsai/axi.git, rev: persimmons}
+    common_verification: { git: https://github.com/persimmonsai/common_verification.git, rev: master}
+    common_cells: {git: https://github.com/persimmonsai/common_cells.git, rev: persimmons}
+    axi_riscv_atomics: { git: "https://github.com/pulp-platform/axi_riscv_atomics.git", version: 0.8.2 }
