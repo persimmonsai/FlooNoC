@@ -5,7 +5,6 @@
 #
 # Tim Fischer <fischeti@iis.ee.ethz.ch>
 
-tb_dut="tb_floo_compute_tile_array"
 job_type="compute_tile_array"
 
 print_jobs="true"
@@ -29,8 +28,6 @@ RANDOM=$$
 
 make clean-test-random
 mkdir -p ${out_dir}
-# One time build of VCS simulation binary
-make -C simulation/dma_test bin/floo_noc_batch.vcs TB_DUT=$tb_dut 2>&1 | tee ${out_dir}/vcs_build_bin.log
 
 # Running the simulation
 for rw in ${rw_type[@]}
@@ -68,7 +65,6 @@ do
                 TRAFFIC_NR_BURST_NUM=$num_narrow_bursts TRAFFIC_NR_BURST_LEN=$narrow_burst_length \
                 TRAFFIC_WD_BURST_NUM=$num_wide_bursts TRAFFIC_WD_BURST_LEN=$wide_burst_length 2>&1 | tee $job_dir/job_stats.log
             # Run the simulation
-            #make run-vcs-batch TB_DUT=$tb_dut JOB_NAME=$job_type JOB_DIR=$job_dir DMA_TESTNODE=TRUE 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
             make dma_test-run-vcs-batch JOB_NAME=$job_type JOB_DIR=$job_dir 2>&1 | tee ${out_dir}/${job_name}_sim_stats.log
         done
     done

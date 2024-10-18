@@ -302,7 +302,7 @@ clean-dma_test:
 
 .PHONY: test-random clean-test-random
 
-test-random:
+test-random: dma_test-bin/floo_noc_batch.vcs
 	util/test_random_compute_tile.sh 2>&1 | tee test_random.log
 
 clean-test-random:
