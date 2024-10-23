@@ -612,7 +612,28 @@ module tb_floo_compute_tile_array_pd;
   floo_rsp_t [3:0] hbm_east_floo_rsp_top_o;
   floo_wide_t [3:0] hbm_east_floo_wide_top_o;
 
-  chiplet_soc i_chiplet_soc (
+  chiplet_soc #(
+      .router_3_0_north_cut (0),
+      .router_3_0_east_cut  (3),
+      .router_3_0_west_cut  (3),
+      .router_3_0_south_cut (0),
+      .router_3_0_eject_cut (0),
+      .router_3_1_north_cut (0),
+      .router_3_1_east_cut  (2),
+      .router_3_1_west_cut  (2),
+      .router_3_1_south_cut (0),
+      .router_3_1_eject_cut (0),
+      .router_3_2_north_cut (0),
+      .router_3_2_east_cut  (2),
+      .router_3_2_west_cut  (2),
+      .router_3_2_south_cut (0),
+      .router_3_2_eject_cut (0),
+      .router_3_3_north_cut (0),
+      .router_3_3_east_cut  (3),
+      .router_3_3_west_cut  (3),
+      .router_3_3_south_cut (0),
+      .router_3_3_eject_cut (0)
+  ) i_chiplet_soc (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .test_mode_i(1'b0),

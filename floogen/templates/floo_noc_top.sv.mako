@@ -15,7 +15,9 @@ module ${noc.name}_floo_noc
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
   import hbm_pd_pkg::*;
-(
+#(
+  ${noc.render_cut_param()}
+) (
   input logic clk_i,
   input logic rst_ni,
   input logic test_enable_i,

@@ -14,6 +14,13 @@ ${rsp_type} [NumDirections-1:0] ${router.name}_rsp_in;
 ${wide_type} [NumDirections-1:0] ${router.name}_wide_in;
 ${wide_type} [NumDirections-1:0] ${router.name}_wide_out;
 
+${req_type} [NumDirections-1:0] ${router.name}_cut_req_in;
+${rsp_type} [NumDirections-1:0] ${router.name}_cut_rsp_out;
+${req_type} [NumDirections-1:0] ${router.name}_cut_req_out;
+${rsp_type} [NumDirections-1:0] ${router.name}_cut_rsp_in;
+${wide_type} [NumDirections-1:0] ${router.name}_cut_wide_in;
+${wide_type} [NumDirections-1:0] ${router.name}_cut_wide_out;
+
 % for dir, link in router.incoming._asdict().items():
   % if link is not None:
     % if link.export_ni:
@@ -80,6 +87,27 @@ ${wide_type} [NumDirections-1:0] ${router.name}_wide_out;
   % endif
 % endfor
 
+%for dir in ['north','east','west','south','eject']:
+  // Generate ${router.name} interface cuts for ${dir} direction
+  %for type in ['req','rsp','wide']:
+  floo_cut #(
+    .NumCuts (${router.name}_${dir}_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_${type}_chan_t)
+  ) i_floo_${type}_${router.name}_${dir}_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({${router.name}_${type}_in[${camelcase(dir)}].valid, ${router.name}_cut_${type}_out[${camelcase(dir)}].valid}),
+    .ready_i ({${router.name}_${type}_in[${camelcase(dir)}].ready, ${router.name}_cut_${type}_out[${camelcase(dir)}].ready}),
+    .data_i  ({${router.name}_${type}_in[${camelcase(dir)}].${type}, ${router.name}_cut_${type}_out[${camelcase(dir)}].${type}}),
+    .valid_o ({${router.name}_cut_${type}_in[${camelcase(dir)}].valid, ${router.name}_${type}_out[${camelcase(dir)}].valid}),
+    .ready_o ({${router.name}_cut_${type}_in[${camelcase(dir)}].ready, ${router.name}_${type}_out[${camelcase(dir)}].ready}),
+    .data_o  ({${router.name}_cut_${type}_in[${camelcase(dir)}].${type}, ${router.name}_${type}_out[${camelcase(dir)}].${type}})
+  );
+  %endfor
+%endfor
+
 localparam id_t ${router_id} = ${actual_xy_id.render()};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
@@ -96,10 +124,10 @@ floo_narrow_wide_router #(
   .test_enable_i,
   .id_i (${router_id}),
   .id_route_map_i ('0),
-  .floo_req_i (${router.name}_req_in),
-  .floo_rsp_o (${router.name}_rsp_out),
-  .floo_req_o (${router.name}_req_out),
-  .floo_rsp_i (${router.name}_rsp_in),
-  .floo_wide_i (${router.name}_wide_in),
-  .floo_wide_o (${router.name}_wide_out)
+  .floo_req_i (${router.name}_cut_req_in),
+  .floo_rsp_o (${router.name}_cut_rsp_out),
+  .floo_req_o (${router.name}_cut_req_out),
+  .floo_rsp_i (${router.name}_cut_rsp_in),
+  .floo_wide_i (${router.name}_cut_wide_in),
+  .floo_wide_o (${router.name}_cut_wide_out)
 );
