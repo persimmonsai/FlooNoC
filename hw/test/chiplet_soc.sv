@@ -145,7 +145,30 @@ module chiplet_soc
   assign hbm_south_2_floo_rsp_i = hbm_south_floo_rsp_i[3:2];
   assign hbm_south_2_floo_wide_i = hbm_south_floo_wide_i[3:2];
 
-  chiplet_floo_noc i_chiplet_floo_noc (
+  chiplet_floo_noc 
+  #(
+      .router_3_0_eject_cut(0),
+      .router_3_0_north_cut(0),
+      .router_3_0_south_cut(0),
+      .router_3_0_east_cut (1),
+      .router_3_0_west_cut (1),
+      .router_3_1_eject_cut(0),
+      .router_3_1_north_cut(0),
+      .router_3_1_south_cut(0),
+      .router_3_1_east_cut (1),
+      .router_3_1_west_cut (1),
+      .router_3_2_eject_cut(0),
+      .router_3_2_north_cut(0),
+      .router_3_2_south_cut(0),
+      .router_3_2_east_cut (1),
+      .router_3_2_west_cut (1),
+      .router_3_3_eject_cut(0),
+      .router_3_3_north_cut(0),
+      .router_3_3_south_cut(0),
+      .router_3_3_east_cut (1),
+      .router_3_3_west_cut (1)
+  ) 
+  i_chiplet_floo_noc (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .test_enable_i(1'b0),

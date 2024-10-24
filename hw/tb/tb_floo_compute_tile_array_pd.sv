@@ -612,28 +612,7 @@ module tb_floo_compute_tile_array_pd;
   floo_rsp_t [3:0] hbm_east_floo_rsp_top_o;
   floo_wide_t [3:0] hbm_east_floo_wide_top_o;
 
-  chiplet_soc #(
-      .router_3_0_north_cut (0),
-      .router_3_0_east_cut  (3),
-      .router_3_0_west_cut  (3),
-      .router_3_0_south_cut (0),
-      .router_3_0_eject_cut (0),
-      .router_3_1_north_cut (0),
-      .router_3_1_east_cut  (2),
-      .router_3_1_west_cut  (2),
-      .router_3_1_south_cut (0),
-      .router_3_1_eject_cut (0),
-      .router_3_2_north_cut (0),
-      .router_3_2_east_cut  (2),
-      .router_3_2_west_cut  (2),
-      .router_3_2_south_cut (0),
-      .router_3_2_eject_cut (0),
-      .router_3_3_north_cut (0),
-      .router_3_3_east_cut  (3),
-      .router_3_3_west_cut  (3),
-      .router_3_3_south_cut (0),
-      .router_3_3_eject_cut (0)
-  ) i_chiplet_soc (
+  chiplet_soc i_chiplet_soc (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .test_mode_i(1'b0),
@@ -701,7 +680,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_0_cut (
@@ -716,7 +695,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_req_top_o[0].req, hbm_north_floo_req_soc_i[0].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_0_cut (
@@ -731,7 +710,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_rsp_top_o[0].rsp, hbm_north_floo_rsp_soc_i[0].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_0_cut (
@@ -748,7 +727,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_1_cut (
@@ -763,7 +742,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_req_top_o[1].req, hbm_north_floo_req_soc_i[1].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_1_cut (
@@ -778,7 +757,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_rsp_top_o[1].rsp, hbm_north_floo_rsp_soc_i[1].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_1_cut (
@@ -795,7 +774,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_2_cut (
@@ -810,7 +789,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_req_top_o[2].req, hbm_north_floo_req_soc_i[2].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_2_cut (
@@ -825,7 +804,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_rsp_top_o[2].rsp, hbm_north_floo_rsp_soc_i[2].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_2_cut (
@@ -842,7 +821,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_3_cut (
@@ -857,7 +836,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_req_top_o[3].req, hbm_north_floo_req_soc_i[3].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_3_cut (
@@ -872,7 +851,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_rsp_top_o[3].rsp, hbm_north_floo_rsp_soc_i[3].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_3_cut (
@@ -889,7 +868,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_0_cut (
@@ -904,7 +883,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_req_top_o[0].req, hbm_south_floo_req_soc_i[0].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_0_cut (
@@ -919,7 +898,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_rsp_top_o[0].rsp, hbm_south_floo_rsp_soc_i[0].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_0_cut (
@@ -936,7 +915,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_1_cut (
@@ -951,7 +930,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_req_top_o[1].req, hbm_south_floo_req_soc_i[1].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_1_cut (
@@ -966,7 +945,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_rsp_top_o[1].rsp, hbm_south_floo_rsp_soc_i[1].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_1_cut (
@@ -983,7 +962,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_2_cut (
@@ -998,7 +977,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_req_top_o[2].req, hbm_south_floo_req_soc_i[2].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_2_cut (
@@ -1013,7 +992,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_rsp_top_o[2].rsp, hbm_south_floo_rsp_soc_i[2].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_2_cut (
@@ -1030,7 +1009,7 @@ module tb_floo_compute_tile_array_pd;
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_3_cut (
@@ -1045,7 +1024,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_req_top_o[3].req, hbm_south_floo_req_soc_i[3].req})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_3_cut (
@@ -1060,7 +1039,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_rsp_top_o[3].rsp, hbm_south_floo_rsp_soc_i[3].rsp})
   );
   floo_cut #(
-      .NumCuts(3),
+      .NumCuts(2),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_3_cut (
@@ -1075,56 +1054,17 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_wide_top_o[3].wide, hbm_south_floo_wide_soc_i[3].wide})
   );
 
-  // Generate hbm interface cuts
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_req_chan_t)
-  ) i_floo_req_hbm_west_0_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_west_floo_req_soc_o[0].valid, hbm_west_floo_req_top_i[0].valid}),
-      .ready_i({hbm_west_floo_req_top_i[0].ready, hbm_west_floo_req_soc_o[0].ready}),
-      .data_i ({hbm_west_floo_req_soc_o[0].req, hbm_west_floo_req_top_i[0].req}),
-      .valid_o({hbm_west_floo_req_top_o[0].valid, hbm_west_floo_req_soc_i[0].valid}),
-      .ready_o({hbm_west_floo_req_soc_i[0].ready, hbm_west_floo_req_top_o[0].ready}),
-      .data_o ({hbm_west_floo_req_top_o[0].req, hbm_west_floo_req_soc_i[0].req})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_rsp_chan_t)
-  ) i_floo_rsp_hbm_west_0_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_west_floo_rsp_soc_o[0].valid, hbm_west_floo_rsp_top_i[0].valid}),
-      .ready_i({hbm_west_floo_rsp_top_i[0].ready, hbm_west_floo_rsp_soc_o[0].ready}),
-      .data_i ({hbm_west_floo_rsp_soc_o[0].rsp, hbm_west_floo_rsp_top_i[0].rsp}),
-      .valid_o({hbm_west_floo_rsp_top_o[0].valid, hbm_west_floo_rsp_soc_i[0].valid}),
-      .ready_o({hbm_west_floo_rsp_soc_i[0].ready, hbm_west_floo_rsp_top_o[0].ready}),
-      .data_o ({hbm_west_floo_rsp_top_o[0].rsp, hbm_west_floo_rsp_soc_i[0].rsp})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_wide_chan_t)
-  ) i_floo_wide_hbm_west_0_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_west_floo_wide_soc_o[0].valid, hbm_west_floo_wide_top_i[0].valid}),
-      .ready_i({hbm_west_floo_wide_top_i[0].ready, hbm_west_floo_wide_soc_o[0].ready}),
-      .data_i ({hbm_west_floo_wide_soc_o[0].wide, hbm_west_floo_wide_top_i[0].wide}),
-      .valid_o({hbm_west_floo_wide_top_o[0].valid, hbm_west_floo_wide_soc_i[0].valid}),
-      .ready_o({hbm_west_floo_wide_soc_i[0].ready, hbm_west_floo_wide_top_o[0].ready}),
-      .data_o ({hbm_west_floo_wide_top_o[0].wide, hbm_west_floo_wide_soc_i[0].wide})
-  );
+  // Generate hbm interface cuts bypass
+  assign hbm_west_floo_req_top_o[0]  = hbm_west_floo_req_soc_o[0];
+  assign hbm_west_floo_req_soc_i[0]  = hbm_west_floo_req_top_i[0];
+  assign hbm_west_floo_rsp_top_o[0]  = hbm_west_floo_rsp_soc_o[0];
+  assign hbm_west_floo_rsp_soc_i[0]  = hbm_west_floo_rsp_top_i[0];
+  assign hbm_west_floo_wide_top_o[0] = hbm_west_floo_wide_soc_o[0];
+  assign hbm_west_floo_wide_soc_i[0] = hbm_west_floo_wide_top_i[0];
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_west_1_cut (
@@ -1139,7 +1079,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_west_floo_req_top_o[1].req, hbm_west_floo_req_soc_i[1].req})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_west_1_cut (
@@ -1154,7 +1094,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_west_floo_rsp_top_o[1].rsp, hbm_west_floo_rsp_soc_i[1].rsp})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_west_1_cut (
@@ -1169,56 +1109,17 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_west_floo_wide_top_o[1].wide, hbm_west_floo_wide_soc_i[1].wide})
   );
 
-  // Generate hbm interface cuts
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_req_chan_t)
-  ) i_floo_req_hbm_west_2_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_west_floo_req_soc_o[2].valid, hbm_west_floo_req_top_i[2].valid}),
-      .ready_i({hbm_west_floo_req_top_i[2].ready, hbm_west_floo_req_soc_o[2].ready}),
-      .data_i ({hbm_west_floo_req_soc_o[2].req, hbm_west_floo_req_top_i[2].req}),
-      .valid_o({hbm_west_floo_req_top_o[2].valid, hbm_west_floo_req_soc_i[2].valid}),
-      .ready_o({hbm_west_floo_req_soc_i[2].ready, hbm_west_floo_req_top_o[2].ready}),
-      .data_o ({hbm_west_floo_req_top_o[2].req, hbm_west_floo_req_soc_i[2].req})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_rsp_chan_t)
-  ) i_floo_rsp_hbm_west_2_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_west_floo_rsp_soc_o[2].valid, hbm_west_floo_rsp_top_i[2].valid}),
-      .ready_i({hbm_west_floo_rsp_top_i[2].ready, hbm_west_floo_rsp_soc_o[2].ready}),
-      .data_i ({hbm_west_floo_rsp_soc_o[2].rsp, hbm_west_floo_rsp_top_i[2].rsp}),
-      .valid_o({hbm_west_floo_rsp_top_o[2].valid, hbm_west_floo_rsp_soc_i[2].valid}),
-      .ready_o({hbm_west_floo_rsp_soc_i[2].ready, hbm_west_floo_rsp_top_o[2].ready}),
-      .data_o ({hbm_west_floo_rsp_top_o[2].rsp, hbm_west_floo_rsp_soc_i[2].rsp})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_wide_chan_t)
-  ) i_floo_wide_hbm_west_2_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_west_floo_wide_soc_o[2].valid, hbm_west_floo_wide_top_i[2].valid}),
-      .ready_i({hbm_west_floo_wide_top_i[2].ready, hbm_west_floo_wide_soc_o[2].ready}),
-      .data_i ({hbm_west_floo_wide_soc_o[2].wide, hbm_west_floo_wide_top_i[2].wide}),
-      .valid_o({hbm_west_floo_wide_top_o[2].valid, hbm_west_floo_wide_soc_i[2].valid}),
-      .ready_o({hbm_west_floo_wide_soc_i[2].ready, hbm_west_floo_wide_top_o[2].ready}),
-      .data_o ({hbm_west_floo_wide_top_o[2].wide, hbm_west_floo_wide_soc_i[2].wide})
-  );
+  // Generate hbm interface cuts bypass
+  assign hbm_west_floo_req_top_o[2]  = hbm_west_floo_req_soc_o[2];
+  assign hbm_west_floo_req_soc_i[2]  = hbm_west_floo_req_top_i[2];
+  assign hbm_west_floo_rsp_top_o[2]  = hbm_west_floo_rsp_soc_o[2];
+  assign hbm_west_floo_rsp_soc_i[2]  = hbm_west_floo_rsp_top_i[2];
+  assign hbm_west_floo_wide_top_o[2] = hbm_west_floo_wide_soc_o[2];
+  assign hbm_west_floo_wide_soc_i[2] = hbm_west_floo_wide_top_i[2];
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_west_3_cut (
@@ -1233,7 +1134,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_west_floo_req_top_o[3].req, hbm_west_floo_req_soc_i[3].req})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_west_3_cut (
@@ -1248,7 +1149,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_west_floo_rsp_top_o[3].rsp, hbm_west_floo_rsp_soc_i[3].rsp})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_west_3_cut (
@@ -1263,56 +1164,17 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_west_floo_wide_top_o[3].wide, hbm_west_floo_wide_soc_i[3].wide})
   );
 
-  // Generate hbm interface cuts
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_req_chan_t)
-  ) i_floo_req_hbm_east_0_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_east_floo_req_soc_o[0].valid, hbm_east_floo_req_top_i[0].valid}),
-      .ready_i({hbm_east_floo_req_top_i[0].ready, hbm_east_floo_req_soc_o[0].ready}),
-      .data_i ({hbm_east_floo_req_soc_o[0].req, hbm_east_floo_req_top_i[0].req}),
-      .valid_o({hbm_east_floo_req_top_o[0].valid, hbm_east_floo_req_soc_i[0].valid}),
-      .ready_o({hbm_east_floo_req_soc_i[0].ready, hbm_east_floo_req_top_o[0].ready}),
-      .data_o ({hbm_east_floo_req_top_o[0].req, hbm_east_floo_req_soc_i[0].req})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_rsp_chan_t)
-  ) i_floo_rsp_hbm_east_0_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_east_floo_rsp_soc_o[0].valid, hbm_east_floo_rsp_top_i[0].valid}),
-      .ready_i({hbm_east_floo_rsp_top_i[0].ready, hbm_east_floo_rsp_soc_o[0].ready}),
-      .data_i ({hbm_east_floo_rsp_soc_o[0].rsp, hbm_east_floo_rsp_top_i[0].rsp}),
-      .valid_o({hbm_east_floo_rsp_top_o[0].valid, hbm_east_floo_rsp_soc_i[0].valid}),
-      .ready_o({hbm_east_floo_rsp_soc_i[0].ready, hbm_east_floo_rsp_top_o[0].ready}),
-      .data_o ({hbm_east_floo_rsp_top_o[0].rsp, hbm_east_floo_rsp_soc_i[0].rsp})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_wide_chan_t)
-  ) i_floo_wide_hbm_east_0_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_east_floo_wide_soc_o[0].valid, hbm_east_floo_wide_top_i[0].valid}),
-      .ready_i({hbm_east_floo_wide_top_i[0].ready, hbm_east_floo_wide_soc_o[0].ready}),
-      .data_i ({hbm_east_floo_wide_soc_o[0].wide, hbm_east_floo_wide_top_i[0].wide}),
-      .valid_o({hbm_east_floo_wide_top_o[0].valid, hbm_east_floo_wide_soc_i[0].valid}),
-      .ready_o({hbm_east_floo_wide_soc_i[0].ready, hbm_east_floo_wide_top_o[0].ready}),
-      .data_o ({hbm_east_floo_wide_top_o[0].wide, hbm_east_floo_wide_soc_i[0].wide})
-  );
+  // Generate hbm interface cuts bypass
+  assign hbm_east_floo_req_top_o[0]  = hbm_east_floo_req_soc_o[0];
+  assign hbm_east_floo_req_soc_i[0]  = hbm_east_floo_req_top_i[0];
+  assign hbm_east_floo_rsp_top_o[0]  = hbm_east_floo_rsp_soc_o[0];
+  assign hbm_east_floo_rsp_soc_i[0]  = hbm_east_floo_rsp_top_i[0];
+  assign hbm_east_floo_wide_top_o[0] = hbm_east_floo_wide_soc_o[0];
+  assign hbm_east_floo_wide_soc_i[0] = hbm_east_floo_wide_top_i[0];
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_east_1_cut (
@@ -1327,7 +1189,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_east_floo_req_top_o[1].req, hbm_east_floo_req_soc_i[1].req})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_east_1_cut (
@@ -1342,7 +1204,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_east_floo_rsp_top_o[1].rsp, hbm_east_floo_rsp_soc_i[1].rsp})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_east_1_cut (
@@ -1357,56 +1219,17 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_east_floo_wide_top_o[1].wide, hbm_east_floo_wide_soc_i[1].wide})
   );
 
-  // Generate hbm interface cuts
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_req_chan_t)
-  ) i_floo_req_hbm_east_2_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_east_floo_req_soc_o[2].valid, hbm_east_floo_req_top_i[2].valid}),
-      .ready_i({hbm_east_floo_req_top_i[2].ready, hbm_east_floo_req_soc_o[2].ready}),
-      .data_i ({hbm_east_floo_req_soc_o[2].req, hbm_east_floo_req_top_i[2].req}),
-      .valid_o({hbm_east_floo_req_top_o[2].valid, hbm_east_floo_req_soc_i[2].valid}),
-      .ready_o({hbm_east_floo_req_soc_i[2].ready, hbm_east_floo_req_top_o[2].ready}),
-      .data_o ({hbm_east_floo_req_top_o[2].req, hbm_east_floo_req_soc_i[2].req})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_rsp_chan_t)
-  ) i_floo_rsp_hbm_east_2_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_east_floo_rsp_soc_o[2].valid, hbm_east_floo_rsp_top_i[2].valid}),
-      .ready_i({hbm_east_floo_rsp_top_i[2].ready, hbm_east_floo_rsp_soc_o[2].ready}),
-      .data_i ({hbm_east_floo_rsp_soc_o[2].rsp, hbm_east_floo_rsp_top_i[2].rsp}),
-      .valid_o({hbm_east_floo_rsp_top_o[2].valid, hbm_east_floo_rsp_soc_i[2].valid}),
-      .ready_o({hbm_east_floo_rsp_soc_i[2].ready, hbm_east_floo_rsp_top_o[2].ready}),
-      .data_o ({hbm_east_floo_rsp_top_o[2].rsp, hbm_east_floo_rsp_soc_i[2].rsp})
-  );
-  floo_cut #(
-      .NumCuts(1),
-      .NumChannels(2),  // 2 for bi-directional channels
-      .flit_t(floo_wide_chan_t)
-  ) i_floo_wide_hbm_east_2_cut (
-      .clk_i  (clk_i),
-      .rst_ni (rst_ni),
-      // {SoC -> Top, Top -> SoC}
-      .valid_i({hbm_east_floo_wide_soc_o[2].valid, hbm_east_floo_wide_top_i[2].valid}),
-      .ready_i({hbm_east_floo_wide_top_i[2].ready, hbm_east_floo_wide_soc_o[2].ready}),
-      .data_i ({hbm_east_floo_wide_soc_o[2].wide, hbm_east_floo_wide_top_i[2].wide}),
-      .valid_o({hbm_east_floo_wide_top_o[2].valid, hbm_east_floo_wide_soc_i[2].valid}),
-      .ready_o({hbm_east_floo_wide_soc_i[2].ready, hbm_east_floo_wide_top_o[2].ready}),
-      .data_o ({hbm_east_floo_wide_top_o[2].wide, hbm_east_floo_wide_soc_i[2].wide})
-  );
+  // Generate hbm interface cuts bypass
+  assign hbm_east_floo_req_top_o[2]  = hbm_east_floo_req_soc_o[2];
+  assign hbm_east_floo_req_soc_i[2]  = hbm_east_floo_req_top_i[2];
+  assign hbm_east_floo_rsp_top_o[2]  = hbm_east_floo_rsp_soc_o[2];
+  assign hbm_east_floo_rsp_soc_i[2]  = hbm_east_floo_rsp_top_i[2];
+  assign hbm_east_floo_wide_top_o[2] = hbm_east_floo_wide_soc_o[2];
+  assign hbm_east_floo_wide_soc_i[2] = hbm_east_floo_wide_top_i[2];
 
   // Generate hbm interface cuts
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_east_3_cut (
@@ -1421,7 +1244,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_east_floo_req_top_o[3].req, hbm_east_floo_req_soc_i[3].req})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_east_3_cut (
@@ -1436,7 +1259,7 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_east_floo_rsp_top_o[3].rsp, hbm_east_floo_rsp_soc_i[3].rsp})
   );
   floo_cut #(
-      .NumCuts(2),
+      .NumCuts(1),
       .NumChannels(2),  // 2 for bi-directional channels
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_east_3_cut (

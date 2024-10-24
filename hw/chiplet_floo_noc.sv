@@ -2325,10 +2325,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_req_in[North].valid, router_3_0_cut_req_out[North].valid}),
-    .ready_i ({router_3_0_req_in[North].ready, router_3_0_cut_req_out[North].ready}),
+    .ready_i ({router_3_0_cut_req_out[North].ready, router_3_0_req_in[North].ready}),
     .data_i  ({router_3_0_req_in[North].req, router_3_0_cut_req_out[North].req}),
     .valid_o ({router_3_0_cut_req_in[North].valid, router_3_0_req_out[North].valid}),
-    .ready_o ({router_3_0_cut_req_in[North].ready, router_3_0_req_out[North].ready}),
+    .ready_o ({router_3_0_req_out[North].ready, router_3_0_cut_req_in[North].ready}),
     .data_o  ({router_3_0_cut_req_in[North].req, router_3_0_req_out[North].req})
   );
   floo_cut #(
@@ -2340,10 +2340,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_rsp_in[North].valid, router_3_0_cut_rsp_out[North].valid}),
-    .ready_i ({router_3_0_rsp_in[North].ready, router_3_0_cut_rsp_out[North].ready}),
+    .ready_i ({router_3_0_cut_rsp_out[North].ready, router_3_0_rsp_in[North].ready}),
     .data_i  ({router_3_0_rsp_in[North].rsp, router_3_0_cut_rsp_out[North].rsp}),
     .valid_o ({router_3_0_cut_rsp_in[North].valid, router_3_0_rsp_out[North].valid}),
-    .ready_o ({router_3_0_cut_rsp_in[North].ready, router_3_0_rsp_out[North].ready}),
+    .ready_o ({router_3_0_rsp_out[North].ready, router_3_0_cut_rsp_in[North].ready}),
     .data_o  ({router_3_0_cut_rsp_in[North].rsp, router_3_0_rsp_out[North].rsp})
   );
   floo_cut #(
@@ -2355,10 +2355,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_wide_in[North].valid, router_3_0_cut_wide_out[North].valid}),
-    .ready_i ({router_3_0_wide_in[North].ready, router_3_0_cut_wide_out[North].ready}),
+    .ready_i ({router_3_0_cut_wide_out[North].ready, router_3_0_wide_in[North].ready}),
     .data_i  ({router_3_0_wide_in[North].wide, router_3_0_cut_wide_out[North].wide}),
     .valid_o ({router_3_0_cut_wide_in[North].valid, router_3_0_wide_out[North].valid}),
-    .ready_o ({router_3_0_cut_wide_in[North].ready, router_3_0_wide_out[North].ready}),
+    .ready_o ({router_3_0_wide_out[North].ready, router_3_0_cut_wide_in[North].ready}),
     .data_o  ({router_3_0_cut_wide_in[North].wide, router_3_0_wide_out[North].wide})
   );
   // Generate router_3_0 interface cuts for east direction
@@ -2371,10 +2371,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_req_in[East].valid, router_3_0_cut_req_out[East].valid}),
-    .ready_i ({router_3_0_req_in[East].ready, router_3_0_cut_req_out[East].ready}),
+    .ready_i ({router_3_0_cut_req_out[East].ready, router_3_0_req_in[East].ready}),
     .data_i  ({router_3_0_req_in[East].req, router_3_0_cut_req_out[East].req}),
     .valid_o ({router_3_0_cut_req_in[East].valid, router_3_0_req_out[East].valid}),
-    .ready_o ({router_3_0_cut_req_in[East].ready, router_3_0_req_out[East].ready}),
+    .ready_o ({router_3_0_req_out[East].ready, router_3_0_cut_req_in[East].ready}),
     .data_o  ({router_3_0_cut_req_in[East].req, router_3_0_req_out[East].req})
   );
   floo_cut #(
@@ -2386,10 +2386,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_rsp_in[East].valid, router_3_0_cut_rsp_out[East].valid}),
-    .ready_i ({router_3_0_rsp_in[East].ready, router_3_0_cut_rsp_out[East].ready}),
+    .ready_i ({router_3_0_cut_rsp_out[East].ready, router_3_0_rsp_in[East].ready}),
     .data_i  ({router_3_0_rsp_in[East].rsp, router_3_0_cut_rsp_out[East].rsp}),
     .valid_o ({router_3_0_cut_rsp_in[East].valid, router_3_0_rsp_out[East].valid}),
-    .ready_o ({router_3_0_cut_rsp_in[East].ready, router_3_0_rsp_out[East].ready}),
+    .ready_o ({router_3_0_rsp_out[East].ready, router_3_0_cut_rsp_in[East].ready}),
     .data_o  ({router_3_0_cut_rsp_in[East].rsp, router_3_0_rsp_out[East].rsp})
   );
   floo_cut #(
@@ -2401,10 +2401,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_wide_in[East].valid, router_3_0_cut_wide_out[East].valid}),
-    .ready_i ({router_3_0_wide_in[East].ready, router_3_0_cut_wide_out[East].ready}),
+    .ready_i ({router_3_0_cut_wide_out[East].ready, router_3_0_wide_in[East].ready}),
     .data_i  ({router_3_0_wide_in[East].wide, router_3_0_cut_wide_out[East].wide}),
     .valid_o ({router_3_0_cut_wide_in[East].valid, router_3_0_wide_out[East].valid}),
-    .ready_o ({router_3_0_cut_wide_in[East].ready, router_3_0_wide_out[East].ready}),
+    .ready_o ({router_3_0_wide_out[East].ready, router_3_0_cut_wide_in[East].ready}),
     .data_o  ({router_3_0_cut_wide_in[East].wide, router_3_0_wide_out[East].wide})
   );
   // Generate router_3_0 interface cuts for west direction
@@ -2417,10 +2417,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_req_in[West].valid, router_3_0_cut_req_out[West].valid}),
-    .ready_i ({router_3_0_req_in[West].ready, router_3_0_cut_req_out[West].ready}),
+    .ready_i ({router_3_0_cut_req_out[West].ready, router_3_0_req_in[West].ready}),
     .data_i  ({router_3_0_req_in[West].req, router_3_0_cut_req_out[West].req}),
     .valid_o ({router_3_0_cut_req_in[West].valid, router_3_0_req_out[West].valid}),
-    .ready_o ({router_3_0_cut_req_in[West].ready, router_3_0_req_out[West].ready}),
+    .ready_o ({router_3_0_req_out[West].ready, router_3_0_cut_req_in[West].ready}),
     .data_o  ({router_3_0_cut_req_in[West].req, router_3_0_req_out[West].req})
   );
   floo_cut #(
@@ -2432,10 +2432,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_rsp_in[West].valid, router_3_0_cut_rsp_out[West].valid}),
-    .ready_i ({router_3_0_rsp_in[West].ready, router_3_0_cut_rsp_out[West].ready}),
+    .ready_i ({router_3_0_cut_rsp_out[West].ready, router_3_0_rsp_in[West].ready}),
     .data_i  ({router_3_0_rsp_in[West].rsp, router_3_0_cut_rsp_out[West].rsp}),
     .valid_o ({router_3_0_cut_rsp_in[West].valid, router_3_0_rsp_out[West].valid}),
-    .ready_o ({router_3_0_cut_rsp_in[West].ready, router_3_0_rsp_out[West].ready}),
+    .ready_o ({router_3_0_rsp_out[West].ready, router_3_0_cut_rsp_in[West].ready}),
     .data_o  ({router_3_0_cut_rsp_in[West].rsp, router_3_0_rsp_out[West].rsp})
   );
   floo_cut #(
@@ -2447,10 +2447,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_wide_in[West].valid, router_3_0_cut_wide_out[West].valid}),
-    .ready_i ({router_3_0_wide_in[West].ready, router_3_0_cut_wide_out[West].ready}),
+    .ready_i ({router_3_0_cut_wide_out[West].ready, router_3_0_wide_in[West].ready}),
     .data_i  ({router_3_0_wide_in[West].wide, router_3_0_cut_wide_out[West].wide}),
     .valid_o ({router_3_0_cut_wide_in[West].valid, router_3_0_wide_out[West].valid}),
-    .ready_o ({router_3_0_cut_wide_in[West].ready, router_3_0_wide_out[West].ready}),
+    .ready_o ({router_3_0_wide_out[West].ready, router_3_0_cut_wide_in[West].ready}),
     .data_o  ({router_3_0_cut_wide_in[West].wide, router_3_0_wide_out[West].wide})
   );
   // Generate router_3_0 interface cuts for south direction
@@ -2463,10 +2463,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_req_in[South].valid, router_3_0_cut_req_out[South].valid}),
-    .ready_i ({router_3_0_req_in[South].ready, router_3_0_cut_req_out[South].ready}),
+    .ready_i ({router_3_0_cut_req_out[South].ready, router_3_0_req_in[South].ready}),
     .data_i  ({router_3_0_req_in[South].req, router_3_0_cut_req_out[South].req}),
     .valid_o ({router_3_0_cut_req_in[South].valid, router_3_0_req_out[South].valid}),
-    .ready_o ({router_3_0_cut_req_in[South].ready, router_3_0_req_out[South].ready}),
+    .ready_o ({router_3_0_req_out[South].ready, router_3_0_cut_req_in[South].ready}),
     .data_o  ({router_3_0_cut_req_in[South].req, router_3_0_req_out[South].req})
   );
   floo_cut #(
@@ -2478,10 +2478,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_rsp_in[South].valid, router_3_0_cut_rsp_out[South].valid}),
-    .ready_i ({router_3_0_rsp_in[South].ready, router_3_0_cut_rsp_out[South].ready}),
+    .ready_i ({router_3_0_cut_rsp_out[South].ready, router_3_0_rsp_in[South].ready}),
     .data_i  ({router_3_0_rsp_in[South].rsp, router_3_0_cut_rsp_out[South].rsp}),
     .valid_o ({router_3_0_cut_rsp_in[South].valid, router_3_0_rsp_out[South].valid}),
-    .ready_o ({router_3_0_cut_rsp_in[South].ready, router_3_0_rsp_out[South].ready}),
+    .ready_o ({router_3_0_rsp_out[South].ready, router_3_0_cut_rsp_in[South].ready}),
     .data_o  ({router_3_0_cut_rsp_in[South].rsp, router_3_0_rsp_out[South].rsp})
   );
   floo_cut #(
@@ -2493,10 +2493,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_wide_in[South].valid, router_3_0_cut_wide_out[South].valid}),
-    .ready_i ({router_3_0_wide_in[South].ready, router_3_0_cut_wide_out[South].ready}),
+    .ready_i ({router_3_0_cut_wide_out[South].ready, router_3_0_wide_in[South].ready}),
     .data_i  ({router_3_0_wide_in[South].wide, router_3_0_cut_wide_out[South].wide}),
     .valid_o ({router_3_0_cut_wide_in[South].valid, router_3_0_wide_out[South].valid}),
-    .ready_o ({router_3_0_cut_wide_in[South].ready, router_3_0_wide_out[South].ready}),
+    .ready_o ({router_3_0_wide_out[South].ready, router_3_0_cut_wide_in[South].ready}),
     .data_o  ({router_3_0_cut_wide_in[South].wide, router_3_0_wide_out[South].wide})
   );
   // Generate router_3_0 interface cuts for eject direction
@@ -2509,10 +2509,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_req_in[Eject].valid, router_3_0_cut_req_out[Eject].valid}),
-    .ready_i ({router_3_0_req_in[Eject].ready, router_3_0_cut_req_out[Eject].ready}),
+    .ready_i ({router_3_0_cut_req_out[Eject].ready, router_3_0_req_in[Eject].ready}),
     .data_i  ({router_3_0_req_in[Eject].req, router_3_0_cut_req_out[Eject].req}),
     .valid_o ({router_3_0_cut_req_in[Eject].valid, router_3_0_req_out[Eject].valid}),
-    .ready_o ({router_3_0_cut_req_in[Eject].ready, router_3_0_req_out[Eject].ready}),
+    .ready_o ({router_3_0_req_out[Eject].ready, router_3_0_cut_req_in[Eject].ready}),
     .data_o  ({router_3_0_cut_req_in[Eject].req, router_3_0_req_out[Eject].req})
   );
   floo_cut #(
@@ -2524,10 +2524,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_rsp_in[Eject].valid, router_3_0_cut_rsp_out[Eject].valid}),
-    .ready_i ({router_3_0_rsp_in[Eject].ready, router_3_0_cut_rsp_out[Eject].ready}),
+    .ready_i ({router_3_0_cut_rsp_out[Eject].ready, router_3_0_rsp_in[Eject].ready}),
     .data_i  ({router_3_0_rsp_in[Eject].rsp, router_3_0_cut_rsp_out[Eject].rsp}),
     .valid_o ({router_3_0_cut_rsp_in[Eject].valid, router_3_0_rsp_out[Eject].valid}),
-    .ready_o ({router_3_0_cut_rsp_in[Eject].ready, router_3_0_rsp_out[Eject].ready}),
+    .ready_o ({router_3_0_rsp_out[Eject].ready, router_3_0_cut_rsp_in[Eject].ready}),
     .data_o  ({router_3_0_cut_rsp_in[Eject].rsp, router_3_0_rsp_out[Eject].rsp})
   );
   floo_cut #(
@@ -2539,10 +2539,10 @@ floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_0_wide_in[Eject].valid, router_3_0_cut_wide_out[Eject].valid}),
-    .ready_i ({router_3_0_wide_in[Eject].ready, router_3_0_cut_wide_out[Eject].ready}),
+    .ready_i ({router_3_0_cut_wide_out[Eject].ready, router_3_0_wide_in[Eject].ready}),
     .data_i  ({router_3_0_wide_in[Eject].wide, router_3_0_cut_wide_out[Eject].wide}),
     .valid_o ({router_3_0_cut_wide_in[Eject].valid, router_3_0_wide_out[Eject].valid}),
-    .ready_o ({router_3_0_cut_wide_in[Eject].ready, router_3_0_wide_out[Eject].ready}),
+    .ready_o ({router_3_0_wide_out[Eject].ready, router_3_0_cut_wide_in[Eject].ready}),
     .data_o  ({router_3_0_cut_wide_in[Eject].wide, router_3_0_wide_out[Eject].wide})
   );
 
@@ -2631,10 +2631,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_req_in[North].valid, router_3_1_cut_req_out[North].valid}),
-    .ready_i ({router_3_1_req_in[North].ready, router_3_1_cut_req_out[North].ready}),
+    .ready_i ({router_3_1_cut_req_out[North].ready, router_3_1_req_in[North].ready}),
     .data_i  ({router_3_1_req_in[North].req, router_3_1_cut_req_out[North].req}),
     .valid_o ({router_3_1_cut_req_in[North].valid, router_3_1_req_out[North].valid}),
-    .ready_o ({router_3_1_cut_req_in[North].ready, router_3_1_req_out[North].ready}),
+    .ready_o ({router_3_1_req_out[North].ready, router_3_1_cut_req_in[North].ready}),
     .data_o  ({router_3_1_cut_req_in[North].req, router_3_1_req_out[North].req})
   );
   floo_cut #(
@@ -2646,10 +2646,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_rsp_in[North].valid, router_3_1_cut_rsp_out[North].valid}),
-    .ready_i ({router_3_1_rsp_in[North].ready, router_3_1_cut_rsp_out[North].ready}),
+    .ready_i ({router_3_1_cut_rsp_out[North].ready, router_3_1_rsp_in[North].ready}),
     .data_i  ({router_3_1_rsp_in[North].rsp, router_3_1_cut_rsp_out[North].rsp}),
     .valid_o ({router_3_1_cut_rsp_in[North].valid, router_3_1_rsp_out[North].valid}),
-    .ready_o ({router_3_1_cut_rsp_in[North].ready, router_3_1_rsp_out[North].ready}),
+    .ready_o ({router_3_1_rsp_out[North].ready, router_3_1_cut_rsp_in[North].ready}),
     .data_o  ({router_3_1_cut_rsp_in[North].rsp, router_3_1_rsp_out[North].rsp})
   );
   floo_cut #(
@@ -2661,10 +2661,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_wide_in[North].valid, router_3_1_cut_wide_out[North].valid}),
-    .ready_i ({router_3_1_wide_in[North].ready, router_3_1_cut_wide_out[North].ready}),
+    .ready_i ({router_3_1_cut_wide_out[North].ready, router_3_1_wide_in[North].ready}),
     .data_i  ({router_3_1_wide_in[North].wide, router_3_1_cut_wide_out[North].wide}),
     .valid_o ({router_3_1_cut_wide_in[North].valid, router_3_1_wide_out[North].valid}),
-    .ready_o ({router_3_1_cut_wide_in[North].ready, router_3_1_wide_out[North].ready}),
+    .ready_o ({router_3_1_wide_out[North].ready, router_3_1_cut_wide_in[North].ready}),
     .data_o  ({router_3_1_cut_wide_in[North].wide, router_3_1_wide_out[North].wide})
   );
   // Generate router_3_1 interface cuts for east direction
@@ -2677,10 +2677,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_req_in[East].valid, router_3_1_cut_req_out[East].valid}),
-    .ready_i ({router_3_1_req_in[East].ready, router_3_1_cut_req_out[East].ready}),
+    .ready_i ({router_3_1_cut_req_out[East].ready, router_3_1_req_in[East].ready}),
     .data_i  ({router_3_1_req_in[East].req, router_3_1_cut_req_out[East].req}),
     .valid_o ({router_3_1_cut_req_in[East].valid, router_3_1_req_out[East].valid}),
-    .ready_o ({router_3_1_cut_req_in[East].ready, router_3_1_req_out[East].ready}),
+    .ready_o ({router_3_1_req_out[East].ready, router_3_1_cut_req_in[East].ready}),
     .data_o  ({router_3_1_cut_req_in[East].req, router_3_1_req_out[East].req})
   );
   floo_cut #(
@@ -2692,10 +2692,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_rsp_in[East].valid, router_3_1_cut_rsp_out[East].valid}),
-    .ready_i ({router_3_1_rsp_in[East].ready, router_3_1_cut_rsp_out[East].ready}),
+    .ready_i ({router_3_1_cut_rsp_out[East].ready, router_3_1_rsp_in[East].ready}),
     .data_i  ({router_3_1_rsp_in[East].rsp, router_3_1_cut_rsp_out[East].rsp}),
     .valid_o ({router_3_1_cut_rsp_in[East].valid, router_3_1_rsp_out[East].valid}),
-    .ready_o ({router_3_1_cut_rsp_in[East].ready, router_3_1_rsp_out[East].ready}),
+    .ready_o ({router_3_1_rsp_out[East].ready, router_3_1_cut_rsp_in[East].ready}),
     .data_o  ({router_3_1_cut_rsp_in[East].rsp, router_3_1_rsp_out[East].rsp})
   );
   floo_cut #(
@@ -2707,10 +2707,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_wide_in[East].valid, router_3_1_cut_wide_out[East].valid}),
-    .ready_i ({router_3_1_wide_in[East].ready, router_3_1_cut_wide_out[East].ready}),
+    .ready_i ({router_3_1_cut_wide_out[East].ready, router_3_1_wide_in[East].ready}),
     .data_i  ({router_3_1_wide_in[East].wide, router_3_1_cut_wide_out[East].wide}),
     .valid_o ({router_3_1_cut_wide_in[East].valid, router_3_1_wide_out[East].valid}),
-    .ready_o ({router_3_1_cut_wide_in[East].ready, router_3_1_wide_out[East].ready}),
+    .ready_o ({router_3_1_wide_out[East].ready, router_3_1_cut_wide_in[East].ready}),
     .data_o  ({router_3_1_cut_wide_in[East].wide, router_3_1_wide_out[East].wide})
   );
   // Generate router_3_1 interface cuts for west direction
@@ -2723,10 +2723,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_req_in[West].valid, router_3_1_cut_req_out[West].valid}),
-    .ready_i ({router_3_1_req_in[West].ready, router_3_1_cut_req_out[West].ready}),
+    .ready_i ({router_3_1_cut_req_out[West].ready, router_3_1_req_in[West].ready}),
     .data_i  ({router_3_1_req_in[West].req, router_3_1_cut_req_out[West].req}),
     .valid_o ({router_3_1_cut_req_in[West].valid, router_3_1_req_out[West].valid}),
-    .ready_o ({router_3_1_cut_req_in[West].ready, router_3_1_req_out[West].ready}),
+    .ready_o ({router_3_1_req_out[West].ready, router_3_1_cut_req_in[West].ready}),
     .data_o  ({router_3_1_cut_req_in[West].req, router_3_1_req_out[West].req})
   );
   floo_cut #(
@@ -2738,10 +2738,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_rsp_in[West].valid, router_3_1_cut_rsp_out[West].valid}),
-    .ready_i ({router_3_1_rsp_in[West].ready, router_3_1_cut_rsp_out[West].ready}),
+    .ready_i ({router_3_1_cut_rsp_out[West].ready, router_3_1_rsp_in[West].ready}),
     .data_i  ({router_3_1_rsp_in[West].rsp, router_3_1_cut_rsp_out[West].rsp}),
     .valid_o ({router_3_1_cut_rsp_in[West].valid, router_3_1_rsp_out[West].valid}),
-    .ready_o ({router_3_1_cut_rsp_in[West].ready, router_3_1_rsp_out[West].ready}),
+    .ready_o ({router_3_1_rsp_out[West].ready, router_3_1_cut_rsp_in[West].ready}),
     .data_o  ({router_3_1_cut_rsp_in[West].rsp, router_3_1_rsp_out[West].rsp})
   );
   floo_cut #(
@@ -2753,10 +2753,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_wide_in[West].valid, router_3_1_cut_wide_out[West].valid}),
-    .ready_i ({router_3_1_wide_in[West].ready, router_3_1_cut_wide_out[West].ready}),
+    .ready_i ({router_3_1_cut_wide_out[West].ready, router_3_1_wide_in[West].ready}),
     .data_i  ({router_3_1_wide_in[West].wide, router_3_1_cut_wide_out[West].wide}),
     .valid_o ({router_3_1_cut_wide_in[West].valid, router_3_1_wide_out[West].valid}),
-    .ready_o ({router_3_1_cut_wide_in[West].ready, router_3_1_wide_out[West].ready}),
+    .ready_o ({router_3_1_wide_out[West].ready, router_3_1_cut_wide_in[West].ready}),
     .data_o  ({router_3_1_cut_wide_in[West].wide, router_3_1_wide_out[West].wide})
   );
   // Generate router_3_1 interface cuts for south direction
@@ -2769,10 +2769,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_req_in[South].valid, router_3_1_cut_req_out[South].valid}),
-    .ready_i ({router_3_1_req_in[South].ready, router_3_1_cut_req_out[South].ready}),
+    .ready_i ({router_3_1_cut_req_out[South].ready, router_3_1_req_in[South].ready}),
     .data_i  ({router_3_1_req_in[South].req, router_3_1_cut_req_out[South].req}),
     .valid_o ({router_3_1_cut_req_in[South].valid, router_3_1_req_out[South].valid}),
-    .ready_o ({router_3_1_cut_req_in[South].ready, router_3_1_req_out[South].ready}),
+    .ready_o ({router_3_1_req_out[South].ready, router_3_1_cut_req_in[South].ready}),
     .data_o  ({router_3_1_cut_req_in[South].req, router_3_1_req_out[South].req})
   );
   floo_cut #(
@@ -2784,10 +2784,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_rsp_in[South].valid, router_3_1_cut_rsp_out[South].valid}),
-    .ready_i ({router_3_1_rsp_in[South].ready, router_3_1_cut_rsp_out[South].ready}),
+    .ready_i ({router_3_1_cut_rsp_out[South].ready, router_3_1_rsp_in[South].ready}),
     .data_i  ({router_3_1_rsp_in[South].rsp, router_3_1_cut_rsp_out[South].rsp}),
     .valid_o ({router_3_1_cut_rsp_in[South].valid, router_3_1_rsp_out[South].valid}),
-    .ready_o ({router_3_1_cut_rsp_in[South].ready, router_3_1_rsp_out[South].ready}),
+    .ready_o ({router_3_1_rsp_out[South].ready, router_3_1_cut_rsp_in[South].ready}),
     .data_o  ({router_3_1_cut_rsp_in[South].rsp, router_3_1_rsp_out[South].rsp})
   );
   floo_cut #(
@@ -2799,10 +2799,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_wide_in[South].valid, router_3_1_cut_wide_out[South].valid}),
-    .ready_i ({router_3_1_wide_in[South].ready, router_3_1_cut_wide_out[South].ready}),
+    .ready_i ({router_3_1_cut_wide_out[South].ready, router_3_1_wide_in[South].ready}),
     .data_i  ({router_3_1_wide_in[South].wide, router_3_1_cut_wide_out[South].wide}),
     .valid_o ({router_3_1_cut_wide_in[South].valid, router_3_1_wide_out[South].valid}),
-    .ready_o ({router_3_1_cut_wide_in[South].ready, router_3_1_wide_out[South].ready}),
+    .ready_o ({router_3_1_wide_out[South].ready, router_3_1_cut_wide_in[South].ready}),
     .data_o  ({router_3_1_cut_wide_in[South].wide, router_3_1_wide_out[South].wide})
   );
   // Generate router_3_1 interface cuts for eject direction
@@ -2815,10 +2815,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_req_in[Eject].valid, router_3_1_cut_req_out[Eject].valid}),
-    .ready_i ({router_3_1_req_in[Eject].ready, router_3_1_cut_req_out[Eject].ready}),
+    .ready_i ({router_3_1_cut_req_out[Eject].ready, router_3_1_req_in[Eject].ready}),
     .data_i  ({router_3_1_req_in[Eject].req, router_3_1_cut_req_out[Eject].req}),
     .valid_o ({router_3_1_cut_req_in[Eject].valid, router_3_1_req_out[Eject].valid}),
-    .ready_o ({router_3_1_cut_req_in[Eject].ready, router_3_1_req_out[Eject].ready}),
+    .ready_o ({router_3_1_req_out[Eject].ready, router_3_1_cut_req_in[Eject].ready}),
     .data_o  ({router_3_1_cut_req_in[Eject].req, router_3_1_req_out[Eject].req})
   );
   floo_cut #(
@@ -2830,10 +2830,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_rsp_in[Eject].valid, router_3_1_cut_rsp_out[Eject].valid}),
-    .ready_i ({router_3_1_rsp_in[Eject].ready, router_3_1_cut_rsp_out[Eject].ready}),
+    .ready_i ({router_3_1_cut_rsp_out[Eject].ready, router_3_1_rsp_in[Eject].ready}),
     .data_i  ({router_3_1_rsp_in[Eject].rsp, router_3_1_cut_rsp_out[Eject].rsp}),
     .valid_o ({router_3_1_cut_rsp_in[Eject].valid, router_3_1_rsp_out[Eject].valid}),
-    .ready_o ({router_3_1_cut_rsp_in[Eject].ready, router_3_1_rsp_out[Eject].ready}),
+    .ready_o ({router_3_1_rsp_out[Eject].ready, router_3_1_cut_rsp_in[Eject].ready}),
     .data_o  ({router_3_1_cut_rsp_in[Eject].rsp, router_3_1_rsp_out[Eject].rsp})
   );
   floo_cut #(
@@ -2845,10 +2845,10 @@ floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_1_wide_in[Eject].valid, router_3_1_cut_wide_out[Eject].valid}),
-    .ready_i ({router_3_1_wide_in[Eject].ready, router_3_1_cut_wide_out[Eject].ready}),
+    .ready_i ({router_3_1_cut_wide_out[Eject].ready, router_3_1_wide_in[Eject].ready}),
     .data_i  ({router_3_1_wide_in[Eject].wide, router_3_1_cut_wide_out[Eject].wide}),
     .valid_o ({router_3_1_cut_wide_in[Eject].valid, router_3_1_wide_out[Eject].valid}),
-    .ready_o ({router_3_1_cut_wide_in[Eject].ready, router_3_1_wide_out[Eject].ready}),
+    .ready_o ({router_3_1_wide_out[Eject].ready, router_3_1_cut_wide_in[Eject].ready}),
     .data_o  ({router_3_1_cut_wide_in[Eject].wide, router_3_1_wide_out[Eject].wide})
   );
 
@@ -2937,10 +2937,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_req_in[North].valid, router_3_2_cut_req_out[North].valid}),
-    .ready_i ({router_3_2_req_in[North].ready, router_3_2_cut_req_out[North].ready}),
+    .ready_i ({router_3_2_cut_req_out[North].ready, router_3_2_req_in[North].ready}),
     .data_i  ({router_3_2_req_in[North].req, router_3_2_cut_req_out[North].req}),
     .valid_o ({router_3_2_cut_req_in[North].valid, router_3_2_req_out[North].valid}),
-    .ready_o ({router_3_2_cut_req_in[North].ready, router_3_2_req_out[North].ready}),
+    .ready_o ({router_3_2_req_out[North].ready, router_3_2_cut_req_in[North].ready}),
     .data_o  ({router_3_2_cut_req_in[North].req, router_3_2_req_out[North].req})
   );
   floo_cut #(
@@ -2952,10 +2952,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_rsp_in[North].valid, router_3_2_cut_rsp_out[North].valid}),
-    .ready_i ({router_3_2_rsp_in[North].ready, router_3_2_cut_rsp_out[North].ready}),
+    .ready_i ({router_3_2_cut_rsp_out[North].ready, router_3_2_rsp_in[North].ready}),
     .data_i  ({router_3_2_rsp_in[North].rsp, router_3_2_cut_rsp_out[North].rsp}),
     .valid_o ({router_3_2_cut_rsp_in[North].valid, router_3_2_rsp_out[North].valid}),
-    .ready_o ({router_3_2_cut_rsp_in[North].ready, router_3_2_rsp_out[North].ready}),
+    .ready_o ({router_3_2_rsp_out[North].ready, router_3_2_cut_rsp_in[North].ready}),
     .data_o  ({router_3_2_cut_rsp_in[North].rsp, router_3_2_rsp_out[North].rsp})
   );
   floo_cut #(
@@ -2967,10 +2967,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_wide_in[North].valid, router_3_2_cut_wide_out[North].valid}),
-    .ready_i ({router_3_2_wide_in[North].ready, router_3_2_cut_wide_out[North].ready}),
+    .ready_i ({router_3_2_cut_wide_out[North].ready, router_3_2_wide_in[North].ready}),
     .data_i  ({router_3_2_wide_in[North].wide, router_3_2_cut_wide_out[North].wide}),
     .valid_o ({router_3_2_cut_wide_in[North].valid, router_3_2_wide_out[North].valid}),
-    .ready_o ({router_3_2_cut_wide_in[North].ready, router_3_2_wide_out[North].ready}),
+    .ready_o ({router_3_2_wide_out[North].ready, router_3_2_cut_wide_in[North].ready}),
     .data_o  ({router_3_2_cut_wide_in[North].wide, router_3_2_wide_out[North].wide})
   );
   // Generate router_3_2 interface cuts for east direction
@@ -2983,10 +2983,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_req_in[East].valid, router_3_2_cut_req_out[East].valid}),
-    .ready_i ({router_3_2_req_in[East].ready, router_3_2_cut_req_out[East].ready}),
+    .ready_i ({router_3_2_cut_req_out[East].ready, router_3_2_req_in[East].ready}),
     .data_i  ({router_3_2_req_in[East].req, router_3_2_cut_req_out[East].req}),
     .valid_o ({router_3_2_cut_req_in[East].valid, router_3_2_req_out[East].valid}),
-    .ready_o ({router_3_2_cut_req_in[East].ready, router_3_2_req_out[East].ready}),
+    .ready_o ({router_3_2_req_out[East].ready, router_3_2_cut_req_in[East].ready}),
     .data_o  ({router_3_2_cut_req_in[East].req, router_3_2_req_out[East].req})
   );
   floo_cut #(
@@ -2998,10 +2998,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_rsp_in[East].valid, router_3_2_cut_rsp_out[East].valid}),
-    .ready_i ({router_3_2_rsp_in[East].ready, router_3_2_cut_rsp_out[East].ready}),
+    .ready_i ({router_3_2_cut_rsp_out[East].ready, router_3_2_rsp_in[East].ready}),
     .data_i  ({router_3_2_rsp_in[East].rsp, router_3_2_cut_rsp_out[East].rsp}),
     .valid_o ({router_3_2_cut_rsp_in[East].valid, router_3_2_rsp_out[East].valid}),
-    .ready_o ({router_3_2_cut_rsp_in[East].ready, router_3_2_rsp_out[East].ready}),
+    .ready_o ({router_3_2_rsp_out[East].ready, router_3_2_cut_rsp_in[East].ready}),
     .data_o  ({router_3_2_cut_rsp_in[East].rsp, router_3_2_rsp_out[East].rsp})
   );
   floo_cut #(
@@ -3013,10 +3013,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_wide_in[East].valid, router_3_2_cut_wide_out[East].valid}),
-    .ready_i ({router_3_2_wide_in[East].ready, router_3_2_cut_wide_out[East].ready}),
+    .ready_i ({router_3_2_cut_wide_out[East].ready, router_3_2_wide_in[East].ready}),
     .data_i  ({router_3_2_wide_in[East].wide, router_3_2_cut_wide_out[East].wide}),
     .valid_o ({router_3_2_cut_wide_in[East].valid, router_3_2_wide_out[East].valid}),
-    .ready_o ({router_3_2_cut_wide_in[East].ready, router_3_2_wide_out[East].ready}),
+    .ready_o ({router_3_2_wide_out[East].ready, router_3_2_cut_wide_in[East].ready}),
     .data_o  ({router_3_2_cut_wide_in[East].wide, router_3_2_wide_out[East].wide})
   );
   // Generate router_3_2 interface cuts for west direction
@@ -3029,10 +3029,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_req_in[West].valid, router_3_2_cut_req_out[West].valid}),
-    .ready_i ({router_3_2_req_in[West].ready, router_3_2_cut_req_out[West].ready}),
+    .ready_i ({router_3_2_cut_req_out[West].ready, router_3_2_req_in[West].ready}),
     .data_i  ({router_3_2_req_in[West].req, router_3_2_cut_req_out[West].req}),
     .valid_o ({router_3_2_cut_req_in[West].valid, router_3_2_req_out[West].valid}),
-    .ready_o ({router_3_2_cut_req_in[West].ready, router_3_2_req_out[West].ready}),
+    .ready_o ({router_3_2_req_out[West].ready, router_3_2_cut_req_in[West].ready}),
     .data_o  ({router_3_2_cut_req_in[West].req, router_3_2_req_out[West].req})
   );
   floo_cut #(
@@ -3044,10 +3044,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_rsp_in[West].valid, router_3_2_cut_rsp_out[West].valid}),
-    .ready_i ({router_3_2_rsp_in[West].ready, router_3_2_cut_rsp_out[West].ready}),
+    .ready_i ({router_3_2_cut_rsp_out[West].ready, router_3_2_rsp_in[West].ready}),
     .data_i  ({router_3_2_rsp_in[West].rsp, router_3_2_cut_rsp_out[West].rsp}),
     .valid_o ({router_3_2_cut_rsp_in[West].valid, router_3_2_rsp_out[West].valid}),
-    .ready_o ({router_3_2_cut_rsp_in[West].ready, router_3_2_rsp_out[West].ready}),
+    .ready_o ({router_3_2_rsp_out[West].ready, router_3_2_cut_rsp_in[West].ready}),
     .data_o  ({router_3_2_cut_rsp_in[West].rsp, router_3_2_rsp_out[West].rsp})
   );
   floo_cut #(
@@ -3059,10 +3059,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_wide_in[West].valid, router_3_2_cut_wide_out[West].valid}),
-    .ready_i ({router_3_2_wide_in[West].ready, router_3_2_cut_wide_out[West].ready}),
+    .ready_i ({router_3_2_cut_wide_out[West].ready, router_3_2_wide_in[West].ready}),
     .data_i  ({router_3_2_wide_in[West].wide, router_3_2_cut_wide_out[West].wide}),
     .valid_o ({router_3_2_cut_wide_in[West].valid, router_3_2_wide_out[West].valid}),
-    .ready_o ({router_3_2_cut_wide_in[West].ready, router_3_2_wide_out[West].ready}),
+    .ready_o ({router_3_2_wide_out[West].ready, router_3_2_cut_wide_in[West].ready}),
     .data_o  ({router_3_2_cut_wide_in[West].wide, router_3_2_wide_out[West].wide})
   );
   // Generate router_3_2 interface cuts for south direction
@@ -3075,10 +3075,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_req_in[South].valid, router_3_2_cut_req_out[South].valid}),
-    .ready_i ({router_3_2_req_in[South].ready, router_3_2_cut_req_out[South].ready}),
+    .ready_i ({router_3_2_cut_req_out[South].ready, router_3_2_req_in[South].ready}),
     .data_i  ({router_3_2_req_in[South].req, router_3_2_cut_req_out[South].req}),
     .valid_o ({router_3_2_cut_req_in[South].valid, router_3_2_req_out[South].valid}),
-    .ready_o ({router_3_2_cut_req_in[South].ready, router_3_2_req_out[South].ready}),
+    .ready_o ({router_3_2_req_out[South].ready, router_3_2_cut_req_in[South].ready}),
     .data_o  ({router_3_2_cut_req_in[South].req, router_3_2_req_out[South].req})
   );
   floo_cut #(
@@ -3090,10 +3090,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_rsp_in[South].valid, router_3_2_cut_rsp_out[South].valid}),
-    .ready_i ({router_3_2_rsp_in[South].ready, router_3_2_cut_rsp_out[South].ready}),
+    .ready_i ({router_3_2_cut_rsp_out[South].ready, router_3_2_rsp_in[South].ready}),
     .data_i  ({router_3_2_rsp_in[South].rsp, router_3_2_cut_rsp_out[South].rsp}),
     .valid_o ({router_3_2_cut_rsp_in[South].valid, router_3_2_rsp_out[South].valid}),
-    .ready_o ({router_3_2_cut_rsp_in[South].ready, router_3_2_rsp_out[South].ready}),
+    .ready_o ({router_3_2_rsp_out[South].ready, router_3_2_cut_rsp_in[South].ready}),
     .data_o  ({router_3_2_cut_rsp_in[South].rsp, router_3_2_rsp_out[South].rsp})
   );
   floo_cut #(
@@ -3105,10 +3105,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_wide_in[South].valid, router_3_2_cut_wide_out[South].valid}),
-    .ready_i ({router_3_2_wide_in[South].ready, router_3_2_cut_wide_out[South].ready}),
+    .ready_i ({router_3_2_cut_wide_out[South].ready, router_3_2_wide_in[South].ready}),
     .data_i  ({router_3_2_wide_in[South].wide, router_3_2_cut_wide_out[South].wide}),
     .valid_o ({router_3_2_cut_wide_in[South].valid, router_3_2_wide_out[South].valid}),
-    .ready_o ({router_3_2_cut_wide_in[South].ready, router_3_2_wide_out[South].ready}),
+    .ready_o ({router_3_2_wide_out[South].ready, router_3_2_cut_wide_in[South].ready}),
     .data_o  ({router_3_2_cut_wide_in[South].wide, router_3_2_wide_out[South].wide})
   );
   // Generate router_3_2 interface cuts for eject direction
@@ -3121,10 +3121,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_req_in[Eject].valid, router_3_2_cut_req_out[Eject].valid}),
-    .ready_i ({router_3_2_req_in[Eject].ready, router_3_2_cut_req_out[Eject].ready}),
+    .ready_i ({router_3_2_cut_req_out[Eject].ready, router_3_2_req_in[Eject].ready}),
     .data_i  ({router_3_2_req_in[Eject].req, router_3_2_cut_req_out[Eject].req}),
     .valid_o ({router_3_2_cut_req_in[Eject].valid, router_3_2_req_out[Eject].valid}),
-    .ready_o ({router_3_2_cut_req_in[Eject].ready, router_3_2_req_out[Eject].ready}),
+    .ready_o ({router_3_2_req_out[Eject].ready, router_3_2_cut_req_in[Eject].ready}),
     .data_o  ({router_3_2_cut_req_in[Eject].req, router_3_2_req_out[Eject].req})
   );
   floo_cut #(
@@ -3136,10 +3136,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_rsp_in[Eject].valid, router_3_2_cut_rsp_out[Eject].valid}),
-    .ready_i ({router_3_2_rsp_in[Eject].ready, router_3_2_cut_rsp_out[Eject].ready}),
+    .ready_i ({router_3_2_cut_rsp_out[Eject].ready, router_3_2_rsp_in[Eject].ready}),
     .data_i  ({router_3_2_rsp_in[Eject].rsp, router_3_2_cut_rsp_out[Eject].rsp}),
     .valid_o ({router_3_2_cut_rsp_in[Eject].valid, router_3_2_rsp_out[Eject].valid}),
-    .ready_o ({router_3_2_cut_rsp_in[Eject].ready, router_3_2_rsp_out[Eject].ready}),
+    .ready_o ({router_3_2_rsp_out[Eject].ready, router_3_2_cut_rsp_in[Eject].ready}),
     .data_o  ({router_3_2_cut_rsp_in[Eject].rsp, router_3_2_rsp_out[Eject].rsp})
   );
   floo_cut #(
@@ -3151,10 +3151,10 @@ floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_2_wide_in[Eject].valid, router_3_2_cut_wide_out[Eject].valid}),
-    .ready_i ({router_3_2_wide_in[Eject].ready, router_3_2_cut_wide_out[Eject].ready}),
+    .ready_i ({router_3_2_cut_wide_out[Eject].ready, router_3_2_wide_in[Eject].ready}),
     .data_i  ({router_3_2_wide_in[Eject].wide, router_3_2_cut_wide_out[Eject].wide}),
     .valid_o ({router_3_2_cut_wide_in[Eject].valid, router_3_2_wide_out[Eject].valid}),
-    .ready_o ({router_3_2_cut_wide_in[Eject].ready, router_3_2_wide_out[Eject].ready}),
+    .ready_o ({router_3_2_wide_out[Eject].ready, router_3_2_cut_wide_in[Eject].ready}),
     .data_o  ({router_3_2_cut_wide_in[Eject].wide, router_3_2_wide_out[Eject].wide})
   );
 
@@ -3243,10 +3243,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_req_in[North].valid, router_3_3_cut_req_out[North].valid}),
-    .ready_i ({router_3_3_req_in[North].ready, router_3_3_cut_req_out[North].ready}),
+    .ready_i ({router_3_3_cut_req_out[North].ready, router_3_3_req_in[North].ready}),
     .data_i  ({router_3_3_req_in[North].req, router_3_3_cut_req_out[North].req}),
     .valid_o ({router_3_3_cut_req_in[North].valid, router_3_3_req_out[North].valid}),
-    .ready_o ({router_3_3_cut_req_in[North].ready, router_3_3_req_out[North].ready}),
+    .ready_o ({router_3_3_req_out[North].ready, router_3_3_cut_req_in[North].ready}),
     .data_o  ({router_3_3_cut_req_in[North].req, router_3_3_req_out[North].req})
   );
   floo_cut #(
@@ -3258,10 +3258,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_rsp_in[North].valid, router_3_3_cut_rsp_out[North].valid}),
-    .ready_i ({router_3_3_rsp_in[North].ready, router_3_3_cut_rsp_out[North].ready}),
+    .ready_i ({router_3_3_cut_rsp_out[North].ready, router_3_3_rsp_in[North].ready}),
     .data_i  ({router_3_3_rsp_in[North].rsp, router_3_3_cut_rsp_out[North].rsp}),
     .valid_o ({router_3_3_cut_rsp_in[North].valid, router_3_3_rsp_out[North].valid}),
-    .ready_o ({router_3_3_cut_rsp_in[North].ready, router_3_3_rsp_out[North].ready}),
+    .ready_o ({router_3_3_rsp_out[North].ready, router_3_3_cut_rsp_in[North].ready}),
     .data_o  ({router_3_3_cut_rsp_in[North].rsp, router_3_3_rsp_out[North].rsp})
   );
   floo_cut #(
@@ -3273,10 +3273,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_wide_in[North].valid, router_3_3_cut_wide_out[North].valid}),
-    .ready_i ({router_3_3_wide_in[North].ready, router_3_3_cut_wide_out[North].ready}),
+    .ready_i ({router_3_3_cut_wide_out[North].ready, router_3_3_wide_in[North].ready}),
     .data_i  ({router_3_3_wide_in[North].wide, router_3_3_cut_wide_out[North].wide}),
     .valid_o ({router_3_3_cut_wide_in[North].valid, router_3_3_wide_out[North].valid}),
-    .ready_o ({router_3_3_cut_wide_in[North].ready, router_3_3_wide_out[North].ready}),
+    .ready_o ({router_3_3_wide_out[North].ready, router_3_3_cut_wide_in[North].ready}),
     .data_o  ({router_3_3_cut_wide_in[North].wide, router_3_3_wide_out[North].wide})
   );
   // Generate router_3_3 interface cuts for east direction
@@ -3289,10 +3289,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_req_in[East].valid, router_3_3_cut_req_out[East].valid}),
-    .ready_i ({router_3_3_req_in[East].ready, router_3_3_cut_req_out[East].ready}),
+    .ready_i ({router_3_3_cut_req_out[East].ready, router_3_3_req_in[East].ready}),
     .data_i  ({router_3_3_req_in[East].req, router_3_3_cut_req_out[East].req}),
     .valid_o ({router_3_3_cut_req_in[East].valid, router_3_3_req_out[East].valid}),
-    .ready_o ({router_3_3_cut_req_in[East].ready, router_3_3_req_out[East].ready}),
+    .ready_o ({router_3_3_req_out[East].ready, router_3_3_cut_req_in[East].ready}),
     .data_o  ({router_3_3_cut_req_in[East].req, router_3_3_req_out[East].req})
   );
   floo_cut #(
@@ -3304,10 +3304,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_rsp_in[East].valid, router_3_3_cut_rsp_out[East].valid}),
-    .ready_i ({router_3_3_rsp_in[East].ready, router_3_3_cut_rsp_out[East].ready}),
+    .ready_i ({router_3_3_cut_rsp_out[East].ready, router_3_3_rsp_in[East].ready}),
     .data_i  ({router_3_3_rsp_in[East].rsp, router_3_3_cut_rsp_out[East].rsp}),
     .valid_o ({router_3_3_cut_rsp_in[East].valid, router_3_3_rsp_out[East].valid}),
-    .ready_o ({router_3_3_cut_rsp_in[East].ready, router_3_3_rsp_out[East].ready}),
+    .ready_o ({router_3_3_rsp_out[East].ready, router_3_3_cut_rsp_in[East].ready}),
     .data_o  ({router_3_3_cut_rsp_in[East].rsp, router_3_3_rsp_out[East].rsp})
   );
   floo_cut #(
@@ -3319,10 +3319,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_wide_in[East].valid, router_3_3_cut_wide_out[East].valid}),
-    .ready_i ({router_3_3_wide_in[East].ready, router_3_3_cut_wide_out[East].ready}),
+    .ready_i ({router_3_3_cut_wide_out[East].ready, router_3_3_wide_in[East].ready}),
     .data_i  ({router_3_3_wide_in[East].wide, router_3_3_cut_wide_out[East].wide}),
     .valid_o ({router_3_3_cut_wide_in[East].valid, router_3_3_wide_out[East].valid}),
-    .ready_o ({router_3_3_cut_wide_in[East].ready, router_3_3_wide_out[East].ready}),
+    .ready_o ({router_3_3_wide_out[East].ready, router_3_3_cut_wide_in[East].ready}),
     .data_o  ({router_3_3_cut_wide_in[East].wide, router_3_3_wide_out[East].wide})
   );
   // Generate router_3_3 interface cuts for west direction
@@ -3335,10 +3335,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_req_in[West].valid, router_3_3_cut_req_out[West].valid}),
-    .ready_i ({router_3_3_req_in[West].ready, router_3_3_cut_req_out[West].ready}),
+    .ready_i ({router_3_3_cut_req_out[West].ready, router_3_3_req_in[West].ready}),
     .data_i  ({router_3_3_req_in[West].req, router_3_3_cut_req_out[West].req}),
     .valid_o ({router_3_3_cut_req_in[West].valid, router_3_3_req_out[West].valid}),
-    .ready_o ({router_3_3_cut_req_in[West].ready, router_3_3_req_out[West].ready}),
+    .ready_o ({router_3_3_req_out[West].ready, router_3_3_cut_req_in[West].ready}),
     .data_o  ({router_3_3_cut_req_in[West].req, router_3_3_req_out[West].req})
   );
   floo_cut #(
@@ -3350,10 +3350,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_rsp_in[West].valid, router_3_3_cut_rsp_out[West].valid}),
-    .ready_i ({router_3_3_rsp_in[West].ready, router_3_3_cut_rsp_out[West].ready}),
+    .ready_i ({router_3_3_cut_rsp_out[West].ready, router_3_3_rsp_in[West].ready}),
     .data_i  ({router_3_3_rsp_in[West].rsp, router_3_3_cut_rsp_out[West].rsp}),
     .valid_o ({router_3_3_cut_rsp_in[West].valid, router_3_3_rsp_out[West].valid}),
-    .ready_o ({router_3_3_cut_rsp_in[West].ready, router_3_3_rsp_out[West].ready}),
+    .ready_o ({router_3_3_rsp_out[West].ready, router_3_3_cut_rsp_in[West].ready}),
     .data_o  ({router_3_3_cut_rsp_in[West].rsp, router_3_3_rsp_out[West].rsp})
   );
   floo_cut #(
@@ -3365,10 +3365,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_wide_in[West].valid, router_3_3_cut_wide_out[West].valid}),
-    .ready_i ({router_3_3_wide_in[West].ready, router_3_3_cut_wide_out[West].ready}),
+    .ready_i ({router_3_3_cut_wide_out[West].ready, router_3_3_wide_in[West].ready}),
     .data_i  ({router_3_3_wide_in[West].wide, router_3_3_cut_wide_out[West].wide}),
     .valid_o ({router_3_3_cut_wide_in[West].valid, router_3_3_wide_out[West].valid}),
-    .ready_o ({router_3_3_cut_wide_in[West].ready, router_3_3_wide_out[West].ready}),
+    .ready_o ({router_3_3_wide_out[West].ready, router_3_3_cut_wide_in[West].ready}),
     .data_o  ({router_3_3_cut_wide_in[West].wide, router_3_3_wide_out[West].wide})
   );
   // Generate router_3_3 interface cuts for south direction
@@ -3381,10 +3381,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_req_in[South].valid, router_3_3_cut_req_out[South].valid}),
-    .ready_i ({router_3_3_req_in[South].ready, router_3_3_cut_req_out[South].ready}),
+    .ready_i ({router_3_3_cut_req_out[South].ready, router_3_3_req_in[South].ready}),
     .data_i  ({router_3_3_req_in[South].req, router_3_3_cut_req_out[South].req}),
     .valid_o ({router_3_3_cut_req_in[South].valid, router_3_3_req_out[South].valid}),
-    .ready_o ({router_3_3_cut_req_in[South].ready, router_3_3_req_out[South].ready}),
+    .ready_o ({router_3_3_req_out[South].ready, router_3_3_cut_req_in[South].ready}),
     .data_o  ({router_3_3_cut_req_in[South].req, router_3_3_req_out[South].req})
   );
   floo_cut #(
@@ -3396,10 +3396,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_rsp_in[South].valid, router_3_3_cut_rsp_out[South].valid}),
-    .ready_i ({router_3_3_rsp_in[South].ready, router_3_3_cut_rsp_out[South].ready}),
+    .ready_i ({router_3_3_cut_rsp_out[South].ready, router_3_3_rsp_in[South].ready}),
     .data_i  ({router_3_3_rsp_in[South].rsp, router_3_3_cut_rsp_out[South].rsp}),
     .valid_o ({router_3_3_cut_rsp_in[South].valid, router_3_3_rsp_out[South].valid}),
-    .ready_o ({router_3_3_cut_rsp_in[South].ready, router_3_3_rsp_out[South].ready}),
+    .ready_o ({router_3_3_rsp_out[South].ready, router_3_3_cut_rsp_in[South].ready}),
     .data_o  ({router_3_3_cut_rsp_in[South].rsp, router_3_3_rsp_out[South].rsp})
   );
   floo_cut #(
@@ -3411,10 +3411,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_wide_in[South].valid, router_3_3_cut_wide_out[South].valid}),
-    .ready_i ({router_3_3_wide_in[South].ready, router_3_3_cut_wide_out[South].ready}),
+    .ready_i ({router_3_3_cut_wide_out[South].ready, router_3_3_wide_in[South].ready}),
     .data_i  ({router_3_3_wide_in[South].wide, router_3_3_cut_wide_out[South].wide}),
     .valid_o ({router_3_3_cut_wide_in[South].valid, router_3_3_wide_out[South].valid}),
-    .ready_o ({router_3_3_cut_wide_in[South].ready, router_3_3_wide_out[South].ready}),
+    .ready_o ({router_3_3_wide_out[South].ready, router_3_3_cut_wide_in[South].ready}),
     .data_o  ({router_3_3_cut_wide_in[South].wide, router_3_3_wide_out[South].wide})
   );
   // Generate router_3_3 interface cuts for eject direction
@@ -3427,10 +3427,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_req_in[Eject].valid, router_3_3_cut_req_out[Eject].valid}),
-    .ready_i ({router_3_3_req_in[Eject].ready, router_3_3_cut_req_out[Eject].ready}),
+    .ready_i ({router_3_3_cut_req_out[Eject].ready, router_3_3_req_in[Eject].ready}),
     .data_i  ({router_3_3_req_in[Eject].req, router_3_3_cut_req_out[Eject].req}),
     .valid_o ({router_3_3_cut_req_in[Eject].valid, router_3_3_req_out[Eject].valid}),
-    .ready_o ({router_3_3_cut_req_in[Eject].ready, router_3_3_req_out[Eject].ready}),
+    .ready_o ({router_3_3_req_out[Eject].ready, router_3_3_cut_req_in[Eject].ready}),
     .data_o  ({router_3_3_cut_req_in[Eject].req, router_3_3_req_out[Eject].req})
   );
   floo_cut #(
@@ -3442,10 +3442,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_rsp_in[Eject].valid, router_3_3_cut_rsp_out[Eject].valid}),
-    .ready_i ({router_3_3_rsp_in[Eject].ready, router_3_3_cut_rsp_out[Eject].ready}),
+    .ready_i ({router_3_3_cut_rsp_out[Eject].ready, router_3_3_rsp_in[Eject].ready}),
     .data_i  ({router_3_3_rsp_in[Eject].rsp, router_3_3_cut_rsp_out[Eject].rsp}),
     .valid_o ({router_3_3_cut_rsp_in[Eject].valid, router_3_3_rsp_out[Eject].valid}),
-    .ready_o ({router_3_3_cut_rsp_in[Eject].ready, router_3_3_rsp_out[Eject].ready}),
+    .ready_o ({router_3_3_rsp_out[Eject].ready, router_3_3_cut_rsp_in[Eject].ready}),
     .data_o  ({router_3_3_cut_rsp_in[Eject].rsp, router_3_3_rsp_out[Eject].rsp})
   );
   floo_cut #(
@@ -3457,10 +3457,10 @@ floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
     .rst_ni,
     // {to_router, from_router}
     .valid_i ({router_3_3_wide_in[Eject].valid, router_3_3_cut_wide_out[Eject].valid}),
-    .ready_i ({router_3_3_wide_in[Eject].ready, router_3_3_cut_wide_out[Eject].ready}),
+    .ready_i ({router_3_3_cut_wide_out[Eject].ready, router_3_3_wide_in[Eject].ready}),
     .data_i  ({router_3_3_wide_in[Eject].wide, router_3_3_cut_wide_out[Eject].wide}),
     .valid_o ({router_3_3_cut_wide_in[Eject].valid, router_3_3_wide_out[Eject].valid}),
-    .ready_o ({router_3_3_cut_wide_in[Eject].ready, router_3_3_wide_out[Eject].ready}),
+    .ready_o ({router_3_3_wide_out[Eject].ready, router_3_3_cut_wide_in[Eject].ready}),
     .data_o  ({router_3_3_cut_wide_in[Eject].wide, router_3_3_wide_out[Eject].wide})
   );
 
