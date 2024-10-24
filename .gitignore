@@ -104,6 +104,8 @@ verdiLog
 .inter.fsdb.tbsim
 inter.fsdb
 inter.fsdb.*
+floonoc.fsdb
+floonoc.fsdb.*
 novas.conf
 novas.rc
 simv.vdb

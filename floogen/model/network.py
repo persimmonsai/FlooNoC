@@ -862,6 +862,31 @@ class Network(BaseModel):  # pylint: disable=too-many-public-methods
             else:
                 string += rt.render(self.routing.id_offset)
         return string
+    
+    def render_cut_param(self):
+        """Render cut parameter that use to cut NoC interface around the routers in the generated code."""
+        ep_eject_ni, ep_eject_node = self.graph.get_ep_eject_nodes(with_name=True, ni_name_type=True)
+        ep_eject_cp_tile_ni = []
+        ep_eject_hbm_tile_ni = []
+        for i in range(len(ep_eject_node)):
+            if ep_eject_node[i].is_compute_tile:
+                ep_eject_cp_tile_ni.append(ep_eject_ni[i])
+            if ep_eject_node[i].is_hbm_tile:
+                ep_eject_hbm_tile_ni.append(ep_eject_ni[i])
+        rt_nodes = self.graph.get_rt_nodes()
+        rt_nodes = [rt for rt in rt_nodes if (rt.incoming.EJECT.source not in ep_eject_cp_tile_ni) and \
+                                            (rt.outgoing.EJECT.dest not in ep_eject_cp_tile_ni) and \
+                                            (rt.incoming.EJECT.source not in ep_eject_hbm_tile_ni) and \
+                                            (rt.outgoing.EJECT.dest not in ep_eject_hbm_tile_ni)]
+        cuts_param_string = []
+        for rt in rt_nodes:
+            for dir in ['north','east','west','south','eject']:
+                cuts_param_string.append(
+                    f"parameter int unsigned {rt.name}_{dir}_cut = 0"
+                )
+                
+        cuts_param_string = ",\n  ".join(cuts_param_string)
+        return cuts_param_string
 
     def render_nis(self):
         """Render the network interfaces in the generated code."""

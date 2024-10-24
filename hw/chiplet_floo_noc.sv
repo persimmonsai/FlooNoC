@@ -8,7 +8,28 @@ module chiplet_floo_noc
   import floo_pkg::*;
   import floo_narrow_wide_pkg::*;
   import hbm_pd_pkg::*;
-(
+#(
+  parameter int unsigned router_3_0_north_cut = 0,
+  parameter int unsigned router_3_0_east_cut = 0,
+  parameter int unsigned router_3_0_west_cut = 0,
+  parameter int unsigned router_3_0_south_cut = 0,
+  parameter int unsigned router_3_0_eject_cut = 0,
+  parameter int unsigned router_3_1_north_cut = 0,
+  parameter int unsigned router_3_1_east_cut = 0,
+  parameter int unsigned router_3_1_west_cut = 0,
+  parameter int unsigned router_3_1_south_cut = 0,
+  parameter int unsigned router_3_1_eject_cut = 0,
+  parameter int unsigned router_3_2_north_cut = 0,
+  parameter int unsigned router_3_2_east_cut = 0,
+  parameter int unsigned router_3_2_west_cut = 0,
+  parameter int unsigned router_3_2_south_cut = 0,
+  parameter int unsigned router_3_2_eject_cut = 0,
+  parameter int unsigned router_3_3_north_cut = 0,
+  parameter int unsigned router_3_3_east_cut = 0,
+  parameter int unsigned router_3_3_west_cut = 0,
+  parameter int unsigned router_3_3_south_cut = 0,
+  parameter int unsigned router_3_3_eject_cut = 0
+) (
   input logic clk_i,
   input logic rst_ni,
   input logic test_enable_i,
@@ -2251,6 +2272,13 @@ floo_rsp_t [NumDirections-1:0] router_3_0_rsp_in;
 floo_wide_t [NumDirections-1:0] router_3_0_wide_in;
 floo_wide_t [NumDirections-1:0] router_3_0_wide_out;
 
+floo_req_t [NumDirections-1:0] router_3_0_cut_req_in;
+floo_rsp_t [NumDirections-1:0] router_3_0_cut_rsp_out;
+floo_req_t [NumDirections-1:0] router_3_0_cut_req_out;
+floo_rsp_t [NumDirections-1:0] router_3_0_cut_rsp_in;
+floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_in;
+floo_wide_t [NumDirections-1:0] router_3_0_cut_wide_out;
+
   assign router_3_0_req_in[Eject] = jtag_ni_to_router_3_0_req;
   assign router_3_0_req_in[East] = router_4_0_to_router_3_0_req;
   assign router_3_0_req_in[North] = router_3_1_to_router_3_0_req;
@@ -2287,6 +2315,237 @@ floo_wide_t [NumDirections-1:0] router_3_0_wide_out;
   assign router_3_0_to_zero_mem_ni_wide = router_3_0_wide_out[South];
   assign router_3_0_to_router_2_0_wide = router_3_0_wide_out[West];
 
+  // Generate router_3_0 interface cuts for north direction
+  floo_cut #(
+    .NumCuts (router_3_0_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_0_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_req_in[North].valid, router_3_0_cut_req_out[North].valid}),
+    .ready_i ({router_3_0_req_in[North].ready, router_3_0_cut_req_out[North].ready}),
+    .data_i  ({router_3_0_req_in[North].req, router_3_0_cut_req_out[North].req}),
+    .valid_o ({router_3_0_cut_req_in[North].valid, router_3_0_req_out[North].valid}),
+    .ready_o ({router_3_0_cut_req_in[North].ready, router_3_0_req_out[North].ready}),
+    .data_o  ({router_3_0_cut_req_in[North].req, router_3_0_req_out[North].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_0_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_rsp_in[North].valid, router_3_0_cut_rsp_out[North].valid}),
+    .ready_i ({router_3_0_rsp_in[North].ready, router_3_0_cut_rsp_out[North].ready}),
+    .data_i  ({router_3_0_rsp_in[North].rsp, router_3_0_cut_rsp_out[North].rsp}),
+    .valid_o ({router_3_0_cut_rsp_in[North].valid, router_3_0_rsp_out[North].valid}),
+    .ready_o ({router_3_0_cut_rsp_in[North].ready, router_3_0_rsp_out[North].ready}),
+    .data_o  ({router_3_0_cut_rsp_in[North].rsp, router_3_0_rsp_out[North].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_0_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_wide_in[North].valid, router_3_0_cut_wide_out[North].valid}),
+    .ready_i ({router_3_0_wide_in[North].ready, router_3_0_cut_wide_out[North].ready}),
+    .data_i  ({router_3_0_wide_in[North].wide, router_3_0_cut_wide_out[North].wide}),
+    .valid_o ({router_3_0_cut_wide_in[North].valid, router_3_0_wide_out[North].valid}),
+    .ready_o ({router_3_0_cut_wide_in[North].ready, router_3_0_wide_out[North].ready}),
+    .data_o  ({router_3_0_cut_wide_in[North].wide, router_3_0_wide_out[North].wide})
+  );
+  // Generate router_3_0 interface cuts for east direction
+  floo_cut #(
+    .NumCuts (router_3_0_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_0_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_req_in[East].valid, router_3_0_cut_req_out[East].valid}),
+    .ready_i ({router_3_0_req_in[East].ready, router_3_0_cut_req_out[East].ready}),
+    .data_i  ({router_3_0_req_in[East].req, router_3_0_cut_req_out[East].req}),
+    .valid_o ({router_3_0_cut_req_in[East].valid, router_3_0_req_out[East].valid}),
+    .ready_o ({router_3_0_cut_req_in[East].ready, router_3_0_req_out[East].ready}),
+    .data_o  ({router_3_0_cut_req_in[East].req, router_3_0_req_out[East].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_0_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_rsp_in[East].valid, router_3_0_cut_rsp_out[East].valid}),
+    .ready_i ({router_3_0_rsp_in[East].ready, router_3_0_cut_rsp_out[East].ready}),
+    .data_i  ({router_3_0_rsp_in[East].rsp, router_3_0_cut_rsp_out[East].rsp}),
+    .valid_o ({router_3_0_cut_rsp_in[East].valid, router_3_0_rsp_out[East].valid}),
+    .ready_o ({router_3_0_cut_rsp_in[East].ready, router_3_0_rsp_out[East].ready}),
+    .data_o  ({router_3_0_cut_rsp_in[East].rsp, router_3_0_rsp_out[East].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_0_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_wide_in[East].valid, router_3_0_cut_wide_out[East].valid}),
+    .ready_i ({router_3_0_wide_in[East].ready, router_3_0_cut_wide_out[East].ready}),
+    .data_i  ({router_3_0_wide_in[East].wide, router_3_0_cut_wide_out[East].wide}),
+    .valid_o ({router_3_0_cut_wide_in[East].valid, router_3_0_wide_out[East].valid}),
+    .ready_o ({router_3_0_cut_wide_in[East].ready, router_3_0_wide_out[East].ready}),
+    .data_o  ({router_3_0_cut_wide_in[East].wide, router_3_0_wide_out[East].wide})
+  );
+  // Generate router_3_0 interface cuts for west direction
+  floo_cut #(
+    .NumCuts (router_3_0_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_0_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_req_in[West].valid, router_3_0_cut_req_out[West].valid}),
+    .ready_i ({router_3_0_req_in[West].ready, router_3_0_cut_req_out[West].ready}),
+    .data_i  ({router_3_0_req_in[West].req, router_3_0_cut_req_out[West].req}),
+    .valid_o ({router_3_0_cut_req_in[West].valid, router_3_0_req_out[West].valid}),
+    .ready_o ({router_3_0_cut_req_in[West].ready, router_3_0_req_out[West].ready}),
+    .data_o  ({router_3_0_cut_req_in[West].req, router_3_0_req_out[West].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_0_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_rsp_in[West].valid, router_3_0_cut_rsp_out[West].valid}),
+    .ready_i ({router_3_0_rsp_in[West].ready, router_3_0_cut_rsp_out[West].ready}),
+    .data_i  ({router_3_0_rsp_in[West].rsp, router_3_0_cut_rsp_out[West].rsp}),
+    .valid_o ({router_3_0_cut_rsp_in[West].valid, router_3_0_rsp_out[West].valid}),
+    .ready_o ({router_3_0_cut_rsp_in[West].ready, router_3_0_rsp_out[West].ready}),
+    .data_o  ({router_3_0_cut_rsp_in[West].rsp, router_3_0_rsp_out[West].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_0_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_wide_in[West].valid, router_3_0_cut_wide_out[West].valid}),
+    .ready_i ({router_3_0_wide_in[West].ready, router_3_0_cut_wide_out[West].ready}),
+    .data_i  ({router_3_0_wide_in[West].wide, router_3_0_cut_wide_out[West].wide}),
+    .valid_o ({router_3_0_cut_wide_in[West].valid, router_3_0_wide_out[West].valid}),
+    .ready_o ({router_3_0_cut_wide_in[West].ready, router_3_0_wide_out[West].ready}),
+    .data_o  ({router_3_0_cut_wide_in[West].wide, router_3_0_wide_out[West].wide})
+  );
+  // Generate router_3_0 interface cuts for south direction
+  floo_cut #(
+    .NumCuts (router_3_0_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_0_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_req_in[South].valid, router_3_0_cut_req_out[South].valid}),
+    .ready_i ({router_3_0_req_in[South].ready, router_3_0_cut_req_out[South].ready}),
+    .data_i  ({router_3_0_req_in[South].req, router_3_0_cut_req_out[South].req}),
+    .valid_o ({router_3_0_cut_req_in[South].valid, router_3_0_req_out[South].valid}),
+    .ready_o ({router_3_0_cut_req_in[South].ready, router_3_0_req_out[South].ready}),
+    .data_o  ({router_3_0_cut_req_in[South].req, router_3_0_req_out[South].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_0_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_rsp_in[South].valid, router_3_0_cut_rsp_out[South].valid}),
+    .ready_i ({router_3_0_rsp_in[South].ready, router_3_0_cut_rsp_out[South].ready}),
+    .data_i  ({router_3_0_rsp_in[South].rsp, router_3_0_cut_rsp_out[South].rsp}),
+    .valid_o ({router_3_0_cut_rsp_in[South].valid, router_3_0_rsp_out[South].valid}),
+    .ready_o ({router_3_0_cut_rsp_in[South].ready, router_3_0_rsp_out[South].ready}),
+    .data_o  ({router_3_0_cut_rsp_in[South].rsp, router_3_0_rsp_out[South].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_0_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_wide_in[South].valid, router_3_0_cut_wide_out[South].valid}),
+    .ready_i ({router_3_0_wide_in[South].ready, router_3_0_cut_wide_out[South].ready}),
+    .data_i  ({router_3_0_wide_in[South].wide, router_3_0_cut_wide_out[South].wide}),
+    .valid_o ({router_3_0_cut_wide_in[South].valid, router_3_0_wide_out[South].valid}),
+    .ready_o ({router_3_0_cut_wide_in[South].ready, router_3_0_wide_out[South].ready}),
+    .data_o  ({router_3_0_cut_wide_in[South].wide, router_3_0_wide_out[South].wide})
+  );
+  // Generate router_3_0 interface cuts for eject direction
+  floo_cut #(
+    .NumCuts (router_3_0_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_0_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_req_in[Eject].valid, router_3_0_cut_req_out[Eject].valid}),
+    .ready_i ({router_3_0_req_in[Eject].ready, router_3_0_cut_req_out[Eject].ready}),
+    .data_i  ({router_3_0_req_in[Eject].req, router_3_0_cut_req_out[Eject].req}),
+    .valid_o ({router_3_0_cut_req_in[Eject].valid, router_3_0_req_out[Eject].valid}),
+    .ready_o ({router_3_0_cut_req_in[Eject].ready, router_3_0_req_out[Eject].ready}),
+    .data_o  ({router_3_0_cut_req_in[Eject].req, router_3_0_req_out[Eject].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_0_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_rsp_in[Eject].valid, router_3_0_cut_rsp_out[Eject].valid}),
+    .ready_i ({router_3_0_rsp_in[Eject].ready, router_3_0_cut_rsp_out[Eject].ready}),
+    .data_i  ({router_3_0_rsp_in[Eject].rsp, router_3_0_cut_rsp_out[Eject].rsp}),
+    .valid_o ({router_3_0_cut_rsp_in[Eject].valid, router_3_0_rsp_out[Eject].valid}),
+    .ready_o ({router_3_0_cut_rsp_in[Eject].ready, router_3_0_rsp_out[Eject].ready}),
+    .data_o  ({router_3_0_cut_rsp_in[Eject].rsp, router_3_0_rsp_out[Eject].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_0_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_0_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_0_wide_in[Eject].valid, router_3_0_cut_wide_out[Eject].valid}),
+    .ready_i ({router_3_0_wide_in[Eject].ready, router_3_0_cut_wide_out[Eject].ready}),
+    .data_i  ({router_3_0_wide_in[Eject].wide, router_3_0_cut_wide_out[Eject].wide}),
+    .valid_o ({router_3_0_cut_wide_in[Eject].valid, router_3_0_wide_out[Eject].valid}),
+    .ready_o ({router_3_0_cut_wide_in[Eject].ready, router_3_0_wide_out[Eject].ready}),
+    .data_o  ({router_3_0_cut_wide_in[Eject].wide, router_3_0_wide_out[Eject].wide})
+  );
+
 localparam id_t router_3_0_id = '{x: 4, y: 1};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
@@ -2303,12 +2562,12 @@ floo_narrow_wide_router #(
   .test_enable_i,
   .id_i (router_3_0_id),
   .id_route_map_i ('0),
-  .floo_req_i (router_3_0_req_in),
-  .floo_rsp_o (router_3_0_rsp_out),
-  .floo_req_o (router_3_0_req_out),
-  .floo_rsp_i (router_3_0_rsp_in),
-  .floo_wide_i (router_3_0_wide_in),
-  .floo_wide_o (router_3_0_wide_out)
+  .floo_req_i (router_3_0_cut_req_in),
+  .floo_rsp_o (router_3_0_cut_rsp_out),
+  .floo_req_o (router_3_0_cut_req_out),
+  .floo_rsp_i (router_3_0_cut_rsp_in),
+  .floo_wide_i (router_3_0_cut_wide_in),
+  .floo_wide_o (router_3_0_cut_wide_out)
 );
 
 
@@ -2318,6 +2577,13 @@ floo_req_t [NumDirections-1:0] router_3_1_req_out;
 floo_rsp_t [NumDirections-1:0] router_3_1_rsp_in;
 floo_wide_t [NumDirections-1:0] router_3_1_wide_in;
 floo_wide_t [NumDirections-1:0] router_3_1_wide_out;
+
+floo_req_t [NumDirections-1:0] router_3_1_cut_req_in;
+floo_rsp_t [NumDirections-1:0] router_3_1_cut_rsp_out;
+floo_req_t [NumDirections-1:0] router_3_1_cut_req_out;
+floo_rsp_t [NumDirections-1:0] router_3_1_cut_rsp_in;
+floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_in;
+floo_wide_t [NumDirections-1:0] router_3_1_cut_wide_out;
 
   assign router_3_1_req_in[Eject] = peripherals_ni_to_router_3_1_req;
   assign router_3_1_req_in[East] = router_4_1_to_router_3_1_req;
@@ -2355,6 +2621,237 @@ floo_wide_t [NumDirections-1:0] router_3_1_wide_out;
   assign router_3_1_to_router_3_0_wide = router_3_1_wide_out[South];
   assign router_3_1_to_router_2_1_wide = router_3_1_wide_out[West];
 
+  // Generate router_3_1 interface cuts for north direction
+  floo_cut #(
+    .NumCuts (router_3_1_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_1_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_req_in[North].valid, router_3_1_cut_req_out[North].valid}),
+    .ready_i ({router_3_1_req_in[North].ready, router_3_1_cut_req_out[North].ready}),
+    .data_i  ({router_3_1_req_in[North].req, router_3_1_cut_req_out[North].req}),
+    .valid_o ({router_3_1_cut_req_in[North].valid, router_3_1_req_out[North].valid}),
+    .ready_o ({router_3_1_cut_req_in[North].ready, router_3_1_req_out[North].ready}),
+    .data_o  ({router_3_1_cut_req_in[North].req, router_3_1_req_out[North].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_1_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_rsp_in[North].valid, router_3_1_cut_rsp_out[North].valid}),
+    .ready_i ({router_3_1_rsp_in[North].ready, router_3_1_cut_rsp_out[North].ready}),
+    .data_i  ({router_3_1_rsp_in[North].rsp, router_3_1_cut_rsp_out[North].rsp}),
+    .valid_o ({router_3_1_cut_rsp_in[North].valid, router_3_1_rsp_out[North].valid}),
+    .ready_o ({router_3_1_cut_rsp_in[North].ready, router_3_1_rsp_out[North].ready}),
+    .data_o  ({router_3_1_cut_rsp_in[North].rsp, router_3_1_rsp_out[North].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_1_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_wide_in[North].valid, router_3_1_cut_wide_out[North].valid}),
+    .ready_i ({router_3_1_wide_in[North].ready, router_3_1_cut_wide_out[North].ready}),
+    .data_i  ({router_3_1_wide_in[North].wide, router_3_1_cut_wide_out[North].wide}),
+    .valid_o ({router_3_1_cut_wide_in[North].valid, router_3_1_wide_out[North].valid}),
+    .ready_o ({router_3_1_cut_wide_in[North].ready, router_3_1_wide_out[North].ready}),
+    .data_o  ({router_3_1_cut_wide_in[North].wide, router_3_1_wide_out[North].wide})
+  );
+  // Generate router_3_1 interface cuts for east direction
+  floo_cut #(
+    .NumCuts (router_3_1_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_1_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_req_in[East].valid, router_3_1_cut_req_out[East].valid}),
+    .ready_i ({router_3_1_req_in[East].ready, router_3_1_cut_req_out[East].ready}),
+    .data_i  ({router_3_1_req_in[East].req, router_3_1_cut_req_out[East].req}),
+    .valid_o ({router_3_1_cut_req_in[East].valid, router_3_1_req_out[East].valid}),
+    .ready_o ({router_3_1_cut_req_in[East].ready, router_3_1_req_out[East].ready}),
+    .data_o  ({router_3_1_cut_req_in[East].req, router_3_1_req_out[East].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_1_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_rsp_in[East].valid, router_3_1_cut_rsp_out[East].valid}),
+    .ready_i ({router_3_1_rsp_in[East].ready, router_3_1_cut_rsp_out[East].ready}),
+    .data_i  ({router_3_1_rsp_in[East].rsp, router_3_1_cut_rsp_out[East].rsp}),
+    .valid_o ({router_3_1_cut_rsp_in[East].valid, router_3_1_rsp_out[East].valid}),
+    .ready_o ({router_3_1_cut_rsp_in[East].ready, router_3_1_rsp_out[East].ready}),
+    .data_o  ({router_3_1_cut_rsp_in[East].rsp, router_3_1_rsp_out[East].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_1_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_wide_in[East].valid, router_3_1_cut_wide_out[East].valid}),
+    .ready_i ({router_3_1_wide_in[East].ready, router_3_1_cut_wide_out[East].ready}),
+    .data_i  ({router_3_1_wide_in[East].wide, router_3_1_cut_wide_out[East].wide}),
+    .valid_o ({router_3_1_cut_wide_in[East].valid, router_3_1_wide_out[East].valid}),
+    .ready_o ({router_3_1_cut_wide_in[East].ready, router_3_1_wide_out[East].ready}),
+    .data_o  ({router_3_1_cut_wide_in[East].wide, router_3_1_wide_out[East].wide})
+  );
+  // Generate router_3_1 interface cuts for west direction
+  floo_cut #(
+    .NumCuts (router_3_1_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_1_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_req_in[West].valid, router_3_1_cut_req_out[West].valid}),
+    .ready_i ({router_3_1_req_in[West].ready, router_3_1_cut_req_out[West].ready}),
+    .data_i  ({router_3_1_req_in[West].req, router_3_1_cut_req_out[West].req}),
+    .valid_o ({router_3_1_cut_req_in[West].valid, router_3_1_req_out[West].valid}),
+    .ready_o ({router_3_1_cut_req_in[West].ready, router_3_1_req_out[West].ready}),
+    .data_o  ({router_3_1_cut_req_in[West].req, router_3_1_req_out[West].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_1_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_rsp_in[West].valid, router_3_1_cut_rsp_out[West].valid}),
+    .ready_i ({router_3_1_rsp_in[West].ready, router_3_1_cut_rsp_out[West].ready}),
+    .data_i  ({router_3_1_rsp_in[West].rsp, router_3_1_cut_rsp_out[West].rsp}),
+    .valid_o ({router_3_1_cut_rsp_in[West].valid, router_3_1_rsp_out[West].valid}),
+    .ready_o ({router_3_1_cut_rsp_in[West].ready, router_3_1_rsp_out[West].ready}),
+    .data_o  ({router_3_1_cut_rsp_in[West].rsp, router_3_1_rsp_out[West].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_1_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_wide_in[West].valid, router_3_1_cut_wide_out[West].valid}),
+    .ready_i ({router_3_1_wide_in[West].ready, router_3_1_cut_wide_out[West].ready}),
+    .data_i  ({router_3_1_wide_in[West].wide, router_3_1_cut_wide_out[West].wide}),
+    .valid_o ({router_3_1_cut_wide_in[West].valid, router_3_1_wide_out[West].valid}),
+    .ready_o ({router_3_1_cut_wide_in[West].ready, router_3_1_wide_out[West].ready}),
+    .data_o  ({router_3_1_cut_wide_in[West].wide, router_3_1_wide_out[West].wide})
+  );
+  // Generate router_3_1 interface cuts for south direction
+  floo_cut #(
+    .NumCuts (router_3_1_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_1_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_req_in[South].valid, router_3_1_cut_req_out[South].valid}),
+    .ready_i ({router_3_1_req_in[South].ready, router_3_1_cut_req_out[South].ready}),
+    .data_i  ({router_3_1_req_in[South].req, router_3_1_cut_req_out[South].req}),
+    .valid_o ({router_3_1_cut_req_in[South].valid, router_3_1_req_out[South].valid}),
+    .ready_o ({router_3_1_cut_req_in[South].ready, router_3_1_req_out[South].ready}),
+    .data_o  ({router_3_1_cut_req_in[South].req, router_3_1_req_out[South].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_1_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_rsp_in[South].valid, router_3_1_cut_rsp_out[South].valid}),
+    .ready_i ({router_3_1_rsp_in[South].ready, router_3_1_cut_rsp_out[South].ready}),
+    .data_i  ({router_3_1_rsp_in[South].rsp, router_3_1_cut_rsp_out[South].rsp}),
+    .valid_o ({router_3_1_cut_rsp_in[South].valid, router_3_1_rsp_out[South].valid}),
+    .ready_o ({router_3_1_cut_rsp_in[South].ready, router_3_1_rsp_out[South].ready}),
+    .data_o  ({router_3_1_cut_rsp_in[South].rsp, router_3_1_rsp_out[South].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_1_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_wide_in[South].valid, router_3_1_cut_wide_out[South].valid}),
+    .ready_i ({router_3_1_wide_in[South].ready, router_3_1_cut_wide_out[South].ready}),
+    .data_i  ({router_3_1_wide_in[South].wide, router_3_1_cut_wide_out[South].wide}),
+    .valid_o ({router_3_1_cut_wide_in[South].valid, router_3_1_wide_out[South].valid}),
+    .ready_o ({router_3_1_cut_wide_in[South].ready, router_3_1_wide_out[South].ready}),
+    .data_o  ({router_3_1_cut_wide_in[South].wide, router_3_1_wide_out[South].wide})
+  );
+  // Generate router_3_1 interface cuts for eject direction
+  floo_cut #(
+    .NumCuts (router_3_1_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_1_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_req_in[Eject].valid, router_3_1_cut_req_out[Eject].valid}),
+    .ready_i ({router_3_1_req_in[Eject].ready, router_3_1_cut_req_out[Eject].ready}),
+    .data_i  ({router_3_1_req_in[Eject].req, router_3_1_cut_req_out[Eject].req}),
+    .valid_o ({router_3_1_cut_req_in[Eject].valid, router_3_1_req_out[Eject].valid}),
+    .ready_o ({router_3_1_cut_req_in[Eject].ready, router_3_1_req_out[Eject].ready}),
+    .data_o  ({router_3_1_cut_req_in[Eject].req, router_3_1_req_out[Eject].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_1_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_rsp_in[Eject].valid, router_3_1_cut_rsp_out[Eject].valid}),
+    .ready_i ({router_3_1_rsp_in[Eject].ready, router_3_1_cut_rsp_out[Eject].ready}),
+    .data_i  ({router_3_1_rsp_in[Eject].rsp, router_3_1_cut_rsp_out[Eject].rsp}),
+    .valid_o ({router_3_1_cut_rsp_in[Eject].valid, router_3_1_rsp_out[Eject].valid}),
+    .ready_o ({router_3_1_cut_rsp_in[Eject].ready, router_3_1_rsp_out[Eject].ready}),
+    .data_o  ({router_3_1_cut_rsp_in[Eject].rsp, router_3_1_rsp_out[Eject].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_1_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_1_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_1_wide_in[Eject].valid, router_3_1_cut_wide_out[Eject].valid}),
+    .ready_i ({router_3_1_wide_in[Eject].ready, router_3_1_cut_wide_out[Eject].ready}),
+    .data_i  ({router_3_1_wide_in[Eject].wide, router_3_1_cut_wide_out[Eject].wide}),
+    .valid_o ({router_3_1_cut_wide_in[Eject].valid, router_3_1_wide_out[Eject].valid}),
+    .ready_o ({router_3_1_cut_wide_in[Eject].ready, router_3_1_wide_out[Eject].ready}),
+    .data_o  ({router_3_1_cut_wide_in[Eject].wide, router_3_1_wide_out[Eject].wide})
+  );
+
 localparam id_t router_3_1_id = '{x: 4, y: 2};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
@@ -2371,12 +2868,12 @@ floo_narrow_wide_router #(
   .test_enable_i,
   .id_i (router_3_1_id),
   .id_route_map_i ('0),
-  .floo_req_i (router_3_1_req_in),
-  .floo_rsp_o (router_3_1_rsp_out),
-  .floo_req_o (router_3_1_req_out),
-  .floo_rsp_i (router_3_1_rsp_in),
-  .floo_wide_i (router_3_1_wide_in),
-  .floo_wide_o (router_3_1_wide_out)
+  .floo_req_i (router_3_1_cut_req_in),
+  .floo_rsp_o (router_3_1_cut_rsp_out),
+  .floo_req_o (router_3_1_cut_req_out),
+  .floo_rsp_i (router_3_1_cut_rsp_in),
+  .floo_wide_i (router_3_1_cut_wide_in),
+  .floo_wide_o (router_3_1_cut_wide_out)
 );
 
 
@@ -2386,6 +2883,13 @@ floo_req_t [NumDirections-1:0] router_3_2_req_out;
 floo_rsp_t [NumDirections-1:0] router_3_2_rsp_in;
 floo_wide_t [NumDirections-1:0] router_3_2_wide_in;
 floo_wide_t [NumDirections-1:0] router_3_2_wide_out;
+
+floo_req_t [NumDirections-1:0] router_3_2_cut_req_in;
+floo_rsp_t [NumDirections-1:0] router_3_2_cut_rsp_out;
+floo_req_t [NumDirections-1:0] router_3_2_cut_req_out;
+floo_rsp_t [NumDirections-1:0] router_3_2_cut_rsp_in;
+floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_in;
+floo_wide_t [NumDirections-1:0] router_3_2_cut_wide_out;
 
   assign router_3_2_req_in[Eject] = cva6_ni_to_router_3_2_req;
   assign router_3_2_req_in[East] = router_4_2_to_router_3_2_req;
@@ -2423,6 +2927,237 @@ floo_wide_t [NumDirections-1:0] router_3_2_wide_out;
   assign router_3_2_to_router_3_1_wide = router_3_2_wide_out[South];
   assign router_3_2_to_router_2_2_wide = router_3_2_wide_out[West];
 
+  // Generate router_3_2 interface cuts for north direction
+  floo_cut #(
+    .NumCuts (router_3_2_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_2_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_req_in[North].valid, router_3_2_cut_req_out[North].valid}),
+    .ready_i ({router_3_2_req_in[North].ready, router_3_2_cut_req_out[North].ready}),
+    .data_i  ({router_3_2_req_in[North].req, router_3_2_cut_req_out[North].req}),
+    .valid_o ({router_3_2_cut_req_in[North].valid, router_3_2_req_out[North].valid}),
+    .ready_o ({router_3_2_cut_req_in[North].ready, router_3_2_req_out[North].ready}),
+    .data_o  ({router_3_2_cut_req_in[North].req, router_3_2_req_out[North].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_2_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_rsp_in[North].valid, router_3_2_cut_rsp_out[North].valid}),
+    .ready_i ({router_3_2_rsp_in[North].ready, router_3_2_cut_rsp_out[North].ready}),
+    .data_i  ({router_3_2_rsp_in[North].rsp, router_3_2_cut_rsp_out[North].rsp}),
+    .valid_o ({router_3_2_cut_rsp_in[North].valid, router_3_2_rsp_out[North].valid}),
+    .ready_o ({router_3_2_cut_rsp_in[North].ready, router_3_2_rsp_out[North].ready}),
+    .data_o  ({router_3_2_cut_rsp_in[North].rsp, router_3_2_rsp_out[North].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_2_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_wide_in[North].valid, router_3_2_cut_wide_out[North].valid}),
+    .ready_i ({router_3_2_wide_in[North].ready, router_3_2_cut_wide_out[North].ready}),
+    .data_i  ({router_3_2_wide_in[North].wide, router_3_2_cut_wide_out[North].wide}),
+    .valid_o ({router_3_2_cut_wide_in[North].valid, router_3_2_wide_out[North].valid}),
+    .ready_o ({router_3_2_cut_wide_in[North].ready, router_3_2_wide_out[North].ready}),
+    .data_o  ({router_3_2_cut_wide_in[North].wide, router_3_2_wide_out[North].wide})
+  );
+  // Generate router_3_2 interface cuts for east direction
+  floo_cut #(
+    .NumCuts (router_3_2_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_2_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_req_in[East].valid, router_3_2_cut_req_out[East].valid}),
+    .ready_i ({router_3_2_req_in[East].ready, router_3_2_cut_req_out[East].ready}),
+    .data_i  ({router_3_2_req_in[East].req, router_3_2_cut_req_out[East].req}),
+    .valid_o ({router_3_2_cut_req_in[East].valid, router_3_2_req_out[East].valid}),
+    .ready_o ({router_3_2_cut_req_in[East].ready, router_3_2_req_out[East].ready}),
+    .data_o  ({router_3_2_cut_req_in[East].req, router_3_2_req_out[East].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_2_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_rsp_in[East].valid, router_3_2_cut_rsp_out[East].valid}),
+    .ready_i ({router_3_2_rsp_in[East].ready, router_3_2_cut_rsp_out[East].ready}),
+    .data_i  ({router_3_2_rsp_in[East].rsp, router_3_2_cut_rsp_out[East].rsp}),
+    .valid_o ({router_3_2_cut_rsp_in[East].valid, router_3_2_rsp_out[East].valid}),
+    .ready_o ({router_3_2_cut_rsp_in[East].ready, router_3_2_rsp_out[East].ready}),
+    .data_o  ({router_3_2_cut_rsp_in[East].rsp, router_3_2_rsp_out[East].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_2_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_wide_in[East].valid, router_3_2_cut_wide_out[East].valid}),
+    .ready_i ({router_3_2_wide_in[East].ready, router_3_2_cut_wide_out[East].ready}),
+    .data_i  ({router_3_2_wide_in[East].wide, router_3_2_cut_wide_out[East].wide}),
+    .valid_o ({router_3_2_cut_wide_in[East].valid, router_3_2_wide_out[East].valid}),
+    .ready_o ({router_3_2_cut_wide_in[East].ready, router_3_2_wide_out[East].ready}),
+    .data_o  ({router_3_2_cut_wide_in[East].wide, router_3_2_wide_out[East].wide})
+  );
+  // Generate router_3_2 interface cuts for west direction
+  floo_cut #(
+    .NumCuts (router_3_2_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_2_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_req_in[West].valid, router_3_2_cut_req_out[West].valid}),
+    .ready_i ({router_3_2_req_in[West].ready, router_3_2_cut_req_out[West].ready}),
+    .data_i  ({router_3_2_req_in[West].req, router_3_2_cut_req_out[West].req}),
+    .valid_o ({router_3_2_cut_req_in[West].valid, router_3_2_req_out[West].valid}),
+    .ready_o ({router_3_2_cut_req_in[West].ready, router_3_2_req_out[West].ready}),
+    .data_o  ({router_3_2_cut_req_in[West].req, router_3_2_req_out[West].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_2_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_rsp_in[West].valid, router_3_2_cut_rsp_out[West].valid}),
+    .ready_i ({router_3_2_rsp_in[West].ready, router_3_2_cut_rsp_out[West].ready}),
+    .data_i  ({router_3_2_rsp_in[West].rsp, router_3_2_cut_rsp_out[West].rsp}),
+    .valid_o ({router_3_2_cut_rsp_in[West].valid, router_3_2_rsp_out[West].valid}),
+    .ready_o ({router_3_2_cut_rsp_in[West].ready, router_3_2_rsp_out[West].ready}),
+    .data_o  ({router_3_2_cut_rsp_in[West].rsp, router_3_2_rsp_out[West].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_2_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_wide_in[West].valid, router_3_2_cut_wide_out[West].valid}),
+    .ready_i ({router_3_2_wide_in[West].ready, router_3_2_cut_wide_out[West].ready}),
+    .data_i  ({router_3_2_wide_in[West].wide, router_3_2_cut_wide_out[West].wide}),
+    .valid_o ({router_3_2_cut_wide_in[West].valid, router_3_2_wide_out[West].valid}),
+    .ready_o ({router_3_2_cut_wide_in[West].ready, router_3_2_wide_out[West].ready}),
+    .data_o  ({router_3_2_cut_wide_in[West].wide, router_3_2_wide_out[West].wide})
+  );
+  // Generate router_3_2 interface cuts for south direction
+  floo_cut #(
+    .NumCuts (router_3_2_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_2_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_req_in[South].valid, router_3_2_cut_req_out[South].valid}),
+    .ready_i ({router_3_2_req_in[South].ready, router_3_2_cut_req_out[South].ready}),
+    .data_i  ({router_3_2_req_in[South].req, router_3_2_cut_req_out[South].req}),
+    .valid_o ({router_3_2_cut_req_in[South].valid, router_3_2_req_out[South].valid}),
+    .ready_o ({router_3_2_cut_req_in[South].ready, router_3_2_req_out[South].ready}),
+    .data_o  ({router_3_2_cut_req_in[South].req, router_3_2_req_out[South].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_2_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_rsp_in[South].valid, router_3_2_cut_rsp_out[South].valid}),
+    .ready_i ({router_3_2_rsp_in[South].ready, router_3_2_cut_rsp_out[South].ready}),
+    .data_i  ({router_3_2_rsp_in[South].rsp, router_3_2_cut_rsp_out[South].rsp}),
+    .valid_o ({router_3_2_cut_rsp_in[South].valid, router_3_2_rsp_out[South].valid}),
+    .ready_o ({router_3_2_cut_rsp_in[South].ready, router_3_2_rsp_out[South].ready}),
+    .data_o  ({router_3_2_cut_rsp_in[South].rsp, router_3_2_rsp_out[South].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_2_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_wide_in[South].valid, router_3_2_cut_wide_out[South].valid}),
+    .ready_i ({router_3_2_wide_in[South].ready, router_3_2_cut_wide_out[South].ready}),
+    .data_i  ({router_3_2_wide_in[South].wide, router_3_2_cut_wide_out[South].wide}),
+    .valid_o ({router_3_2_cut_wide_in[South].valid, router_3_2_wide_out[South].valid}),
+    .ready_o ({router_3_2_cut_wide_in[South].ready, router_3_2_wide_out[South].ready}),
+    .data_o  ({router_3_2_cut_wide_in[South].wide, router_3_2_wide_out[South].wide})
+  );
+  // Generate router_3_2 interface cuts for eject direction
+  floo_cut #(
+    .NumCuts (router_3_2_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_2_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_req_in[Eject].valid, router_3_2_cut_req_out[Eject].valid}),
+    .ready_i ({router_3_2_req_in[Eject].ready, router_3_2_cut_req_out[Eject].ready}),
+    .data_i  ({router_3_2_req_in[Eject].req, router_3_2_cut_req_out[Eject].req}),
+    .valid_o ({router_3_2_cut_req_in[Eject].valid, router_3_2_req_out[Eject].valid}),
+    .ready_o ({router_3_2_cut_req_in[Eject].ready, router_3_2_req_out[Eject].ready}),
+    .data_o  ({router_3_2_cut_req_in[Eject].req, router_3_2_req_out[Eject].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_2_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_rsp_in[Eject].valid, router_3_2_cut_rsp_out[Eject].valid}),
+    .ready_i ({router_3_2_rsp_in[Eject].ready, router_3_2_cut_rsp_out[Eject].ready}),
+    .data_i  ({router_3_2_rsp_in[Eject].rsp, router_3_2_cut_rsp_out[Eject].rsp}),
+    .valid_o ({router_3_2_cut_rsp_in[Eject].valid, router_3_2_rsp_out[Eject].valid}),
+    .ready_o ({router_3_2_cut_rsp_in[Eject].ready, router_3_2_rsp_out[Eject].ready}),
+    .data_o  ({router_3_2_cut_rsp_in[Eject].rsp, router_3_2_rsp_out[Eject].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_2_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_2_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_2_wide_in[Eject].valid, router_3_2_cut_wide_out[Eject].valid}),
+    .ready_i ({router_3_2_wide_in[Eject].ready, router_3_2_cut_wide_out[Eject].ready}),
+    .data_i  ({router_3_2_wide_in[Eject].wide, router_3_2_cut_wide_out[Eject].wide}),
+    .valid_o ({router_3_2_cut_wide_in[Eject].valid, router_3_2_wide_out[Eject].valid}),
+    .ready_o ({router_3_2_cut_wide_in[Eject].ready, router_3_2_wide_out[Eject].ready}),
+    .data_o  ({router_3_2_cut_wide_in[Eject].wide, router_3_2_wide_out[Eject].wide})
+  );
+
 localparam id_t router_3_2_id = '{x: 4, y: 3};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
@@ -2439,12 +3174,12 @@ floo_narrow_wide_router #(
   .test_enable_i,
   .id_i (router_3_2_id),
   .id_route_map_i ('0),
-  .floo_req_i (router_3_2_req_in),
-  .floo_rsp_o (router_3_2_rsp_out),
-  .floo_req_o (router_3_2_req_out),
-  .floo_rsp_i (router_3_2_rsp_in),
-  .floo_wide_i (router_3_2_wide_in),
-  .floo_wide_o (router_3_2_wide_out)
+  .floo_req_i (router_3_2_cut_req_in),
+  .floo_rsp_o (router_3_2_cut_rsp_out),
+  .floo_req_o (router_3_2_cut_req_out),
+  .floo_rsp_i (router_3_2_cut_rsp_in),
+  .floo_wide_i (router_3_2_cut_wide_in),
+  .floo_wide_o (router_3_2_cut_wide_out)
 );
 
 
@@ -2454,6 +3189,13 @@ floo_req_t [NumDirections-1:0] router_3_3_req_out;
 floo_rsp_t [NumDirections-1:0] router_3_3_rsp_in;
 floo_wide_t [NumDirections-1:0] router_3_3_wide_in;
 floo_wide_t [NumDirections-1:0] router_3_3_wide_out;
+
+floo_req_t [NumDirections-1:0] router_3_3_cut_req_in;
+floo_rsp_t [NumDirections-1:0] router_3_3_cut_rsp_out;
+floo_req_t [NumDirections-1:0] router_3_3_cut_req_out;
+floo_rsp_t [NumDirections-1:0] router_3_3_cut_rsp_in;
+floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_in;
+floo_wide_t [NumDirections-1:0] router_3_3_cut_wide_out;
 
   assign router_3_3_req_in[Eject] = spm_ni_to_router_3_3_req;
   assign router_3_3_req_in[East] = router_4_3_to_router_3_3_req;
@@ -2491,6 +3233,237 @@ floo_wide_t [NumDirections-1:0] router_3_3_wide_out;
   assign router_3_3_to_router_3_2_wide = router_3_3_wide_out[South];
   assign router_3_3_to_router_2_3_wide = router_3_3_wide_out[West];
 
+  // Generate router_3_3 interface cuts for north direction
+  floo_cut #(
+    .NumCuts (router_3_3_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_3_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_req_in[North].valid, router_3_3_cut_req_out[North].valid}),
+    .ready_i ({router_3_3_req_in[North].ready, router_3_3_cut_req_out[North].ready}),
+    .data_i  ({router_3_3_req_in[North].req, router_3_3_cut_req_out[North].req}),
+    .valid_o ({router_3_3_cut_req_in[North].valid, router_3_3_req_out[North].valid}),
+    .ready_o ({router_3_3_cut_req_in[North].ready, router_3_3_req_out[North].ready}),
+    .data_o  ({router_3_3_cut_req_in[North].req, router_3_3_req_out[North].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_3_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_rsp_in[North].valid, router_3_3_cut_rsp_out[North].valid}),
+    .ready_i ({router_3_3_rsp_in[North].ready, router_3_3_cut_rsp_out[North].ready}),
+    .data_i  ({router_3_3_rsp_in[North].rsp, router_3_3_cut_rsp_out[North].rsp}),
+    .valid_o ({router_3_3_cut_rsp_in[North].valid, router_3_3_rsp_out[North].valid}),
+    .ready_o ({router_3_3_cut_rsp_in[North].ready, router_3_3_rsp_out[North].ready}),
+    .data_o  ({router_3_3_cut_rsp_in[North].rsp, router_3_3_rsp_out[North].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_north_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_3_north_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_wide_in[North].valid, router_3_3_cut_wide_out[North].valid}),
+    .ready_i ({router_3_3_wide_in[North].ready, router_3_3_cut_wide_out[North].ready}),
+    .data_i  ({router_3_3_wide_in[North].wide, router_3_3_cut_wide_out[North].wide}),
+    .valid_o ({router_3_3_cut_wide_in[North].valid, router_3_3_wide_out[North].valid}),
+    .ready_o ({router_3_3_cut_wide_in[North].ready, router_3_3_wide_out[North].ready}),
+    .data_o  ({router_3_3_cut_wide_in[North].wide, router_3_3_wide_out[North].wide})
+  );
+  // Generate router_3_3 interface cuts for east direction
+  floo_cut #(
+    .NumCuts (router_3_3_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_3_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_req_in[East].valid, router_3_3_cut_req_out[East].valid}),
+    .ready_i ({router_3_3_req_in[East].ready, router_3_3_cut_req_out[East].ready}),
+    .data_i  ({router_3_3_req_in[East].req, router_3_3_cut_req_out[East].req}),
+    .valid_o ({router_3_3_cut_req_in[East].valid, router_3_3_req_out[East].valid}),
+    .ready_o ({router_3_3_cut_req_in[East].ready, router_3_3_req_out[East].ready}),
+    .data_o  ({router_3_3_cut_req_in[East].req, router_3_3_req_out[East].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_3_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_rsp_in[East].valid, router_3_3_cut_rsp_out[East].valid}),
+    .ready_i ({router_3_3_rsp_in[East].ready, router_3_3_cut_rsp_out[East].ready}),
+    .data_i  ({router_3_3_rsp_in[East].rsp, router_3_3_cut_rsp_out[East].rsp}),
+    .valid_o ({router_3_3_cut_rsp_in[East].valid, router_3_3_rsp_out[East].valid}),
+    .ready_o ({router_3_3_cut_rsp_in[East].ready, router_3_3_rsp_out[East].ready}),
+    .data_o  ({router_3_3_cut_rsp_in[East].rsp, router_3_3_rsp_out[East].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_east_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_3_east_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_wide_in[East].valid, router_3_3_cut_wide_out[East].valid}),
+    .ready_i ({router_3_3_wide_in[East].ready, router_3_3_cut_wide_out[East].ready}),
+    .data_i  ({router_3_3_wide_in[East].wide, router_3_3_cut_wide_out[East].wide}),
+    .valid_o ({router_3_3_cut_wide_in[East].valid, router_3_3_wide_out[East].valid}),
+    .ready_o ({router_3_3_cut_wide_in[East].ready, router_3_3_wide_out[East].ready}),
+    .data_o  ({router_3_3_cut_wide_in[East].wide, router_3_3_wide_out[East].wide})
+  );
+  // Generate router_3_3 interface cuts for west direction
+  floo_cut #(
+    .NumCuts (router_3_3_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_3_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_req_in[West].valid, router_3_3_cut_req_out[West].valid}),
+    .ready_i ({router_3_3_req_in[West].ready, router_3_3_cut_req_out[West].ready}),
+    .data_i  ({router_3_3_req_in[West].req, router_3_3_cut_req_out[West].req}),
+    .valid_o ({router_3_3_cut_req_in[West].valid, router_3_3_req_out[West].valid}),
+    .ready_o ({router_3_3_cut_req_in[West].ready, router_3_3_req_out[West].ready}),
+    .data_o  ({router_3_3_cut_req_in[West].req, router_3_3_req_out[West].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_3_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_rsp_in[West].valid, router_3_3_cut_rsp_out[West].valid}),
+    .ready_i ({router_3_3_rsp_in[West].ready, router_3_3_cut_rsp_out[West].ready}),
+    .data_i  ({router_3_3_rsp_in[West].rsp, router_3_3_cut_rsp_out[West].rsp}),
+    .valid_o ({router_3_3_cut_rsp_in[West].valid, router_3_3_rsp_out[West].valid}),
+    .ready_o ({router_3_3_cut_rsp_in[West].ready, router_3_3_rsp_out[West].ready}),
+    .data_o  ({router_3_3_cut_rsp_in[West].rsp, router_3_3_rsp_out[West].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_west_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_3_west_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_wide_in[West].valid, router_3_3_cut_wide_out[West].valid}),
+    .ready_i ({router_3_3_wide_in[West].ready, router_3_3_cut_wide_out[West].ready}),
+    .data_i  ({router_3_3_wide_in[West].wide, router_3_3_cut_wide_out[West].wide}),
+    .valid_o ({router_3_3_cut_wide_in[West].valid, router_3_3_wide_out[West].valid}),
+    .ready_o ({router_3_3_cut_wide_in[West].ready, router_3_3_wide_out[West].ready}),
+    .data_o  ({router_3_3_cut_wide_in[West].wide, router_3_3_wide_out[West].wide})
+  );
+  // Generate router_3_3 interface cuts for south direction
+  floo_cut #(
+    .NumCuts (router_3_3_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_3_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_req_in[South].valid, router_3_3_cut_req_out[South].valid}),
+    .ready_i ({router_3_3_req_in[South].ready, router_3_3_cut_req_out[South].ready}),
+    .data_i  ({router_3_3_req_in[South].req, router_3_3_cut_req_out[South].req}),
+    .valid_o ({router_3_3_cut_req_in[South].valid, router_3_3_req_out[South].valid}),
+    .ready_o ({router_3_3_cut_req_in[South].ready, router_3_3_req_out[South].ready}),
+    .data_o  ({router_3_3_cut_req_in[South].req, router_3_3_req_out[South].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_3_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_rsp_in[South].valid, router_3_3_cut_rsp_out[South].valid}),
+    .ready_i ({router_3_3_rsp_in[South].ready, router_3_3_cut_rsp_out[South].ready}),
+    .data_i  ({router_3_3_rsp_in[South].rsp, router_3_3_cut_rsp_out[South].rsp}),
+    .valid_o ({router_3_3_cut_rsp_in[South].valid, router_3_3_rsp_out[South].valid}),
+    .ready_o ({router_3_3_cut_rsp_in[South].ready, router_3_3_rsp_out[South].ready}),
+    .data_o  ({router_3_3_cut_rsp_in[South].rsp, router_3_3_rsp_out[South].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_south_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_3_south_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_wide_in[South].valid, router_3_3_cut_wide_out[South].valid}),
+    .ready_i ({router_3_3_wide_in[South].ready, router_3_3_cut_wide_out[South].ready}),
+    .data_i  ({router_3_3_wide_in[South].wide, router_3_3_cut_wide_out[South].wide}),
+    .valid_o ({router_3_3_cut_wide_in[South].valid, router_3_3_wide_out[South].valid}),
+    .ready_o ({router_3_3_cut_wide_in[South].ready, router_3_3_wide_out[South].ready}),
+    .data_o  ({router_3_3_cut_wide_in[South].wide, router_3_3_wide_out[South].wide})
+  );
+  // Generate router_3_3 interface cuts for eject direction
+  floo_cut #(
+    .NumCuts (router_3_3_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_req_chan_t)
+  ) i_floo_req_router_3_3_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_req_in[Eject].valid, router_3_3_cut_req_out[Eject].valid}),
+    .ready_i ({router_3_3_req_in[Eject].ready, router_3_3_cut_req_out[Eject].ready}),
+    .data_i  ({router_3_3_req_in[Eject].req, router_3_3_cut_req_out[Eject].req}),
+    .valid_o ({router_3_3_cut_req_in[Eject].valid, router_3_3_req_out[Eject].valid}),
+    .ready_o ({router_3_3_cut_req_in[Eject].ready, router_3_3_req_out[Eject].ready}),
+    .data_o  ({router_3_3_cut_req_in[Eject].req, router_3_3_req_out[Eject].req})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_rsp_chan_t)
+  ) i_floo_rsp_router_3_3_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_rsp_in[Eject].valid, router_3_3_cut_rsp_out[Eject].valid}),
+    .ready_i ({router_3_3_rsp_in[Eject].ready, router_3_3_cut_rsp_out[Eject].ready}),
+    .data_i  ({router_3_3_rsp_in[Eject].rsp, router_3_3_cut_rsp_out[Eject].rsp}),
+    .valid_o ({router_3_3_cut_rsp_in[Eject].valid, router_3_3_rsp_out[Eject].valid}),
+    .ready_o ({router_3_3_cut_rsp_in[Eject].ready, router_3_3_rsp_out[Eject].ready}),
+    .data_o  ({router_3_3_cut_rsp_in[Eject].rsp, router_3_3_rsp_out[Eject].rsp})
+  );
+  floo_cut #(
+    .NumCuts (router_3_3_eject_cut),
+    .NumChannels (2), // 2 for bi-directional channels
+    .flit_t (floo_wide_chan_t)
+  ) i_floo_wide_router_3_3_eject_cut (
+    .clk_i,
+    .rst_ni,
+    // {to_router, from_router}
+    .valid_i ({router_3_3_wide_in[Eject].valid, router_3_3_cut_wide_out[Eject].valid}),
+    .ready_i ({router_3_3_wide_in[Eject].ready, router_3_3_cut_wide_out[Eject].ready}),
+    .data_i  ({router_3_3_wide_in[Eject].wide, router_3_3_cut_wide_out[Eject].wide}),
+    .valid_o ({router_3_3_cut_wide_in[Eject].valid, router_3_3_wide_out[Eject].valid}),
+    .ready_o ({router_3_3_cut_wide_in[Eject].ready, router_3_3_wide_out[Eject].ready}),
+    .data_o  ({router_3_3_cut_wide_in[Eject].wide, router_3_3_wide_out[Eject].wide})
+  );
+
 localparam id_t router_3_3_id = '{x: 4, y: 4};
 floo_narrow_wide_router #(
   .NumRoutes (NumDirections),
@@ -2507,12 +3480,12 @@ floo_narrow_wide_router #(
   .test_enable_i,
   .id_i (router_3_3_id),
   .id_route_map_i ('0),
-  .floo_req_i (router_3_3_req_in),
-  .floo_rsp_o (router_3_3_rsp_out),
-  .floo_req_o (router_3_3_req_out),
-  .floo_rsp_i (router_3_3_rsp_in),
-  .floo_wide_i (router_3_3_wide_in),
-  .floo_wide_o (router_3_3_wide_out)
+  .floo_req_i (router_3_3_cut_req_in),
+  .floo_rsp_o (router_3_3_cut_rsp_out),
+  .floo_req_o (router_3_3_cut_req_out),
+  .floo_rsp_i (router_3_3_cut_rsp_in),
+  .floo_wide_i (router_3_3_cut_wide_in),
+  .floo_wide_o (router_3_3_cut_wide_out)
 );
 
 
