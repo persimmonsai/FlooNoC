@@ -32,12 +32,12 @@ module floo_narrow_wide_router
     input id_t id_i,
     input addr_rule_t [NumAddrRules-1:0] id_route_map_i,
 
-    input  floo_req_t  [ NumInputs-1:0] floo_req_i,
-    input  floo_rsp_t  [NumOutputs-1:0] floo_rsp_i,
-    output floo_req_t  [NumOutputs-1:0] floo_req_o,
-    output floo_rsp_t  [ NumInputs-1:0] floo_rsp_o,
-    input  floo_wide_t [ NumRoutes-1:0] floo_wide_i,
-    output floo_wide_t [ NumRoutes-1:0] floo_wide_o
+    input  floo_vec_req_t  [ NumInputs-1:0] floo_req_i,
+    input  floo_vec_rsp_t  [NumOutputs-1:0] floo_rsp_i,
+    output floo_vec_req_t  [NumOutputs-1:0] floo_req_o,
+    output floo_vec_rsp_t  [ NumInputs-1:0] floo_rsp_o,
+    input  floo_vec_wide_t [ NumRoutes-1:0] floo_wide_i,
+    output floo_vec_wide_t [ NumRoutes-1:0] floo_wide_o
 );
 
   floo_req_chan_t [ NumInputs-1:0] req_in;
