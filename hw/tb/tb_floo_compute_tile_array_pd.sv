@@ -678,6 +678,16 @@ module tb_floo_compute_tile_array_pd;
   /////////////////////////////
 
 
+  logic rst_ni_hbm_north_0_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_north_0_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_north_0_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -685,7 +695,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_0_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_0_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_req_soc_o[0].valid, hbm_north_floo_req_top_i[0].valid}),
       .ready_i({hbm_north_floo_req_top_i[0].ready, hbm_north_floo_req_soc_o[0].ready}),
@@ -700,7 +710,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_0_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_0_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_rsp_soc_o[0].valid, hbm_north_floo_rsp_top_i[0].valid}),
       .ready_i({hbm_north_floo_rsp_top_i[0].ready, hbm_north_floo_rsp_soc_o[0].ready}),
@@ -715,7 +725,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_0_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_0_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_wide_soc_o[0].valid, hbm_north_floo_wide_top_i[0].valid}),
       .ready_i({hbm_north_floo_wide_top_i[0].ready, hbm_north_floo_wide_soc_o[0].ready}),
@@ -725,6 +735,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_wide_top_o[0].wide, hbm_north_floo_wide_soc_i[0].wide})
   );
 
+  logic rst_ni_hbm_north_1_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_north_1_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_north_1_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -732,7 +752,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_req_soc_o[1].valid, hbm_north_floo_req_top_i[1].valid}),
       .ready_i({hbm_north_floo_req_top_i[1].ready, hbm_north_floo_req_soc_o[1].ready}),
@@ -747,7 +767,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_rsp_soc_o[1].valid, hbm_north_floo_rsp_top_i[1].valid}),
       .ready_i({hbm_north_floo_rsp_top_i[1].ready, hbm_north_floo_rsp_soc_o[1].ready}),
@@ -762,7 +782,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_wide_soc_o[1].valid, hbm_north_floo_wide_top_i[1].valid}),
       .ready_i({hbm_north_floo_wide_top_i[1].ready, hbm_north_floo_wide_soc_o[1].ready}),
@@ -772,6 +792,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_wide_top_o[1].wide, hbm_north_floo_wide_soc_i[1].wide})
   );
 
+  logic rst_ni_hbm_north_2_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_north_2_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_north_2_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -779,7 +809,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_2_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_2_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_req_soc_o[2].valid, hbm_north_floo_req_top_i[2].valid}),
       .ready_i({hbm_north_floo_req_top_i[2].ready, hbm_north_floo_req_soc_o[2].ready}),
@@ -794,7 +824,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_2_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_2_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_rsp_soc_o[2].valid, hbm_north_floo_rsp_top_i[2].valid}),
       .ready_i({hbm_north_floo_rsp_top_i[2].ready, hbm_north_floo_rsp_soc_o[2].ready}),
@@ -809,7 +839,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_2_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_2_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_wide_soc_o[2].valid, hbm_north_floo_wide_top_i[2].valid}),
       .ready_i({hbm_north_floo_wide_top_i[2].ready, hbm_north_floo_wide_soc_o[2].ready}),
@@ -819,6 +849,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_wide_top_o[2].wide, hbm_north_floo_wide_soc_i[2].wide})
   );
 
+  logic rst_ni_hbm_north_3_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_north_3_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_north_3_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -826,7 +866,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_north_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_req_soc_o[3].valid, hbm_north_floo_req_top_i[3].valid}),
       .ready_i({hbm_north_floo_req_top_i[3].ready, hbm_north_floo_req_soc_o[3].ready}),
@@ -841,7 +881,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_north_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_rsp_soc_o[3].valid, hbm_north_floo_rsp_top_i[3].valid}),
       .ready_i({hbm_north_floo_rsp_top_i[3].ready, hbm_north_floo_rsp_soc_o[3].ready}),
@@ -856,7 +896,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_north_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_north_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_north_floo_wide_soc_o[3].valid, hbm_north_floo_wide_top_i[3].valid}),
       .ready_i({hbm_north_floo_wide_top_i[3].ready, hbm_north_floo_wide_soc_o[3].ready}),
@@ -866,6 +906,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_north_floo_wide_top_o[3].wide, hbm_north_floo_wide_soc_i[3].wide})
   );
 
+  logic rst_ni_hbm_south_0_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_south_0_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_south_0_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -873,7 +923,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_0_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_0_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_req_soc_o[0].valid, hbm_south_floo_req_top_i[0].valid}),
       .ready_i({hbm_south_floo_req_top_i[0].ready, hbm_south_floo_req_soc_o[0].ready}),
@@ -888,7 +938,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_0_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_0_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_rsp_soc_o[0].valid, hbm_south_floo_rsp_top_i[0].valid}),
       .ready_i({hbm_south_floo_rsp_top_i[0].ready, hbm_south_floo_rsp_soc_o[0].ready}),
@@ -903,7 +953,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_0_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_0_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_wide_soc_o[0].valid, hbm_south_floo_wide_top_i[0].valid}),
       .ready_i({hbm_south_floo_wide_top_i[0].ready, hbm_south_floo_wide_soc_o[0].ready}),
@@ -913,6 +963,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_wide_top_o[0].wide, hbm_south_floo_wide_soc_i[0].wide})
   );
 
+  logic rst_ni_hbm_south_1_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_south_1_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_south_1_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -920,7 +980,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_req_soc_o[1].valid, hbm_south_floo_req_top_i[1].valid}),
       .ready_i({hbm_south_floo_req_top_i[1].ready, hbm_south_floo_req_soc_o[1].ready}),
@@ -935,7 +995,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_rsp_soc_o[1].valid, hbm_south_floo_rsp_top_i[1].valid}),
       .ready_i({hbm_south_floo_rsp_top_i[1].ready, hbm_south_floo_rsp_soc_o[1].ready}),
@@ -950,7 +1010,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_wide_soc_o[1].valid, hbm_south_floo_wide_top_i[1].valid}),
       .ready_i({hbm_south_floo_wide_top_i[1].ready, hbm_south_floo_wide_soc_o[1].ready}),
@@ -960,6 +1020,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_wide_top_o[1].wide, hbm_south_floo_wide_soc_i[1].wide})
   );
 
+  logic rst_ni_hbm_south_2_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_south_2_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_south_2_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -967,7 +1037,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_2_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_2_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_req_soc_o[2].valid, hbm_south_floo_req_top_i[2].valid}),
       .ready_i({hbm_south_floo_req_top_i[2].ready, hbm_south_floo_req_soc_o[2].ready}),
@@ -982,7 +1052,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_2_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_2_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_rsp_soc_o[2].valid, hbm_south_floo_rsp_top_i[2].valid}),
       .ready_i({hbm_south_floo_rsp_top_i[2].ready, hbm_south_floo_rsp_soc_o[2].ready}),
@@ -997,7 +1067,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_2_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_2_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_wide_soc_o[2].valid, hbm_south_floo_wide_top_i[2].valid}),
       .ready_i({hbm_south_floo_wide_top_i[2].ready, hbm_south_floo_wide_soc_o[2].ready}),
@@ -1007,6 +1077,16 @@ module tb_floo_compute_tile_array_pd;
       .data_o ({hbm_south_floo_wide_top_o[2].wide, hbm_south_floo_wide_soc_i[2].wide})
   );
 
+  logic rst_ni_hbm_south_3_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_south_3_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_south_3_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(2),
@@ -1014,7 +1094,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_south_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_req_soc_o[3].valid, hbm_south_floo_req_top_i[3].valid}),
       .ready_i({hbm_south_floo_req_top_i[3].ready, hbm_south_floo_req_soc_o[3].ready}),
@@ -1029,7 +1109,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_south_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_rsp_soc_o[3].valid, hbm_south_floo_rsp_top_i[3].valid}),
       .ready_i({hbm_south_floo_rsp_top_i[3].ready, hbm_south_floo_rsp_soc_o[3].ready}),
@@ -1044,7 +1124,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_south_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_south_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_south_floo_wide_soc_o[3].valid, hbm_south_floo_wide_top_i[3].valid}),
       .ready_i({hbm_south_floo_wide_top_i[3].ready, hbm_south_floo_wide_soc_o[3].ready}),
@@ -1062,6 +1142,16 @@ module tb_floo_compute_tile_array_pd;
   assign hbm_west_floo_wide_top_o[0] = hbm_west_floo_wide_soc_o[0];
   assign hbm_west_floo_wide_soc_i[0] = hbm_west_floo_wide_top_i[0];
 
+  logic rst_ni_hbm_west_1_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_west_1_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_west_1_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(1),
@@ -1069,7 +1159,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_west_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_west_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_west_floo_req_soc_o[1].valid, hbm_west_floo_req_top_i[1].valid}),
       .ready_i({hbm_west_floo_req_top_i[1].ready, hbm_west_floo_req_soc_o[1].ready}),
@@ -1084,7 +1174,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_west_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_west_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_west_floo_rsp_soc_o[1].valid, hbm_west_floo_rsp_top_i[1].valid}),
       .ready_i({hbm_west_floo_rsp_top_i[1].ready, hbm_west_floo_rsp_soc_o[1].ready}),
@@ -1099,7 +1189,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_west_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_west_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_west_floo_wide_soc_o[1].valid, hbm_west_floo_wide_top_i[1].valid}),
       .ready_i({hbm_west_floo_wide_top_i[1].ready, hbm_west_floo_wide_soc_o[1].ready}),
@@ -1117,6 +1207,16 @@ module tb_floo_compute_tile_array_pd;
   assign hbm_west_floo_wide_top_o[2] = hbm_west_floo_wide_soc_o[2];
   assign hbm_west_floo_wide_soc_i[2] = hbm_west_floo_wide_top_i[2];
 
+  logic rst_ni_hbm_west_3_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_west_3_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_west_3_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(1),
@@ -1124,7 +1224,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_west_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_west_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_west_floo_req_soc_o[3].valid, hbm_west_floo_req_top_i[3].valid}),
       .ready_i({hbm_west_floo_req_top_i[3].ready, hbm_west_floo_req_soc_o[3].ready}),
@@ -1139,7 +1239,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_west_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_west_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_west_floo_rsp_soc_o[3].valid, hbm_west_floo_rsp_top_i[3].valid}),
       .ready_i({hbm_west_floo_rsp_top_i[3].ready, hbm_west_floo_rsp_soc_o[3].ready}),
@@ -1154,7 +1254,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_west_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_west_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_west_floo_wide_soc_o[3].valid, hbm_west_floo_wide_top_i[3].valid}),
       .ready_i({hbm_west_floo_wide_top_i[3].ready, hbm_west_floo_wide_soc_o[3].ready}),
@@ -1172,6 +1272,16 @@ module tb_floo_compute_tile_array_pd;
   assign hbm_east_floo_wide_top_o[0] = hbm_east_floo_wide_soc_o[0];
   assign hbm_east_floo_wide_soc_i[0] = hbm_east_floo_wide_top_i[0];
 
+  logic rst_ni_hbm_east_1_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_east_1_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_east_1_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(1),
@@ -1179,7 +1289,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_east_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_east_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_east_floo_req_soc_o[1].valid, hbm_east_floo_req_top_i[1].valid}),
       .ready_i({hbm_east_floo_req_top_i[1].ready, hbm_east_floo_req_soc_o[1].ready}),
@@ -1194,7 +1304,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_east_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_east_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_east_floo_rsp_soc_o[1].valid, hbm_east_floo_rsp_top_i[1].valid}),
       .ready_i({hbm_east_floo_rsp_top_i[1].ready, hbm_east_floo_rsp_soc_o[1].ready}),
@@ -1209,7 +1319,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_east_1_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_east_1_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_east_floo_wide_soc_o[1].valid, hbm_east_floo_wide_top_i[1].valid}),
       .ready_i({hbm_east_floo_wide_top_i[1].ready, hbm_east_floo_wide_soc_o[1].ready}),
@@ -1227,6 +1337,16 @@ module tb_floo_compute_tile_array_pd;
   assign hbm_east_floo_wide_top_o[2] = hbm_east_floo_wide_soc_o[2];
   assign hbm_east_floo_wide_soc_i[2] = hbm_east_floo_wide_top_i[2];
 
+  logic rst_ni_hbm_east_3_cut;
+  sync #(
+      .STAGES(2),
+      .ResetValue(1'b0)  // Not assert ndmreset when the system is reset
+  ) i_sync_rst_ni_hbm_east_3_cut (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .serial_i(rst_ni),
+      .serial_o(rst_ni_hbm_east_3_cut)
+  );
   // Generate hbm interface cuts
   floo_cut #(
       .NumCuts(1),
@@ -1234,7 +1354,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_req_chan_t)
   ) i_floo_req_hbm_east_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_east_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_east_floo_req_soc_o[3].valid, hbm_east_floo_req_top_i[3].valid}),
       .ready_i({hbm_east_floo_req_top_i[3].ready, hbm_east_floo_req_soc_o[3].ready}),
@@ -1249,7 +1369,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_rsp_chan_t)
   ) i_floo_rsp_hbm_east_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_east_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_east_floo_rsp_soc_o[3].valid, hbm_east_floo_rsp_top_i[3].valid}),
       .ready_i({hbm_east_floo_rsp_top_i[3].ready, hbm_east_floo_rsp_soc_o[3].ready}),
@@ -1264,7 +1384,7 @@ module tb_floo_compute_tile_array_pd;
       .flit_t(floo_wide_chan_t)
   ) i_floo_wide_hbm_east_3_cut (
       .clk_i  (clk_i),
-      .rst_ni (rst_ni),
+      .rst_ni (rst_ni_hbm_east_3_cut),
       // {SoC -> Top, Top -> SoC}
       .valid_i({hbm_east_floo_wide_soc_o[3].valid, hbm_east_floo_wide_top_i[3].valid}),
       .ready_i({hbm_east_floo_wide_top_i[3].ready, hbm_east_floo_wide_soc_o[3].ready}),

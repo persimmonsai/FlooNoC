@@ -4,6 +4,8 @@
 //
 // Tim Fischer <fischeti@iis.ee.ethz.ch>
 
+`include "common_cells/registers.svh"
+
 /// Spill registers to cut timing paths
 module floo_cut #(
   parameter int unsigned  NumChannels     = 32'd2, // 2 for bi-directional channels
@@ -35,6 +37,7 @@ module floo_cut #(
     flit_t  [NumChannels-1:0][NumCuts-1:0][NumVirtChannels-1:0] data_virt;
     logic   [NumChannels-1:0][NumCuts:0][NumVirtChannels-1:0] valid, ready;
     logic   [NumChannels-1:0][NumCuts-1:0][NumVirtChannels-1:0] valid_virt, ready_virt;
+    logic   [NumChannels-1:0][NumCuts:0] rst_cut_ni;
 
     for (genvar n = 0; n < NumChannels; n++) begin : gen_channel
 
@@ -42,12 +45,15 @@ module floo_cut #(
       assign valid[n][0] = valid_i[n];
       assign data[n][0] = data_i[n];
       assign ready_o[n] = ready[n][0];
+      assign rst_cut_ni[n][0] = rst_ni;
       // Assign output to last element
       assign valid_o[n] = valid[n][NumCuts];
       assign ready[n][NumCuts] = ready_i[n];
       assign data_o[n] = data[n][NumCuts];
       
       for (genvar c = 0; c < NumCuts; c++) begin : gen_cut
+        // Reset pipe
+        `FFARN(rst_cut_ni[n][c+1], rst_cut_ni[n][c], 1'b0, clk_i, rst_ni)
 
         for (genvar v = 0; v < NumVirtChannels; v++) begin : gen_virt
           spill_register #(
@@ -55,7 +61,7 @@ module floo_cut #(
             .Bypass  ( 1'b0   )
           ) i_floo_spill_reg (
             .clk_i   ( clk_i                ),
-            .rst_ni  ( rst_ni               ),
+            .rst_ni  ( rst_cut_ni[n][c+1]      ),
             .valid_i ( valid[n][c][v]       ),
             .ready_o ( ready[n][c][v]     ),
             .data_i  ( data[n][c]           ),
@@ -72,7 +78,7 @@ module floo_cut #(
           .flit_t(flit_t)
         ) i_floo_vc_arbiter (
           .clk_i      ( clk_i             ),
-          .rst_ni     ( rst_ni            ),
+          .rst_ni     ( rst_cut_ni[n][c+1]   ),
           .valid_i    ( valid_virt[n][c]  ),
           .ready_o    ( ready_virt[n][c]  ),
           .data_i     ( data_virt[n][c]   ),
