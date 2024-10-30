@@ -98,12 +98,12 @@ ${wide_type} [NumDirections-1:0] ${router.name}_cut_wide_out;
     .clk_i,
     .rst_ni,
     // {to_router, from_router}
-    .valid_i ({${router.name}_${type}_in[${camelcase(dir)}].valid, ${router.name}_cut_${type}_out[${camelcase(dir)}].valid}),
-    .ready_i ({${router.name}_cut_${type}_out[${camelcase(dir)}].ready, ${router.name}_${type}_in[${camelcase(dir)}].ready}),
-    .data_i  ({${router.name}_${type}_in[${camelcase(dir)}].${type}, ${router.name}_cut_${type}_out[${camelcase(dir)}].${type}}),
-    .valid_o ({${router.name}_cut_${type}_in[${camelcase(dir)}].valid, ${router.name}_${type}_out[${camelcase(dir)}].valid}),
-    .ready_o ({${router.name}_${type}_out[${camelcase(dir)}].ready, ${router.name}_cut_${type}_in[${camelcase(dir)}].ready}),
-    .data_o  ({${router.name}_cut_${type}_in[${camelcase(dir)}].${type}, ${router.name}_${type}_out[${camelcase(dir)}].${type}})
+    .valid_i ({${router.name}_cut_${type}_out[${camelcase(dir)}].valid  , ${router.name}_${type}_in[${camelcase(dir)}].valid       }),
+    .ready_i ({${router.name}_${type}_in[${camelcase(dir)}].ready       , ${router.name}_cut_${type}_out[${camelcase(dir)}].ready  }),
+    .data_i  ({${router.name}_cut_${type}_out[${camelcase(dir)}].${type}, ${router.name}_${type}_in[${camelcase(dir)}].${type}     }),
+    .valid_o ({${router.name}_${type}_out[${camelcase(dir)}].valid      , ${router.name}_cut_${type}_in[${camelcase(dir)}].valid   }),
+    .ready_o ({${router.name}_cut_${type}_in[${camelcase(dir)}].ready   , ${router.name}_${type}_out[${camelcase(dir)}].ready      }),
+    .data_o  ({${router.name}_${type}_out[${camelcase(dir)}].${type}    , ${router.name}_cut_${type}_in[${camelcase(dir)}].${type} })
   );
   %endfor
 %endfor

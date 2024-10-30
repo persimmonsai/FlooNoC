@@ -39,22 +39,27 @@ module floo_cut #(
     logic   [NumChannels-1:0][NumCuts-1:0][NumVirtChannels-1:0] valid_virt, ready_virt;
     logic   [NumChannels-1:0][NumCuts:0] rst_cut_ni;
 
+    assign rst_cut_ni[0][0] = rst_ni;
+    for (genvar c = 0; c < NumCuts; c++) begin : gen_rst_cut
+      // Reset pipe
+      `FFARN(rst_cut_ni[0][c+1], rst_cut_ni[0][c], 1'b0, clk_i, rst_ni)
+      if (NumChannels==2) begin : gen_back_rst_cut
+        assign rst_cut_ni[1][NumCuts-c] = rst_cut_ni[0][c+1];
+      end
+    end
+
     for (genvar n = 0; n < NumChannels; n++) begin : gen_channel
 
       // Assign input to first element
       assign valid[n][0] = valid_i[n];
       assign data[n][0] = data_i[n];
       assign ready_o[n] = ready[n][0];
-      assign rst_cut_ni[n][0] = rst_ni;
       // Assign output to last element
       assign valid_o[n] = valid[n][NumCuts];
       assign ready[n][NumCuts] = ready_i[n];
       assign data_o[n] = data[n][NumCuts];
       
       for (genvar c = 0; c < NumCuts; c++) begin : gen_cut
-        // Reset pipe
-        `FFARN(rst_cut_ni[n][c+1], rst_cut_ni[n][c], 1'b0, clk_i, rst_ni)
-
         for (genvar v = 0; v < NumVirtChannels; v++) begin : gen_virt
           spill_register #(
             .T       ( flit_t ),
