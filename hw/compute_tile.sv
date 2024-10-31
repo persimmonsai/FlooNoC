@@ -125,27 +125,27 @@ module compute_tile
   assign floo_req_i[North] = floo_north_req_i;
   assign floo_rsp_i[North] = floo_north_rsp_i;
   assign floo_wide_i[North] = floo_north_wide_i;
-  assign floo_north_req_o = floo_req_o[North];
-  assign floo_north_rsp_o = floo_rsp_o[North];
-  assign floo_north_wide_o = floo_wide_o[North];
+  assign #0.1ns floo_north_req_o = floo_req_o[North];
+  assign #0.1ns floo_north_rsp_o = floo_rsp_o[North];
+  assign #0.1ns floo_north_wide_o = floo_wide_o[North];
   assign floo_req_i[East] = floo_east_req_i;
   assign floo_rsp_i[East] = floo_east_rsp_i;
   assign floo_wide_i[East] = floo_east_wide_i;
-  assign floo_east_req_o = floo_req_o[East];
-  assign floo_east_rsp_o = floo_rsp_o[East];
-  assign floo_east_wide_o = floo_wide_o[East];
+  assign #0.1ns floo_east_req_o = floo_req_o[East];
+  assign #0.1ns floo_east_rsp_o = floo_rsp_o[East];
+  assign #0.1ns floo_east_wide_o = floo_wide_o[East];
   assign floo_req_i[South] = floo_south_req_i;
   assign floo_rsp_i[South] = floo_south_rsp_i;
   assign floo_wide_i[South] = floo_south_wide_i;
-  assign floo_south_req_o = floo_req_o[South];
-  assign floo_south_rsp_o = floo_rsp_o[South];
-  assign floo_south_wide_o = floo_wide_o[South];
+  assign #0.1ns floo_south_req_o = floo_req_o[South];
+  assign #0.1ns floo_south_rsp_o = floo_rsp_o[South];
+  assign #0.1ns floo_south_wide_o = floo_wide_o[South];
   assign floo_req_i[West] = floo_west_req_i;
   assign floo_rsp_i[West] = floo_west_rsp_i;
   assign floo_wide_i[West] = floo_west_wide_i;
-  assign floo_west_req_o = floo_req_o[West];
-  assign floo_west_rsp_o = floo_rsp_o[West];
-  assign floo_west_wide_o = floo_wide_o[West];
+  assign #0.1ns floo_west_req_o = floo_req_o[West];
+  assign #0.1ns floo_west_rsp_o = floo_rsp_o[West];
+  assign #0.1ns floo_west_wide_o = floo_wide_o[West];
 
   floo_noc_pd_top i_floo_noc_pd
   (

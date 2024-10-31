@@ -123,9 +123,9 @@ module compute_tile
   assign floo_req_i[${camelcase(dir)}] = floo_${dir}_req_i;
   assign floo_rsp_i[${camelcase(dir)}] = floo_${dir}_rsp_i;
   assign floo_wide_i[${camelcase(dir)}] = floo_${dir}_wide_i;
-  assign floo_${dir}_req_o = floo_req_o[${camelcase(dir)}];
-  assign floo_${dir}_rsp_o = floo_rsp_o[${camelcase(dir)}];
-  assign floo_${dir}_wide_o = floo_wide_o[${camelcase(dir)}];
+  assign #0.1ns floo_${dir}_req_o = floo_req_o[${camelcase(dir)}];
+  assign #0.1ns floo_${dir}_rsp_o = floo_rsp_o[${camelcase(dir)}];
+  assign #0.1ns floo_${dir}_wide_o = floo_wide_o[${camelcase(dir)}];
 % endfor
 
   floo_noc_pd_top i_floo_noc_pd
