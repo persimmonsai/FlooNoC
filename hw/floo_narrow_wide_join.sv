@@ -24,6 +24,8 @@ module floo_narrow_wide_join #(
     parameter  int unsigned AxiNarrowUserInWidth         = 0,
     /// User width of the wide AXI bus
     parameter  int unsigned AxiWideUserInWidth           = 0,
+    /// Enable atomic at output
+    parameter  bit          RiscvAtomicsStructs          = 1'b1,
     /// ID width of the resulting AXI bus
     /// To prevent the instantiation of any ID remappers,
     /// `AxiIdOutWidth` should be chosen, such that:
@@ -188,53 +190,63 @@ module floo_narrow_wide_join #(
   axi_wide_iw_conv_req_t   axi_wide_req_iw_conv;
   axi_wide_iw_conv_rsp_t   axi_wide_rsp_iw_conv;
 
-  axi_iw_converter #(
-      .AxiSlvPortIdWidth     (AxiNarrowIdInWidth),
-      .AxiMstPortIdWidth     (AxiIdConvWidth),
-      .AxiSlvPortMaxUniqIds  (AxiNarrowSlvPortMaxUniqIds),
-      .AxiSlvPortMaxTxnsPerId(AxiNarrowSlvPortMaxTxnsPerId),
-      .AxiSlvPortMaxTxns     (AxiNarrowSlvPortMaxTxns),
-      .AxiMstPortMaxUniqIds  (AxiNarrowMstPortMaxUniqIds),
-      .AxiMstPortMaxTxnsPerId(AxiNarrowMstPortMaxTxnsPerId),
-      .AxiAddrWidth          (AxiAddrWidth),
-      .AxiDataWidth          (AxiNarrowDataWidth),
-      .AxiUserWidth          (AxiNarrowUserInWidth),
-      .slv_req_t             (axi_narrow_req_t),
-      .slv_resp_t            (axi_narrow_rsp_t),
-      .mst_req_t             (axi_narrow_iw_conv_req_t),
-      .mst_resp_t            (axi_narrow_iw_conv_rsp_t)
-  ) i_axi_narrow_iw_converter (
-      .clk_i     (clk_i),
-      .rst_ni    (rst_ni),
-      .slv_req_i (axi_narrow_req_filter_atop),
-      .slv_resp_o(axi_narrow_rsp_filter_atop),
-      .mst_req_o (axi_narrow_req_iw_conv),
-      .mst_resp_i(axi_narrow_rsp_iw_conv)
-  );
-
-  axi_iw_converter #(
-      .AxiSlvPortIdWidth     (AxiWideIdInWidth),
-      .AxiMstPortIdWidth     (AxiIdConvWidth),
-      .AxiSlvPortMaxUniqIds  (AxiWideSlvPortMaxUniqIds),
-      .AxiSlvPortMaxTxnsPerId(AxiWideSlvPortMaxTxnsPerId),
-      .AxiSlvPortMaxTxns     (AxiWideSlvPortMaxTxns),
-      .AxiMstPortMaxUniqIds  (AxiWideMstPortMaxUniqIds),
-      .AxiMstPortMaxTxnsPerId(AxiWideMstPortMaxTxnsPerId),
-      .AxiAddrWidth          (AxiAddrWidth),
-      .AxiDataWidth          (AxiWideDataWidth),
-      .AxiUserWidth          (AxiWideUserInWidth),
-      .slv_req_t             (axi_wide_req_t),
-      .slv_resp_t            (axi_wide_rsp_t),
-      .mst_req_t             (axi_wide_iw_conv_req_t),
-      .mst_resp_t            (axi_wide_iw_conv_rsp_t)
-  ) i_axi_wide_iw_converter (
-      .clk_i     (clk_i),
-      .rst_ni    (rst_ni),
-      .slv_req_i (axi_wide_req_filter_atop),
-      .slv_resp_o(axi_wide_rsp_filter_atop),
-      .mst_req_o (axi_wide_req_iw_conv),
-      .mst_resp_i(axi_wide_rsp_iw_conv)
-  );
+  if (AxiNarrowIdInWidth != AxiIdConvWidth) begin : gen_narrow_id_conv
+    axi_iw_converter #(
+        .AxiSlvPortIdWidth     (AxiNarrowIdInWidth),
+        .AxiMstPortIdWidth     (AxiIdConvWidth),
+        .AxiSlvPortMaxUniqIds  (AxiNarrowSlvPortMaxUniqIds),
+        .AxiSlvPortMaxTxnsPerId(AxiNarrowSlvPortMaxTxnsPerId),
+        .AxiSlvPortMaxTxns     (AxiNarrowSlvPortMaxTxns),
+        .AxiMstPortMaxUniqIds  (AxiNarrowMstPortMaxUniqIds),
+        .AxiMstPortMaxTxnsPerId(AxiNarrowMstPortMaxTxnsPerId),
+        .AxiAddrWidth          (AxiAddrWidth),
+        .AxiDataWidth          (AxiNarrowDataWidth),
+        .AxiUserWidth          (AxiNarrowUserInWidth),
+        .slv_req_t             (axi_narrow_req_t),
+        .slv_resp_t            (axi_narrow_rsp_t),
+        .mst_req_t             (axi_narrow_iw_conv_req_t),
+        .mst_resp_t            (axi_narrow_iw_conv_rsp_t)
+    ) i_axi_narrow_iw_converter (
+        .clk_i     (clk_i),
+        .rst_ni    (rst_ni),
+        .slv_req_i (axi_narrow_req_filter_atop),
+        .slv_resp_o(axi_narrow_rsp_filter_atop),
+        .mst_req_o (axi_narrow_req_iw_conv),
+        .mst_resp_i(axi_narrow_rsp_iw_conv)
+    );
+  end else begin : gen_narrow_id_conv_passthrough
+    `AXI_ASSIGN_REQ_STRUCT(axi_narrow_req_iw_conv, axi_narrow_req_filter_atop)
+    `AXI_ASSIGN_RESP_STRUCT(axi_narrow_rsp_filter_atop, axi_narrow_rsp_iw_conv)
+  end
+  
+  if (AxiWideIdInWidth != AxiIdConvWidth) begin : gen_wide_id_conv
+    axi_iw_converter #(
+        .AxiSlvPortIdWidth     (AxiWideIdInWidth),
+        .AxiMstPortIdWidth     (AxiIdConvWidth),
+        .AxiSlvPortMaxUniqIds  (AxiWideSlvPortMaxUniqIds),
+        .AxiSlvPortMaxTxnsPerId(AxiWideSlvPortMaxTxnsPerId),
+        .AxiSlvPortMaxTxns     (AxiWideSlvPortMaxTxns),
+        .AxiMstPortMaxUniqIds  (AxiWideMstPortMaxUniqIds),
+        .AxiMstPortMaxTxnsPerId(AxiWideMstPortMaxTxnsPerId),
+        .AxiAddrWidth          (AxiAddrWidth),
+        .AxiDataWidth          (AxiWideDataWidth),
+        .AxiUserWidth          (AxiWideUserInWidth),
+        .slv_req_t             (axi_wide_req_t),
+        .slv_resp_t            (axi_wide_rsp_t),
+        .mst_req_t             (axi_wide_iw_conv_req_t),
+        .mst_resp_t            (axi_wide_iw_conv_rsp_t)
+    ) i_axi_wide_iw_converter (
+        .clk_i     (clk_i),
+        .rst_ni    (rst_ni),
+        .slv_req_i (axi_wide_req_filter_atop),
+        .slv_resp_o(axi_wide_rsp_filter_atop),
+        .mst_req_o (axi_wide_req_iw_conv),
+        .mst_resp_i(axi_wide_rsp_iw_conv)
+    );
+  end else begin : gen_wide_id_conv_passthrough
+    `AXI_ASSIGN_REQ_STRUCT(axi_wide_req_iw_conv, axi_wide_req_filter_atop)
+    `AXI_ASSIGN_RESP_STRUCT(axi_wide_rsp_filter_atop, axi_wide_rsp_iw_conv)
+  end
 
   //////////////////////////////
   ///  Data width conversion  //
@@ -423,32 +435,37 @@ module floo_narrow_wide_join #(
   ///  Atomics Adapter  //
   ////////////////////////
 
-  axi_out_req_t axi_out_req_atop;
-  axi_out_rsp_t axi_out_rsp_atop;
+  if (RiscvAtomicsStructs) begin : gen_riscv_atomic_struct
+    axi_out_req_t axi_out_req_atop;
+    axi_out_rsp_t axi_out_rsp_atop;
 
-  axi_riscv_atomics_structs #(
-      .AxiAddrWidth   (AxiAddrWidth),
-      .AxiDataWidth   (AxiDataOutWidth),
-      .AxiIdWidth     (AxiIdOutWidth),
-      .AxiUserWidth   (AxiUserWidth),
-      .AxiMaxReadTxns (AxiOutMaxTxns),
-      .AxiMaxWriteTxns(AxiOutMaxWriteTxns),
-      .AxiUserAsId    (int'(AtopUserAsId)),
-      .AxiUserIdMsb   (AtopAxiUserIdMsb),
-      .AxiUserIdLsb   (AtopAxiUserIdLsb),
-      .RiscvWordWidth (AxiNarrowDataWidth),
-      .axi_req_t      (axi_out_req_t),
-      .axi_rsp_t      (axi_out_rsp_t)
-  ) i_axi_riscv_atomics_structs (
-      .clk_i        (clk_i),
-      .rst_ni       (rst_ni),
-      .axi_slv_req_i(axi_out_cuts_req),
-      .axi_slv_rsp_o(axi_out_cuts_rsp),
-      .axi_mst_req_o(axi_out_req_atop),
-      .axi_mst_rsp_i(axi_out_rsp_atop)
-  );
+    axi_riscv_atomics_structs #(
+        .AxiAddrWidth   (AxiAddrWidth),
+        .AxiDataWidth   (AxiDataOutWidth),
+        .AxiIdWidth     (AxiIdOutWidth),
+        .AxiUserWidth   (AxiUserWidth),
+        .AxiMaxReadTxns (AxiOutMaxTxns),
+        .AxiMaxWriteTxns(AxiOutMaxWriteTxns),
+        .AxiUserAsId    (int'(AtopUserAsId)),
+        .AxiUserIdMsb   (AtopAxiUserIdMsb),
+        .AxiUserIdLsb   (AtopAxiUserIdLsb),
+        .RiscvWordWidth (AxiNarrowDataWidth),
+        .axi_req_t      (axi_out_req_t),
+        .axi_rsp_t      (axi_out_rsp_t)
+    ) i_axi_riscv_atomics_structs (
+        .clk_i        (clk_i),
+        .rst_ni       (rst_ni),
+        .axi_slv_req_i(axi_out_cuts_req),
+        .axi_slv_rsp_o(axi_out_cuts_rsp),
+        .axi_mst_req_o(axi_out_req_atop),
+        .axi_mst_rsp_i(axi_out_rsp_atop)
+    );
 
-  `AXI_ASSIGN_REQ_STRUCT(axi_req_o, axi_out_req_atop)
-  `AXI_ASSIGN_RESP_STRUCT(axi_out_rsp_atop, axi_rsp_i)
+    `AXI_ASSIGN_REQ_STRUCT(axi_req_o, axi_out_req_atop)
+    `AXI_ASSIGN_RESP_STRUCT(axi_out_rsp_atop, axi_rsp_i)
+  end else begin : gen_riscv_atomic_struct_passthrough
+    `AXI_ASSIGN_REQ_STRUCT(axi_req_o, axi_out_cuts_req)
+    `AXI_ASSIGN_RESP_STRUCT(axi_out_cuts_rsp, axi_rsp_i)
+  end
 
 endmodule
