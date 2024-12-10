@@ -107,6 +107,10 @@ ${wide_type} [West:North] ${router.name}_wide_out;
 % endfor
 
 localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
+% if (router.id.x==0 and router.id.y==0):
+`ifdef TARGET_COMPUTE_TILE_0_0_NETLIST
+  compute_tile_netlist
+`else
   compute_tile 
 `ifdef TARGET_DMA_TEST
 #(
@@ -114,6 +118,16 @@ localparam id_t ${compute_tile_id} = ${actual_xy_id.render()};
   .id_y(${actual_xy_id.y})
 ) 
 `endif
+`endif
+% else:
+  compute_tile 
+`ifdef TARGET_DMA_TEST
+#(
+  .id_x(${actual_xy_id.x}),
+  .id_y(${actual_xy_id.y})
+) 
+`endif
+% endif:
  ${compute_tile_name} (
   .clk_i (clk_i),
   .rst_ni (rst_ni),
